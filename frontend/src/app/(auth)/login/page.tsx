@@ -31,7 +31,7 @@ const Login: React.FC = () => {
           <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 mb-4">
             Login
           </button>
-          <button  className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800">
+          <button onClick={()=>{router.push("/signup")}}  className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800">
             New to us?
           </button>
         </div>

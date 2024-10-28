@@ -1,71 +1,171 @@
+"use client"
+
 import Footer from '@/components/user/footer';
 import Navbar from '@/components/user/navbar';
+import { useRouter } from 'next/navigation';
+import { SubmitHandler, useForm } from 'react-hook-form';
 const bg = '/assets/backGround/pexels-dogu-tuncer-339534179-15917308.jpg';
+
+type input = {
+fullName: string,
+email:string,
+phone:number,
+password:string,
+confirmPassword:string,
+gender:string
+}
+
 const Signup: React.FC = () => {
+  let router = useRouter()
+
+  const{
+    register,
+    handleSubmit,
+    getValues,
+    formState:{errors}
+  }=useForm<input>()
+
+  const onSubmit:SubmitHandler<input> = async(data)=>{
+    const {fullName,email,phone,password,confirmPassword} = data
+    const reqBody:{
+      fullName:string,
+      email:string,
+      phone:number,
+      password:string,
+      confirmPassword:string
+    }={
+      fullName,
+      email,
+      phone:Number(phone),
+      password,
+      confirmPassword
+    }
+    const reqHeader={
+     "Content-Type": "application/json"
+    }
+
+    try {
+      const response = await signupApi(reqBody,reqHeader)
+    } catch (error) {
+      
+    }
+  }
+
+  
+
   return (
     <div>
       <Navbar />
       <div 
-        className="flex justify-center items-start min-h-screen bg-cover bg-center pt-40" 
+        className="flex justify-center items-start min-h-screen bg-cover bg-center pt-24" 
         style={{ backgroundImage: `url(${bg})` }} 
       >
-        <div className="bg-black bg-opacity-70 p-8 rounded-lg max-w-md w-full">
+        <div className="bg-black bg-opacity-70 p-10 rounded-lg max-w-md w-full">
+          <form onSubmit={handleSubmit(onSubmit)}>
           <h2 className="text-white text-3xl text-center mb-6">Sign Up</h2>
           <input
             type="text"
-            placeholder="Full Name"
+            placeholder=" Your full Name......."
+            id="fullName"
             className="w-full p-3 mb-5 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {...register("fullName",{
+              required:"Your FullName is required"
+            })}
           />
           <input
             type="email"
             placeholder="Email..."
+            id="email"
+            {...register("email",{
+              required:"Your email is required"
+            })}
             className="w-full p-3 mb-5 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
             type="number"
+            id="phone"
+            {...register("phone",{
+              required:"Your phone is required",
+              pattern:{
+                value:/^[0-9]{10}$/,
+                message:"Phone number must be 10 digits only "
+              }
+            })}
             placeholder="Phone..."
             className="w-full p-3 mb-5 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+
+
+
+          <div className='flex'>
           <input
             type="password"
-            placeholder="Passcode..."
-            className="w-full p-3 mb-5 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            id="password"
+            {...register("password", {
+              required: "Password is required",
+              pattern: {
+                value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*()_+~`|}{[\]:;?><,./-]).{8,}$/,
+                message: "Password must be at least 6 characters",
+              },
+            })}
+            placeholder="password..."
+            className="w-full  p-3 mb-5 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          <input
+            type="password"
+            id="confirmPassword"
+            {...register("confirmPassword", {
+              required: "Password is required",
+              pattern: {
+                value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*()_+~`|}{[\]:;?><,./-]).{8,}$/,
+                message: "Password must be at least 6 characters",
+              },
+            })}
+            placeholder="confirmPassword..."
+            className="w-full p-3 mb-5 ml-4 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          </div>
+
+
+
+          
          
-         <div>
+         <div className='mb-10 mt-10'>
       <h2>Select Gender:</h2>
       
       <label className='p-8'>
         <input
           type="radio"
-          name="gender"
+          id="gender"
           value="male"
+          {...register('gender', { required: true })}
         />
         Male
       </label>
-
       <label className='p-8'>
         <input
           type="radio"
-          name="gender"
+          id="gender"
           value="female"
+          {...register('gender', { required: true })}
         />
         Female
       </label>
-
       <label className='p-8'>
         <input
           type="radio"
-          name="gender"
+          id="gender"
           value="other"
+          {...register('gender', { required: true })}
         />
         Other
       </label>
       </div>
-          <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 mb-4">
-            Login
-          </button>
-          <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800">
+          <button type='submit' className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 mb-4">
+            Signup
+          </button> 
+          </form>
+          <button onClick={()=>{router.push("/login")}} className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800">
             Already have an account?
           </button>
         </div>
