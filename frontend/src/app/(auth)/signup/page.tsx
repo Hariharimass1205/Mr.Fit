@@ -1,5 +1,4 @@
 "use client"
-
 import Footer from '@/components/user/footer';
 import Navbar from '@/components/user/navbar';
 import { signupApi } from '@/service/userApi';
@@ -8,7 +7,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 const bg = '/assets/backGround/pexels-dogu-tuncer-339534179-15917308.jpg';
 
 type input = {
-  fullName: string,
+  userName: string,
   email: string,
   phone: number,
   password: string,
@@ -18,33 +17,32 @@ type input = {
 
 const Signup: React.FC = () => {
   let router = useRouter()
-
   const {
     register,
     handleSubmit,
     getValues,
     formState: { errors }
   } = useForm<input>()
-
   const onSubmit: SubmitHandler<input> = async (data) => {
-    const { fullName, email, phone, password, confirmPassword, gender } = data;
+    const { userName, email, phone, password, confirmPassword, gender } = data;
     const reqBody = {
-      fullName,
+      userName,
       email,
       phone: Number(phone),
       password,
       confirmPassword,
-      gender, // Include the gender field here
+      gender, 
     };
 
     try {
       const response = await signupApi(reqBody);
+      if(response){
+        router.push('/otp')
+      }
     } catch (error) {
       console.log(error);
     }
   };
-
-  
   return (
     <div>
       <Navbar />
@@ -58,12 +56,13 @@ const Signup: React.FC = () => {
             <input
               type="text"
               placeholder=" Your full Name......."
-              id="fullName"
+              id="userName"
               className="w-full p-3 mb-5 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              {...register("fullName", {
-                required: "Your FullName is required"
+              {...register("userName", {
+                required: "Your userName is required"
               })}
             />
+             <small>{errors.userName && <p className="text-red-500">{errors.userName.message}</p>}</small>
             <input
               type="email"
               placeholder="Email..."
@@ -73,6 +72,7 @@ const Signup: React.FC = () => {
               })}
               className="w-full p-3 mb-5 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+             <small>{errors.email && <p className="text-red-500">{errors.email.message}</p>}</small>
             <input
               type="number"
               id="phone"
@@ -86,6 +86,7 @@ const Signup: React.FC = () => {
               placeholder="Phone..."
               className="w-full p-3 mb-5 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <small> {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}</small>
 
             <div className='flex'>
               <input
@@ -101,7 +102,7 @@ const Signup: React.FC = () => {
                 placeholder="password..."
                 className="w-full  p-3 mb-5 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+              <small>{errors.password && <p className="text-red-500">{errors.password.message}</p>}</small>
               <input
                 type="password"
                 id="confirmPassword"
@@ -112,7 +113,7 @@ const Signup: React.FC = () => {
                 placeholder="confirmPassword..."
                 className="w-full p-3 mb-5 ml-4 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}
+              <small>{errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}</small>
             </div>
             <div className='mb-10 mt-10'>
               <h2>Select Gender:</h2>
@@ -142,11 +143,11 @@ const Signup: React.FC = () => {
                 Other
               </label>
             </div>
-            <button type='submit' className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 mb-4">
+            <button  type='submit' className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 mb-4">
               Signup
             </button>
           </form>
-          <button onClick={() => { router.push("/login") }} className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800">
+          <button onClick={() => { router.push("/home") }} className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800">
             Already have an account?
           </button>
         </div>

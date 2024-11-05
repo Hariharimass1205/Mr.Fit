@@ -1,9 +1,9 @@
 import { Router } from "express";
-import {register} from '../controllers/userController'
-import userController from '../controllers/userController'
+import { otpVerify, register } from '../controllers/userController';
 
-export const router = Router()
+const userRouter = Router();
 
-router.post("/signup",userController.register)
+userRouter.post("/signup", register);
+userRouter.post("/sentOTP",otpVerify)
 
-
+export default userRouter

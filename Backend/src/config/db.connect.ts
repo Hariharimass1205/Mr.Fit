@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 export const connectToMongoDB = async (): Promise<void> => {
     try {
-        await mongoose.connect('mongodb+srv://Hariharan:Hariharan0404@cluster0.iey6hba.mongodb.net/', {
+        await mongoose.connect('mongodb+srv://Hariharan:Ki65AToRLAGbg3Xa@cluster1.qbeja.mongodb.net/MrFit', {
             serverSelectionTimeoutMS: 30000,
         });
         console.log("Successfully connected to MongoDB Atlas");
