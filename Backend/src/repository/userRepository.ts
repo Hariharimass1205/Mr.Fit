@@ -4,6 +4,7 @@ import { User } from "../interface/user";
 
 export const findUserByEmail = async (email:String)=>{
     try {
+      console.log("back user repo")
         const user = await userModel.findOne({ email, isBlocked: false }).exec();
         return user
     } catch (error) {

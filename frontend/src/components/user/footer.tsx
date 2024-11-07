@@ -16,8 +16,7 @@ const Footer = () => {
           <h2 className="text-3xl font-bold mb-4">Mr.Fit</h2>
           <p className="mb-2">mrfit@gmail.com</p>
           <p className="mb-2">080-68060300</p>
-          <div className="flex space-x-4 mt-4">
-            {/* Social Media Icons */}
+          {/* <div className="flex space-x-4 mt-4">
             <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:opacity-75">
               <img src="/instagram-icon.svg" alt="Instagram" className="w-6 h-6" />
             </a>
@@ -27,7 +26,7 @@ const Footer = () => {
             <a href="https://facebook.com" target="_blank" rel="noreferrer" className="hover:opacity-75">
               <img src="/facebook-icon.svg" alt="Facebook" className="w-6 h-6" />
             </a>
-          </div>
+          </div> */}
         </div>
 
         {/* Links Section */}

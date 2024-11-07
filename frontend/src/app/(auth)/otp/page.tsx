@@ -3,14 +3,43 @@ import Footer from '@/components/user/footer';
 import Navbar from '@/components/user/navbar';
 import { otpVerify, signupApi } from '@/service/userApi';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useSearchParams } from 'next/navigation';
 const bg = '/assets/backGround/neeww.jpg';
 
 type input = {
-    otp:number
+    otp:string
 }
 const Login: React.FC = () => {
   let router = useRouter()
+  let [timeLeft,setTimeLeft] = useState(60)
+  const [isResendDisabled, setIsResendDisabled] = useState(false);
+  
+  // accessing query by this
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
+
+  // Handle Resend OTP click
+      const handleResentOTP = () => {
+        console.log("Resend OTP");
+        setTimeLeft(60);
+        setIsResendDisabled(true);
+        };
+
+  useEffect(()=>{
+    if(timeLeft==0){
+      setIsResendDisabled(false)
+    }
+    if(timeLeft>0){
+      const timer = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      },1000);
+      return ()=> clearInterval(timer)
+    }
+  },[timeLeft])
+
+
   const {
     register,
     handleSubmit,
@@ -19,10 +48,15 @@ const Login: React.FC = () => {
   } = useForm<input>()
 
   const onSubmit: SubmitHandler<input> = async (data) => {
-    const { otp} = data;
+        const { otp} = data;
     try {
-        const response = await otpVerify(otp);
-        if(response.statusCode==200){
+      if (!email) {
+        console.error("Email is missing in the query params.");
+        return;  // Exit if email is missing
+      }
+        const response = await otpVerify(otp,email);
+        console.log(response)
+        if(response){
           router.push('/home')
         }
       } catch (error) {
@@ -54,6 +88,20 @@ const Login: React.FC = () => {
             verify
           </button>
           </form>
+          {isResendDisabled ? (
+            <p className="text-sm text-white-600">
+            Resend OTP in{" "}
+            <span className="font-medium text-red-900">
+              {timeLeft} seconds
+            </span>
+          </p>
+          ):
+          (
+            <button onClick={handleResentOTP}   className="w-1/2  bg-gray-200 text-black py-3 rounded-lg hover:bg-gray-800 mb-4">
+            resent otp
+          </button>
+          ) }
+          
           <button onClick={()=>{router.push("/login")}}  className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800">
             Already have an account
           </button>

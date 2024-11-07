@@ -37,7 +37,7 @@ const Signup: React.FC = () => {
     try {
       const response = await signupApi(reqBody);
       if(response){
-        router.push('/otp')
+        router.push(`/otp?email=${email}`)
       }
     } catch (error) {
       console.log(error);

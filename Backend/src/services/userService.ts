@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 
 export const registerUser = async (user:any)=>{
     try {
+        console.log("back user service")
         const exsitingUser = await findUserByEmail(user.email)
         if(exsitingUser){
             if(exsitingUser.otpVerified){
@@ -18,3 +19,5 @@ export const registerUser = async (user:any)=>{
     }
 
 }
+
+export { findUserByEmail }
