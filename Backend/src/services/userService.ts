@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken'
-import { createUser, findUserByEmail } from '../repository/userRepository'
+import { createUser, findUserByEmail, verifyAndSaveUser } from '../repository/userRepository'
 import bcrypt from 'bcrypt'
+import { error } from 'console'
 
 export const registerUser = async (user:any)=>{
     try {
-        console.log("back user service")
         const exsitingUser = await findUserByEmail(user.email)
         if(exsitingUser){
             if(exsitingUser.otpVerified){
@@ -19,5 +19,39 @@ export const registerUser = async (user:any)=>{
     }
 
 }
+export const verifyOTPService = async (email:string,otp:string)=>{
+    try {
+        const user = await findUserByEmail(email)
+        if(!user){
+            throw new Error("user not found")
+        }
+        if(user.otp===otp){
+          await verifyAndSaveUser(email,otp)
+          return "User registered successfully";
+        }else{
+            throw new Error("OTP invalid")
+        }
+    } catch (error) {
+        throw new Error("Invalid OTP");
+    }
+}
 
-export { findUserByEmail }
+export const loginUser = async (email:string,password:string)=>{
+ try {
+    const user = await findUserByEmail(email)
+    if(!user){
+        throw new Error("Invalid Email/Password")
+    }
+    const isPassword = await bcrypt.compare(password,user.password)
+    if(!isPassword){
+        throw new Error("Invalid Email/Password")
+    }
+    const token = jwt.sign({userId:user._id},process.env.JWT_SECRET!,{
+        expiresIn:"1h"
+    })
+    return {user,token}
+ } catch (error:any) {
+    console.error('Error during login:', error);
+    throw new Error(error.message);
+ }
+}

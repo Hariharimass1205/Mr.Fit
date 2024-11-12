@@ -1,3 +1,4 @@
+
 import mongoose,{Schema} from 'mongoose'
 import { User } from '../interface/user'
 
@@ -10,6 +11,7 @@ const userSchema = new Schema<User>({
     DOB:{type: String },
     otp: { type: String },
     otpVerified: { type: Boolean, default: false },
+    gender:{ type: String }, 
     address: { type: String },
     state: { type: String },
     district: { type: String },

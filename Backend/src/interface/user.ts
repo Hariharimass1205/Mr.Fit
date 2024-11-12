@@ -4,7 +4,8 @@ export interface User {
     phone?: number;   
     email: string;   
     password?: string;   
-    profileImage?: string;   
+    profileImage?: string;
+    gender?: string;   
     otp?: string;   
     DOB?:string
     otpVerified?: boolean;   

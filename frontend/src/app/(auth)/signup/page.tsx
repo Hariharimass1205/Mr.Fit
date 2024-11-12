@@ -5,7 +5,6 @@ import { signupApi } from '@/service/userApi';
 import { useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 const bg = '/assets/backGround/pexels-dogu-tuncer-339534179-15917308.jpg';
-
 type input = {
   userName: string,
   email: string,
@@ -14,7 +13,6 @@ type input = {
   confirmPassword: string,
   gender: string
 }
-
 const Signup: React.FC = () => {
   let router = useRouter()
   const {
@@ -33,9 +31,9 @@ const Signup: React.FC = () => {
       confirmPassword,
       gender, 
     };
-
     try {
       const response = await signupApi(reqBody);
+      console.log("from back ---- ",response)
       if(response){
         router.push(`/otp?email=${email}`)
       }
@@ -147,7 +145,7 @@ const Signup: React.FC = () => {
               Signup
             </button>
           </form>
-          <button onClick={() => { router.push("/home") }} className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800">
+          <button onClick={() => { router.push("/login") }} className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800">
             Already have an account?
           </button>
         </div>

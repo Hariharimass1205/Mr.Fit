@@ -4,7 +4,6 @@ import { User } from "../interface/user";
 
 export const findUserByEmail = async (email:String)=>{
     try {
-      console.log("back user repo")
         const user = await userModel.findOne({ email, isBlocked: false }).exec();
         return user
     } catch (error) {
@@ -20,4 +19,15 @@ export const createUser = async (user: User): Promise<any>=> {
     } catch (error) {
       throw new Error('Database Error');
     }
+  }
+
+  export const verifyAndSaveUser= async (email:string,otp:string)=>{
+    const user = await userModel.findOne({email})
+    if(user.otp==otp && user){
+      user.otp = null;
+      user.otpVerified=true;
+      await user.save();
+      return user;
+    }
+    throw new Error("Invalid OTP");
   }

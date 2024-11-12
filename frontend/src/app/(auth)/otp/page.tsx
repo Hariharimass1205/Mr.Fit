@@ -13,6 +13,7 @@ type input = {
 }
 const Login: React.FC = () => {
   let router = useRouter()
+  let [error , setError] = useState(false)
   let [timeLeft,setTimeLeft] = useState(60)
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   
@@ -57,10 +58,10 @@ const Login: React.FC = () => {
         const response = await otpVerify(otp,email);
         console.log(response)
         if(response){
-          router.push('/home')
+          router.push('/login')
         }
-      } catch (error) {
-        console.log(error);
+      } catch (error:any) {
+        setError(true)
       }
     }
   return (
@@ -83,6 +84,9 @@ const Login: React.FC = () => {
              })}
             />
             <small>{errors.otp && <p className="text-red-500">{errors.otp.message}</p>}</small>
+            {error?
+            <h3 style={{color:"red"}}>Invalide OTP</h3>:
+            ""}
           <h1>......................................................................................</h1><br/>
           <button type="submit"   className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 mb-4">
             verify
