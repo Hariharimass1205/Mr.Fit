@@ -18,7 +18,8 @@ const userSchema = new Schema<User>({
     pincode: { type: Number },
     reviews: { type: [String] },
     coachId:{type:String},
-    isBlocked:{ type: Boolean, default: false },
+    isBlocked:{ type: Boolean, default:false },
+    isCoach:{type:Boolean,default:false}
 })
 
 const userModel = mongoose.model("users",userSchema)

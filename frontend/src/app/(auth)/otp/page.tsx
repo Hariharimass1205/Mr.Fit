@@ -11,7 +11,7 @@ const bg = '/assets/backGround/neeww.jpg';
 type input = {
     otp:string
 }
-const Login: React.FC = () => {
+const OTP: React.FC = () => {
   let router = useRouter()
   let [error , setError] = useState(false)
   let [timeLeft,setTimeLeft] = useState(60)
@@ -66,7 +66,14 @@ const Login: React.FC = () => {
     }
   return (
     <div>
-      <Navbar />
+      
+      <nav className="bg-black text-white flex justify-between items-center p-4">
+      <div className="text-2xl font-bold">
+        <h1>Mr.Fit</h1>
+      </div>
+    </nav>
+
+
       <div 
         className="flex justify-center items-start min-h-screen bg-cover bg-center pt-40" 
         style={{ backgroundImage: `url(${bg})` }} 
@@ -116,4 +123,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default OTP;

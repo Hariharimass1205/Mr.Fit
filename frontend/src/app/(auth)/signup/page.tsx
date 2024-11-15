@@ -43,7 +43,11 @@ const Signup: React.FC = () => {
   };
   return (
     <div>
-      <Navbar />
+      <nav className="bg-black text-white flex justify-between items-center p-4">
+      <div className="text-2xl font-bold">
+        <h1>Mr.Fit</h1>
+      </div>
+    </nav>
       <div
         className="flex justify-center items-start min-h-screen bg-cover bg-center pt-24"
         style={{ backgroundImage: `url(${bg})` }}

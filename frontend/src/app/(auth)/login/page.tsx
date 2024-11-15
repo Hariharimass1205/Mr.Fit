@@ -33,7 +33,7 @@ const Login: React.FC = () => {
         localStorage.setItem("token",response.token)
       }
       if (response) {
-        router.push(`/home`);
+        router.push(`/user/home`);
       }
 
     } catch (error) {
@@ -41,10 +41,20 @@ const Login: React.FC = () => {
       console.log(error);
     }
   };
+  const handleForgotPassword = ()=>{
+    router.push("/forgotPassword/forgotPassword1")
+  }
 
   return (
+    //navabr
     <div>
-      <Navbar />
+      <nav className="bg-black text-white flex justify-between items-center p-4">
+      <div className="text-2xl font-bold">
+        <h1>Mr.Fit</h1>
+      </div>
+    </nav>
+
+
       <div
         className="flex justify-center items-start min-h-screen bg-cover bg-center pt-40"
         style={{ backgroundImage: `url(${bg})` }}
@@ -68,7 +78,8 @@ const Login: React.FC = () => {
             />
             {error?<h2 style={{color:"red"}}>Password Incorrect</h2>:""}
             <div className="text-right mb-4">
-              <a href="#" className="text-gray-400 hover:text-gray-300 text-sm">
+
+              <a onClick={handleForgotPassword} href="#" className="text-gray-400 hover:text-gray-300 text-sm">
                 Forgot passcode?
               </a>
             </div>

@@ -4,6 +4,9 @@ import userRouter from './routes/userRoute'
 import cors from 'cors'
 import dotenv from "dotenv";
 import { connectToMongoDB } from "./config/db.connect";
+import coachRouter from "./routes/coachRoute";
+import adminRouter from "./routes/adminRoute";
+import { errorHandles } from "./middlesware/errrorHandlers";
 
 
 dotenv.config()
@@ -20,13 +23,11 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use("/user",userRouter)
+app.use("/coach",coachRouter)
+app.use("/admin",adminRouter)
 
 
-   
-
-app.get("/",(req,res)=>{
-    res.send("jbabnij")
-})
+app.use(errorHandles)
 
 
 

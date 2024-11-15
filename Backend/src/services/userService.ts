@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { createUser, findUserByEmail, verifyAndSaveUser } from '../repository/userRepository'
+import { createUser, findUserByEmail, findUserByEmailandUpdate, updateUser, verifyAndSaveUser } from '../repository/userRepository'
 import bcrypt from 'bcrypt'
 import { error } from 'console'
 
@@ -17,7 +17,6 @@ export const registerUser = async (user:any)=>{
     } catch (error) {
         throw error
     }
-
 }
 export const verifyOTPService = async (email:string,otp:string)=>{
     try {
@@ -25,7 +24,7 @@ export const verifyOTPService = async (email:string,otp:string)=>{
         if(!user){
             throw new Error("user not found")
         }
-        if(user.otp===otp){
+        if(user.otp==otp){
           await verifyAndSaveUser(email,otp)
           return "User registered successfully";
         }else{
@@ -54,4 +53,46 @@ export const loginUser = async (email:string,password:string)=>{
     console.error('Error during login:', error);
     throw new Error(error.message);
  }
+}
+
+export const checkUser = async (email:string,otp:string)=>{
+    try {
+        const saveOTP = await findUserByEmailandUpdate(email,otp)
+        saveOTP
+        if(!saveOTP){
+            throw new Error("user not found")
+        }
+        console.log(saveOTP,'okoko');
+        return saveOTP
+    } catch (error) {
+        console.log("error at checkUser at service")
+        throw new Error("error at checkUser in service in forgotpass")
+    }
+}
+
+export const forgotPassverifyOTPService = async (email:string,otp:string)=>{
+    try {
+        const user = await findUserByEmail(email)
+        if(!user){
+            throw new Error("user not found")
+        }
+        if(user.otp==otp){
+          await verifyAndSaveUser(email,otp)
+          return "User registered successfully";
+        }else{
+            throw new Error("OTP invalid")
+        }
+    } catch (error) {
+        throw new Error("Invalid OTP");
+    }
+}
+
+export const saveNewPassword = async (password:string,email:string)=>{
+    try {
+        const hashedpassword =  await bcrypt.hash(password,10)
+        const user = await updateUser(email,hashedpassword)
+        return user
+    } catch (error) {
+        throw new Error("error at saving chanage password");
+    }
 }

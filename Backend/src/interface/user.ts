@@ -16,4 +16,5 @@ export interface User {
     reviews?: string[];   
     isBlocked?: boolean;
     coachId?:string;     
+    isCoach: boolean;
   } 

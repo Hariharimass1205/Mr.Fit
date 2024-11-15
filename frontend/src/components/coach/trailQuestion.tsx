@@ -1,4 +1,4 @@
-import { sentMailtoAdmin } from "@/service/userApi";
+import { sentCoachScore } from "@/service/coachApi";
 import { useState } from "react";
 
 const Quiz = () => {
@@ -36,7 +36,7 @@ const Quiz = () => {
         "Healthy Internal Intensity Training",
         "High-Intensity Isometric Training",
       ],
-      correctAnswer: 0,
+      correctAnswer: 1,
     },
     {
       question: "Which type of exercise is best for improving flexibility?",
@@ -78,7 +78,6 @@ const Quiz = () => {
       options: ["Push-ups", "Squats", "Pull-ups", "Planks"],
       correctAnswer: 1,
     },
-    // Additional 10 questions
     {
       question: "What does BMI stand for?",
       options: [
@@ -87,7 +86,7 @@ const Quiz = () => {
         "Basal Metabolic Index",
         "Body Measurement Indicator",
       ],
-      correctAnswer: 0,
+      correctAnswer: 1,
     },
     {
       question: "Which mineral is essential for oxygen transport in the blood?",
@@ -97,53 +96,13 @@ const Quiz = () => {
     {
       question: "Which type of fat is considered healthy?",
       options: ["Saturated fat", "Trans fat", "Monounsaturated fat", "Hydrogenated fat"],
-      correctAnswer: 2,
+      correctAnswer: 1,
     },
     {
       question: "Which exercise targets the biceps the most?",
       options: ["Squats", "Push-ups", "Bicep curls", "Planks"],
-      correctAnswer: 2,
-    },
-    {
-      question: "What is the benefit of warming up before exercise?",
-      options: [
-        "Increases heart rate rapidly",
-        "Improves flexibility",
-        "Reduces the risk of injury",
-        "Makes you sweat more",
-      ],
-      correctAnswer: 2,
-    },
-    {
-      question: "How many calories does 1 gram of protein provide?",
-      options: ["2 calories", "4 calories", "6 calories", "9 calories"],
       correctAnswer: 1,
-    },
-    {
-      question: "What is the main purpose of the core muscles?",
-      options: [
-        "Strengthening the legs",
-        "Supporting balance and stability",
-        "Improving lung function",
-        "Increasing metabolism",
-      ],
-      correctAnswer: 1,
-    },
-    {
-      question: "Which type of training involves short bursts of intense activity?",
-      options: ["Steady-state cardio", "Circuit training", "HIIT", "LISS"],
-      correctAnswer: 2,
-    },
-    {
-      question: "What macronutrient should be prioritized post-workout for muscle recovery?",
-      options: ["Carbohydrates", "Proteins", "Fats", "Vitamins"],
-      correctAnswer: 1,
-    },
-    {
-      question: "What type of exercise is Pilates?",
-      options: ["Strength", "Flexibility", "Endurance", "Cardio"],
-      correctAnswer: 1,
-    },
+    }
   ];
 
   const [selectedAnswers, setSelectedAnswers] = useState(
@@ -157,28 +116,30 @@ const Quiz = () => {
     setSelectedAnswers(updatedAnswers);
   };
 
-  const handleSubmit = async() => {
-    const calculatedScore = selectedAnswers.reduce(async (acc, answer, index) => {
-      try {
-        const res = await sentMailtoAdmin(calculatedScore)
-        if(res){
-            alert("mail send success")
-        }
-        if (answer === questions[index].correctAnswer) {
-            return acc + 1;
-          }
-          return acc;
-      } catch (error) {
-        console.error("error at sending score")
+  const handleSubmit = async () => {
+    const calculatedScore = selectedAnswers.reduce((acc, answer, index) => {
+      if (answer === questions[index].correctAnswer) {
+        return acc + 1;
       }
-      
+      return acc;
     }, 0);
     setScore(calculatedScore);
+    try {
+      const coach = localStorage.getItem("user");
+      const res = await sentCoachScore(calculatedScore, coach);
+      if (!res) {
+        console.log("Failed to save score");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-5">
-      <h2 className="text-7xl font-semibold mb-6">Fitness Quiz</h2>
+    <div
+      className="max-w-full  justify-items-center mx-auto p-5 min-h-screen bg-cover bg-center"
+    >
+      <h2 className="text-8xl text-cyan-300 font-semibold mb-10">Mr.Fit Fitness test</h2>
 
       {!score && score !== 0 ? (
         <div>
@@ -194,7 +155,7 @@ const Quiz = () => {
                       value={optionIndex}
                       onChange={() => handleAnswerChange(index, optionIndex)}
                       checked={selectedAnswers[index] === optionIndex}
-                      className="mr-2"
+                      className="mr-2 "
                     />
                     {option}
                   </label>
@@ -204,7 +165,7 @@ const Quiz = () => {
           ))}
           <button
             onClick={handleSubmit}
-            className="mt-6 w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-700"
+            className="mt-6 w-full bg-cyan-500 text-white p-3 rounded-lg hover:bg-green-700"
           >
             Submit Quiz
           </button>
@@ -215,12 +176,12 @@ const Quiz = () => {
           <p className="text-lg">
             Your score: {score} out of {questions.length}
           </p>
-          {score >= 14 ? (
+          {score >= 10 ? (
             <p className="text-green-500 mt-4">Congratulations! You passed the quiz.</p>
           ) : (
             <p className="text-red-500 mt-4">Sorry, you need to score higher to qualify.</p>
           )}
-           <p className="text-gray-600 mt-6">
+          <p className="text-gray-600 mt-6">
             Thank you for completing the quiz! Our team will review your responses and contact you after a discussion.
           </p>
         </div>

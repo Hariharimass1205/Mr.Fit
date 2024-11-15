@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { sendScoretoAdmin } from "../controllers/coachController";
+import { saveScore } from "../controllers/coachController";
 
-const CoachRouter = Router();
+const coachRouter = Router();
 
-CoachRouter.post("/sendScore",sendScoretoAdmin)
+coachRouter.post("/sendScore",saveScore)
 
-export default CoachRouter
+export default coachRouter
