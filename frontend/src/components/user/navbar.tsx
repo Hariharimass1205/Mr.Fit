@@ -1,5 +1,4 @@
 "use client";
-import { cookies } from 'next/headers';
 import Link from 'next/link'; 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -28,7 +27,7 @@ const Navbar: React.FC = () => {
         setIsAth(false);
       }
     }
-  }, []);
+  }, [user]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -58,7 +57,7 @@ const Navbar: React.FC = () => {
         {user && (
           <span className="text-lg hover:underline mr-3 hover:text-cyan-400">Hi.. {user}</span>
         )}
-        {user ? (
+        {user && isAth ? (
           <a onClick={handleLogout} className="text-lg hover:underline hover:text-cyan-400">
             logout
           </a>

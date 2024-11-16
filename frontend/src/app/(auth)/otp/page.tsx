@@ -1,7 +1,6 @@
 "use client"
 import Footer from '@/components/user/footer';
-import Navbar from '@/components/user/navbar';
-import { otpVerify, signupApi } from '@/service/userApi';
+import { otpVerify, resendOTP} from '@/service/userApi';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -12,39 +11,28 @@ type input = {
     otp:string
 }
 const OTP: React.FC = () => {
-  let router = useRouter()
-  let [error , setError] = useState(false)
-  let [timeLeft,setTimeLeft] = useState(60)
-  const [isResendDisabled, setIsResendDisabled] = useState(false);
-  
+  const router = useRouter()
+  const [error , setError] = useState(false)
+  const [timer,setTimer] = useState(10)
+   const [buttonVisible,setButtonVisible] = useState(false)
   // accessing query by this
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
 
-  // Handle Resend OTP click
-      const handleResentOTP = () => {
-        console.log("Resend OTP");
-        setTimeLeft(60);
-        setIsResendDisabled(true);
-        };
-
   useEffect(()=>{
-    if(timeLeft==0){
-      setIsResendDisabled(false)
-    }
-    if(timeLeft>0){
-      const timer = setInterval(() => {
-        setTimeLeft((prevTime) => prevTime - 1);
-      },1000);
-      return ()=> clearInterval(timer)
-    }
-  },[timeLeft])
-
+   if(timer>0){
+   let intervalId =  setInterval(() => {
+      setTimer((prevTime)=>prevTime-1)
+   }, 1000);
+   return ()=> clearInterval(intervalId)
+  }else{
+    setButtonVisible(true)
+  }
+  },[timer])
 
   const {
     register,
     handleSubmit,
-    getValues,
     formState: { errors }
   } = useForm<input>()
 
@@ -60,13 +48,24 @@ const OTP: React.FC = () => {
         if(response){
           router.push('/login')
         }
-      } catch (error:any) {
+      } catch (err) {
         setError(true)
+        console.log(err)
       }
     }
+    const handleResendOTP = async ()=>{
+      try {
+        const response = await resendOTP(email)
+        if(response){
+          alert("resend otp success")
+        }
+      } catch (err) {
+        setError(true)
+        console.log(err);
+      }
+  }
   return (
     <div>
-      
       <nav className="bg-black text-white flex justify-between items-center p-4">
       <div className="text-2xl font-bold">
         <h1>Mr.Fit</h1>
@@ -83,7 +82,7 @@ const OTP: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
           <input
              type="number"
-             placeholder=" ENter your OTP ......."
+             placeholder="Enter your OTP ......."
              id="otp"
              className="w-full p-3 mb-5 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
              {...register("otp", {
@@ -94,28 +93,19 @@ const OTP: React.FC = () => {
             {error?
             <h3 style={{color:"red"}}>Invalide OTP</h3>:
             ""}
-          <h1>......................................................................................</h1><br/>
+        <br/>
+          <h1>Time left : {timer}</h1>
+          {buttonVisible?
+          <button  onClick={handleResendOTP} className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 mb-4">
+            Resent otp
+          </button>:
           <button type="submit"   className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 mb-4">
-            verify
-          </button>
-          </form>
-          {isResendDisabled ? (
-            <p className="text-sm text-white-600">
-            Resend OTP in{" "}
-            <span className="font-medium text-red-900">
-              {timeLeft} seconds
-            </span>
-          </p>
-          ):
-          (
-            <button onClick={handleResentOTP}   className="w-1/2  bg-gray-200 text-black py-3 rounded-lg hover:bg-gray-800 mb-4">
-            resent otp
-          </button>
-          ) }
+          verify
+        </button>
+}
+
+          </form> 
           
-          <button onClick={()=>{router.push("/login")}}  className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800">
-            Already have an account
-          </button>
         </div>
       </div>
       <Footer />

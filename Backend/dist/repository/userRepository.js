@@ -38,7 +38,6 @@ const createUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
 exports.createUser = createUser;
 const verifyAndSaveUser = (email, otp) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield userModel_1.default.findOne({ email });
-    console.log(user, "userRepo");
     if (user.otp == otp && user) {
         user.otp = null;
         user.otpVerified = true;

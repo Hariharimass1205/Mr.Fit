@@ -73,7 +73,6 @@ const forgotPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     try {
         const { email } = req.body;
         const otp = (0, OtoGenerator_1.otpGenerator)();
-        console.log("otp in 1st step", otp);
         const exsitingUser = yield (0, userService_1.checkUser)(email, otp);
         if (!exsitingUser) {
             throw new Error("user not found");

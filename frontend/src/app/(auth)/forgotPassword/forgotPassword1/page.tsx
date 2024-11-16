@@ -11,15 +11,13 @@ type input = {
   email:string
 }
 const ForgotPassword1: React.FC = () => {
-  let router = useRouter()
-  let [error , setError] = useState(false)
+  const router = useRouter()
+  const [error , setError] = useState(false)
   
   // accessing query by this
-  const searchParams = useSearchParams();
   const {
     register,
     handleSubmit,
-    getValues,
     formState: { errors }
   } = useForm<input>()
 
@@ -32,8 +30,9 @@ const ForgotPassword1: React.FC = () => {
       }else{
         setError(true)
       }
-    } catch (error:any) {
+    } catch (err) {
       setError(true)
+      console.log(err)
     }
    }
 

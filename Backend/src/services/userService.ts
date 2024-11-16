@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { createUser, findUserByEmail, findUserByEmailandUpdate, updateUser, verifyAndSaveUser } from '../repository/userRepository'
+import { createUser, findUserByEmail, findUserByEmailandUpdate, updateUser, updateUserOTP, verifyAndSaveUser } from '../repository/userRepository'
 import bcrypt from 'bcrypt'
 import { error } from 'console'
 
@@ -94,5 +94,13 @@ export const saveNewPassword = async (password:string,email:string)=>{
         return user
     } catch (error) {
         throw new Error("error at saving chanage password");
+    }
+}
+export const saveOTPtoModel = async (email:string,otp:string)=>{
+    try {
+        const user = await updateUserOTP(email,otp)
+        return user
+    } catch (error) {
+        throw new Error("error at saving otp for resend otp");
     }
 }

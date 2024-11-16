@@ -1,7 +1,7 @@
 // userController.ts
 import { NextFunction, Request, Response } from "express";    
 import { otpGenerator } from "../utils/OtoGenerator";
-import { checkUser, forgotPassverifyOTPService, loginUser, registerUser, saveNewPassword, verifyOTPService } from "../services/userService";
+import { checkUser, forgotPassverifyOTPService, loginUser, registerUser, saveNewPassword, saveOTPtoModel, verifyOTPService } from "../services/userService";
 import { sendEmail } from "../utils/sendEmail";
 import { HttpStatus } from "../utils/httpStatusCode";
 import { json } from "stream/consumers";
@@ -63,7 +63,6 @@ export const forgotPassword = async(req:Request,res:Response,next:NextFunction)=
   try {
     const {email} = req.body
     const otp = otpGenerator()
-    console.log("otp in 1st step",otp)
     const exsitingUser = await checkUser(email,otp)
   if(!exsitingUser){
      throw new Error("user not found")
@@ -92,7 +91,6 @@ export const forgotPasswordOTPVerify = async (req:Request,res:Response,next:Next
 
 export const saveChangePassword = async (req:Request,res:Response,next:NextFunction)=>{
   try {
-    console.log('req reached saveNewPassword')
     const {password,email} = req.body
     const result = await saveNewPassword(password,email)
     if(result){
@@ -102,4 +100,19 @@ export const saveChangePassword = async (req:Request,res:Response,next:NextFunct
     console.error("new Password saving");
     next(error);
   }
+}
+export const HandleResendOTP = async(req:Request,res:Response,next:NextFunction)=>{
+try {
+  const {email} = req.body
+  const otp =  otpGenerator();
+  await sendEmail(req.body.email, otp);
+  console.log("resend otp:",otp)
+  const result = await saveOTPtoModel(email,otp)
+  if(result){
+  res.status(HttpStatus.OK).json({success:true})
+  }
+} catch (error) {
+  console.error("error at handling resent otp ");
+  next(error);
+}
 }

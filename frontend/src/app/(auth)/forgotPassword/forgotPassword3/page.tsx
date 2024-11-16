@@ -1,7 +1,7 @@
 "use client"
 import Footer from '@/components/user/footer';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSearchParams } from 'next/navigation';
 import { saveNewPassword } from '@/service/userApi';
@@ -13,8 +13,8 @@ type input = {
   email:string
 }
 const ForgotPassword3: React.FC = () => {
-  let router = useRouter()
-  let [error , setError] = useState(false)
+  const router = useRouter()
+  const  [error , setError] = useState(false)
   
   // accessing query by this
   const searchParams = useSearchParams();
@@ -32,10 +32,10 @@ const onsubmit:SubmitHandler<input> = async (data)=>{
     const response = await saveNewPassword(password,email)
     if(response){
       router.push(`/login`)
-
     }
-  } catch (error) {
-    
+  } catch (err) {
+    setError(true)
+    console.log(err)
   }
 }
 

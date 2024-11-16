@@ -37,9 +37,9 @@ export const forgotpasswordEmail = async (email:string):Promise<any>=>{
   try {
     const response = await axios.post(`${SERVER_URL_USER}/forgotPassword1`,{email})
     return response.data.success
-  } catch (error) {
-    console.log("error at sending email to backend while forgot password")
-    throw new Error("error at forgot password ")
+  } catch (err) {
+    console.log("error at sending email to backend while forgot password",err)
+    throw new Error("error at forgot password")
   }
 }
 
@@ -60,6 +60,15 @@ export const saveNewPassword = async (password:string,email:any):Promise<any>=>{
     return response
   } catch (error) {
     console.error("Error in saving new password:", error);
+    throw error;
+  }
+}
+export const resendOTP = async (email:any):Promise<any>=>{
+  try {
+    const response = await axios.post(`${SERVER_URL_USER}/resendOTP`,{email})
+    return response
+  } catch (error) {
+    console.error("Error in resending OTP:", error);
     throw error;
   }
 }

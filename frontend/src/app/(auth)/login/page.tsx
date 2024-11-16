@@ -1,6 +1,5 @@
 "use client";
 import Footer from '@/components/user/footer';
-import Navbar from '@/components/user/navbar';
 import { loginApi } from '@/service/userApi';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -15,7 +14,7 @@ type input = {
 
 const Login: React.FC = () => {
   const router = useRouter();
-  const [error,setError] = useState(false)
+  const [errorr,setErrorr] = useState(false)
   const {
     register,
     handleSubmit,
@@ -37,7 +36,7 @@ const Login: React.FC = () => {
       }
 
     } catch (error) {
-      setError(true)
+      setErrorr(true)
       console.log(error);
     }
   };
@@ -69,6 +68,8 @@ const Login: React.FC = () => {
               {...register("email", { required: "Your email is required" })}
               className="w-full p-3 mb-4 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <small>{errors.email && <p className="text-red-500">{errors.email.message}</p>}</small>
+
             <input
               type="password"
               placeholder="Password..."
@@ -76,7 +77,9 @@ const Login: React.FC = () => {
               {...register("password", { required: "Your Passcode is required" })}
               className="w-full p-3 mb-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {error?<h2 style={{color:"red"}}>Password Incorrect</h2>:""}
+            <small>{errors.password && <p className="text-red-500">{errors.password.message}</p>}</small>
+
+            {errorr?<h2 style={{color:"red"}}>Password Incorrect</h2>:""}
             <div className="text-right mb-4">
 
               <a onClick={handleForgotPassword} href="#" className="text-gray-400 hover:text-gray-300 text-sm">

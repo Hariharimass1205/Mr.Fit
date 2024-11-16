@@ -49,6 +49,17 @@ export const updateUser = async (email,hashedpassword)=>{
     const user = await userModel.updateOne({email},{password:hashedpassword})
     return user
   } catch (error) {
-    
+    console.log(error)
+      throw new Error('Database update forgot password');
+  }
+}
+
+export const updateUserOTP = async (email,otp)=>{
+  try {
+    const user = await userModel.updateOne({email},{otp:otp})
+    return user
+  } catch (error) {
+    console.log(error)
+      throw new Error('Database resend otp update  Error');
   }
 }

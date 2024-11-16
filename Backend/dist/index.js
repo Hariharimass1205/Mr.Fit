@@ -11,6 +11,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const db_connect_1 = require("./config/db.connect");
 const coachRoute_1 = __importDefault(require("./routes/coachRoute"));
 const adminRoute_1 = __importDefault(require("./routes/adminRoute"));
+const errrorHandlers_1 = require("./middlesware/errrorHandlers");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const morganFormat = ":method :url :status :response-time ms";
@@ -24,9 +25,7 @@ app.use((0, cookie_parser_1.default)());
 app.use("/user", userRoute_1.default);
 app.use("/coach", coachRoute_1.default);
 app.use("/admin", adminRoute_1.default);
-app.get("/", (req, res) => {
-    res.send("jbabnij");
-});
+app.use(errrorHandlers_1.errorHandles);
 app.listen(5000, () => {
     console.log(`server start at port 5000`);
 });

@@ -1,8 +1,6 @@
 "use client";
 import Footer from '@/components/user/footer';
-import Navbar from '@/components/user/navbar';
 import { adminlogin } from '@/service/adminApi';
-import { loginApi } from '@/service/userApi';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -61,6 +59,8 @@ const Login: React.FC = () => {
               {...register("email", { required: "Your email is required" })}
               className="w-full p-3 mb-4 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+      <small>{errors.email && <p className="text-red-500">{errors.email.message}</p>}</small>
+
             <input
               type="password"
               placeholder="Password..."
@@ -68,6 +68,8 @@ const Login: React.FC = () => {
               {...register("password", { required: "Your Passcode is required" })}
               className="w-full p-3 mb-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <small>{errors.password && <p className="text-red-500">{errors.password.message}</p>}</small>
+
             {error?<h2 style={{color:"red"}}>Password Incorrect</h2>:""}
             <div className="text-right mb-4">
 

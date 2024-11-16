@@ -1,6 +1,5 @@
 "use client"
 import Footer from '@/components/user/footer';
-import Navbar from '@/components/user/navbar';
 import { signupApi } from '@/service/userApi';
 import { useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -14,7 +13,7 @@ type input = {
   gender: string
 }
 const Signup: React.FC = () => {
-  let router = useRouter()
+  const router = useRouter()
   const {
     register,
     handleSubmit,
