@@ -24,7 +24,10 @@ export const register = async (req: Request, res: Response, next: NextFunction)=
       state: "",
       district: "",  
       pincode: 0,
-      coachId: ""      
+      coachId: "",
+      isBlocked:false,
+      isCoach:false,
+      quizScore:0      
     });
     console.log(otp,req.body.email)
      res.status(HttpStatus.OK).json("OTP sent to email and saved in the database.");

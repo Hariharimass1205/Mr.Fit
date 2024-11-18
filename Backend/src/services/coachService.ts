@@ -1,10 +1,11 @@
-import { errorMonitor } from "events"
-import { findUserByEmail } from "../repository/userRepository"
+import { findUserByEmailandUpdateCoach } from "../repository/coachRepository"
 
-
-export const creatCoachDoc = async (score:any,coach:any)=>{
+export const updateCoachScore = async (score:number,coach:any)=>{
     try {
-        let res = await findUserByEmail(coach.Email)
+        let email = coach.email
+        console.log(email,coach,score,"from coachService")
+        let res = await findUserByEmailandUpdateCoach(score,email)
+        return res
     } catch (error) {
         throw new Error("error at sendind doc to db in service")
     }

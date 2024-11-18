@@ -36,7 +36,7 @@ export default function Home() {
         {/* "How Mr.Fit helps you" Section */}
         <section className="text-center py-16 bg-teal-100">
           <h2 className="text-6xl text-black font-semibold pb-10">How Mr.Fit helps you...</h2>
-          <button className="mt-6 bg-cyan-300 w-48 text-white py-2  px-6  hover:bg-cyan-700 transition">
+          <button className="mt-6 bg-cyan-400 w-48 rounded-2xl text-white py-2  px-6  hover:bg-cyan-700 transition">
             Start Training
           </button>
 

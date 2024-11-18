@@ -13,8 +13,9 @@ type input = {
 const OTP: React.FC = () => {
   const router = useRouter()
   const [error , setError] = useState(false)
-  const [timer,setTimer] = useState(10)
+  const [timer,setTimer] = useState(60)
    const [buttonVisible,setButtonVisible] = useState(false)
+   const [resentMsg,setResentMsg] = useState(false)
   // accessing query by this
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
@@ -57,7 +58,8 @@ const OTP: React.FC = () => {
       try {
         const response = await resendOTP(email)
         if(response){
-          alert("resend otp success")
+          setButtonVisible(false)
+          setResentMsg(true)
         }
       } catch (err) {
         setError(true)
@@ -72,11 +74,12 @@ const OTP: React.FC = () => {
       </div>
     </nav>
 
-
+    
       <div 
         className="flex justify-center items-start min-h-screen bg-cover bg-center pt-40" 
         style={{ backgroundImage: `url(${bg})` }} 
       >
+        
         <div className="bg-black bg-opacity-70 p-8 rounded-lg max-w-md w-full">
           <h2 className="text-white text-3xl text-center mb-6">OTP Verification</h2>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -89,6 +92,9 @@ const OTP: React.FC = () => {
                required: "OTP required"
              })}
             />
+            {resentMsg?
+        <h3>Resend OTP successful</h3>:""
+        }
             <small>{errors.otp && <p className="text-red-500">{errors.otp.message}</p>}</small>
             {error?
             <h3 style={{color:"red"}}>Invalide OTP</h3>:

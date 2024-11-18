@@ -4,8 +4,7 @@ import { forgotpasswordEmail } from '@/service/userApi';
 import { useRouter } from 'next/navigation';
 import {  useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useSearchParams } from 'next/navigation';
-const bg = '/assets/backGround/neeww.jpg';
+import  bg from  '/assets/backGround/neeww.jpg';
 
 type input = {
   email:string

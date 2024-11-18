@@ -1,4 +1,5 @@
-import { sentCoachScore } from "@/service/coachApi";
+"use client"  
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const Quiz = () => {
@@ -109,6 +110,7 @@ const Quiz = () => {
     Array(questions.length).fill(null)
   );
   const [score, setScore] = useState(null);
+  const router = useRouter()
 
   const handleAnswerChange = (questionIndex:any, optionIndex:any) => {
     const updatedAnswers = [...selectedAnswers];
@@ -121,26 +123,16 @@ const Quiz = () => {
       if (answer === questions[index].correctAnswer) {
         return acc + 1;
       }
-      return acc;
+      return acc
     }, 0);
     setScore(calculatedScore);
-    try {
-      const coach = localStorage.getItem("user");
-      const res = await sentCoachScore(calculatedScore, coach);
-      if (!res) {
-        console.log("Failed to save score");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    router.push(`/coaches/greetings?score=${calculatedScore}`)
   };
 
   return (
     <div
-      className="max-w-full  justify-items-center mx-auto p-5 min-h-screen bg-cover bg-center"
-    >
+      className="max-w-full  justify-items-center mx-auto p-5 min-h-screen bg-cover bg-center">
       <h2 className="text-8xl text-cyan-300 font-semibold mb-10">Mr.Fit Fitness test</h2>
-
       {!score && score !== 0 ? (
         <div>
           {questions.map((q, index) => (

@@ -1,15 +1,17 @@
 import { NextFunction, Request, Response } from "express";
-import { sendEmail } from "../utils/sendEmail";
 import { HttpStatus } from "../utils/httpStatusCode";
-import { creatCoachDoc } from "../services/coachService";
+import { updateCoachScore } from "../services/coachService";
 
 
 export const saveScore = async  (req:Request,res:Response,next:NextFunction)=>{
     try {
         const {score,coach} = req.body
-        const result = await creatCoachDoc(score,coach)
-       res.status(HttpStatus.OK).json("coachScoreStroed")
+        const takenn = JSON.parse(coach)
+        console.log(coach,score,"from coach controlle")
+        const result = await updateCoachScore(score,takenn)
+       res.status(HttpStatus.OK).json({success:true})
     } catch (error) {
-        throw new Error("error at saving score of coach")
+        console.error("Error at saving score in coach side");
+         next(error);
     }
 }

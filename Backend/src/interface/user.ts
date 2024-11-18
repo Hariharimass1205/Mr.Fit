@@ -17,4 +17,5 @@ export interface User {
     isBlocked?: boolean;
     coachId?:string;     
     isCoach: boolean;
+    quizScore:Number;
   } 

@@ -3,6 +3,6 @@ import { saveScore } from "../controllers/coachController";
 
 const coachRouter = Router();
 
-coachRouter.post("/sendScore",saveScore)
+coachRouter.post("/saveQuizScore",saveScore)
 
 export default coachRouter
