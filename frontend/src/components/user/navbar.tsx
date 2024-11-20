@@ -1,18 +1,19 @@
 "use client";
 import Link from 'next/link'; 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { deleteCookie } from '../../../utils/deleteCookie';
 
 const Navbar: React.FC = () => {
   const [user, setUser] = useState("");
   const [isAth, setIsAth] = useState<boolean>(false);
+  const [isCoach,setIsCoach] = useState(false)
+  const [quizScore,setQuizScore] = useState(0)
   const router = useRouter();
   
   useEffect(() => {
     const storedData = localStorage.getItem("user");
     const token = localStorage.getItem("token");
-
     if (storedData) {
       try {
         const user = JSON.parse(storedData);
@@ -42,32 +43,82 @@ const Navbar: React.FC = () => {
     router.push("/login");
   };
 
+  useEffect(() => {
+    const updatedUser = localStorage.getItem("user");
+    console.log(updatedUser,"updatedUser")
+    if (updatedUser) {
+      try {
+        const user = JSON.parse(updatedUser);
+        const isCoachs = user.isCoach;
+        const quizScore = user.quizScore;
+        setQuizScore(quizScore)
+        setIsCoach(isCoachs);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [user]);
+
+  console.log(isCoach,"isCoach")
+
+ const handleBecomeCoach = ()=>{
+   
+   if(isCoach){
+   router.push(`/coaches/greetings?quizScore=${quizScore}`)
+   }else{
+    router.push('/coaches/becomeACoach')
+   }
+ }
+
   return (
     <nav className="bg-black text-white flex justify-between items-center p-4">
-      <div className="text-2xl font-bold">
-        <h1>Mr.Fit</h1>
-      </div>
-      <div className="flex gap-7">
-        <Link href="/get-coach" className="text-lg hover:underline hover:text-cyan-400">
-          Get Coach
-        </Link>
-        <Link href="/coaches/becomeACoach" className="text-lg hover:underline hover:text-cyan-400">
-          Become Coach
-        </Link>
-        {user && (
-          <span className="text-lg hover:underline mr-3 hover:text-cyan-400">Hi.. {user}</span>
-        )}
-        {user && isAth ? (
-          <a onClick={handleLogout} className="text-lg hover:underline hover:text-cyan-400">
-            logout
+    <div className="text-2xl font-bold">
+      <h1>Mr.Fit</h1>
+    </div>
+    <div className="flex gap-7">
+    <a
+              href="/get-coach"
+              className="text-lg hover:underline hover:text-cyan-400"
+            >
+              Get Coach
+            </a>
+    {user && (
+        <span className="text-lg hover:underline mr-3 hover:text-cyan-400">
+          Hi.. {user}
+        </span>
+      )}
+
+      {/* Conditional rendering for logged-in user */}
+      {user && isAth ? (
+        <>
+         <div className="flex space-x-3">
+           
+            <a
+              onClick={handleBecomeCoach}
+              className="text-lg hover:underline hover:text-cyan-400"
+            >
+              Become Coach
+            </a>
+          </div>
+          <a
+            onClick={handleLogout}
+            className="text-lg hover:underline hover:text-cyan-400 mr-3"
+          >
+            Logout
           </a>
-        ) : (
-          <a onClick={handleLogin} className="text-lg hover:underline hover:text-cyan-400">
-            login
-          </a>
-        )}
-      </div>
-    </nav>
+         
+        </>
+      ) : (
+        // Conditional rendering for guest user
+        <a
+          onClick={handleLogin}
+          className="text-lg hover:underline hover:text-cyan-400"
+        >
+          Login
+        </a>
+      )}
+    </div>
+  </nav>
   );
 };
 

@@ -41,7 +41,7 @@ const OTP: React.FC = () => {
         const { otp} = data;
     try {
       if (!email) {
-        console.error("Email is missing in the query params.");
+        console.log("Email is missing in the query params.");
         return;  // Exit if email is missing
       }
         const response = await otpVerify(otp,email);

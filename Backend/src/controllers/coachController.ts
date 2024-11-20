@@ -9,7 +9,9 @@ export const saveScore = async  (req:Request,res:Response,next:NextFunction)=>{
         const takenn = JSON.parse(coach)
         console.log(coach,score,"from coach controlle")
         const result = await updateCoachScore(score,takenn)
-       res.status(HttpStatus.OK).json({success:true})
+        if(result){
+       res.status(HttpStatus.OK).json({success:true,result})
+        }
     } catch (error) {
         console.error("Error at saving score in coach side");
          next(error);

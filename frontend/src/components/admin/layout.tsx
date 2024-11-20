@@ -11,9 +11,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
 
-  const [activePath, setActivePath] = useState<string | null>(null);
   const router = useRouter();
-
   const handleLogoutClick = () => {
     localStorage.removeItem("admin");
     localStorage.removeItem("adminToken");
@@ -21,79 +19,92 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     router.push("/admin/login"); // Redirect to the home page or login page
   };
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setActivePath(window.location.pathname);
-    }
-  }, []);
 
-  const isActive = (path: string) => activePath === path;
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
+    <div className="min-h-screen flex bg-teal-100">
       {/* Sidebar */}
       <div className="w-64 bg-white shadow-lg fixed h-full">
         <div className="p-6">
-          <h2 className="text-2xl text-black font-semibold">Mr.Fit</h2>
+          <h2 className="text-6xl text-black font-semibold">Mr.Fit</h2>
         </div>
         <nav className="mt-10">
           <ul>
-            <li className="px-6 py-3">
-              <Link
-                href="/admin/dashboard"
-                className={`rounded-lg block text-xl p-3 font-semibold ${isActive("/admin/dashboard")
-                    ? "bg-cyan-300 text-white" 
-                    : "hover:bg-gray-200"
-                  }`}
+            <li className="px-6  py-3">
+            <div className={`rounded-lg block text-black text-xl  font-semibold 
+                  hover:bg-teal-300`}>
+            <Link
+              href="/admin/dashboard"
+              className={`rounded-lg block text-black text-xl p-3 font-semibold 
+              hover:text-black-300`}
               >
-                Dashboard
-              </Link>
+               Dashboard
+            </Link>
+            </div>
             </li>
-            <li className="px-5 py-3">
+            <li className="px-5  text-black py-3">
+            <div className={`rounded-lg block text-black text-xl  font-semibold 
+                  hover:bg-teal-300`}>
               <Link
-                href="/admin/adminUser"
-                className={`rounded-lg block text-xl p-3 font-semibold ${isActive("")
-                    ? "bg-pink-700 text-white"
-                    : "hover:bg-gray-200"
-                  }`}
+                href="/admin/userList"
+                className={`rounded-lg block text-black text-xl p-3 font-semibold 
+                  hover:text-black-300`}
               >
-                clients
+                Users
               </Link>
+              </div>
             </li>
-            <li className="px-6 py-3">
+            <li className="px-6  text-black py-3">
+            <div className={`rounded-lg block text-black text-xl  font-semibold 
+                  hover:bg-teal-300`}>
               <Link
-                href="/admin/adminVendor"
-                className={`rounded-lg block text-xl p-3 font-semibold  ${isActive("")
-                    ? "bg-pink-700 text-grey-700"
-                    : "hover:bg-gray-200"
-                  }`}
+                href="/admin/coachList"
+                className={`rounded-lg block text-black text-xl p-3 font-semibold 
+                  hover:text-black-300`}
               >
-                coaches
+                Coaches
               </Link>
+              </div>
             </li>
-            <li className="px-6 py-3">
+            <li className="px-6  text-black py-3">
+            <div className={`rounded-lg block text-black text-xl  font-semibold 
+                  hover:bg-teal-300`}>
               <Link
-                href="/admin/salesReport"
-                className={`rounded-lg block text-xl p-3 font-semibold ${isActive("")
-                    ? "bg-pink-700 text-white"
-                    : "hover:bg-gray-200"
-                  }`}
+                href="/admin/coachList"
+                className={`rounded-lg block text-black text-xl p-3 font-semibold 
+                  hover:text-black-300`}
               >
-                enrolls
+                Enrolled Clients
               </Link>
+              </div>
+            </li>
+            <li className="px-6  text-black py-3">
+              <div className={`rounded-lg block text-black text-xl p-3 font-semibold 
+                  hover:bg-teal-300`}>
+              <Link
+                href="/admin/CoachApprovals"
+                
+              >
+                Coach Approvals
+              </Link>
+              </div>
+            </li>
+            <li className="px-6  text-black py-3">
+              
             </li>
 
-            <li className="px-6 py-3 mt-12">
+            <li className="pl-6 text-black py-3 mt-20 ">
+              <div className={`rounded-lg block text-black text-xl mr-8 font-semibold 
+                  hover:bg-teal-300`}>
               <button
                 type="button"
                 onClick={handleLogoutClick}
-                className={`rounded-lg block text-xl p-3 font-semibold ${isActive("")
-                    ? "bg-pink-700 text-white"
-                    : "hover:bg-gray-200"
-                  }`}
+                className={`rounded-lg block text-black text-xl p-3 font-semibold 
+                  hover:text-red-300`}
               >
                 Logout
               </button>
+              </div>
             </li>
           </ul>
         </nav>

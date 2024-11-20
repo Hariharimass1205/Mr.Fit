@@ -30,11 +30,14 @@ export const register = async (req: Request, res: Response, next: NextFunction)=
       quizScore:0      
     });
     console.log(otp,req.body.email)
-     res.status(HttpStatus.OK).json("OTP sent to email and saved in the database.");
-  
+     if(register){
+     res.status(HttpStatus.OK).json({success:true});
+     }else{
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({success:false});
+     }
   } catch (error) {
     console.error("Error at registering user",error);
-    throw new Error("Error at registering")
+    next(error)
   }
 };
 

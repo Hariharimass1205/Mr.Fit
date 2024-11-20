@@ -2,11 +2,11 @@ import coachModel from "../model/coachModel"
 import userModel from "../model/userModel"
 
 
-export const findUserByEmailandUpdateCoach =(score,email)=>{
+export const findUserByEmailandUpdateCoach =async (score,email)=>{
     try {
-        const updatedScore =  userModel.updateOne({email},{quizScore:score})
-        //const updatedScore2 = coachModel.updateOne({email},{score:score})
-        return {success:true}
+        const res = await  userModel.updateOne({email},{quizScore:score,isCoach:true})
+        const updatedScore = await userModel.findOne({email})
+        return updatedScore
     } catch (error) {
         throw new Error(error)
     }

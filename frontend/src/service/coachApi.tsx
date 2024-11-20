@@ -3,7 +3,6 @@ import { SERVER_URL_COACH } from './serverURL';
 
 export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
     try {
-        console.log("hi from front axios",score,coach)
       const response = await axios.post(`${SERVER_URL_COACH}/saveQuizScore`,{score,coach})
       return response
     } catch (error) {

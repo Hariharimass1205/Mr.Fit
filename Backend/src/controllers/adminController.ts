@@ -13,7 +13,6 @@ export const adminLogin = async(req:Request,res:Response,next:NextFunction)=>{
       } else {
         res.status(HttpStatus.UNAUTHORIZED).json({ message: "Login failed" });
       }
-
     } catch (error) {
       console.error("Error at adminLogin");
       next(error);

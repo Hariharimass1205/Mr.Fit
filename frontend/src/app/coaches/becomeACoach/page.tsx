@@ -38,7 +38,7 @@ export default function Home() {
       {/* Trail Questions Section */}
       <section className="py-12 px-6 md:px-16 bg-gray-800">
         <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl  text-white-300 md:text-6xl  font-bold mb-10">
+        <h1 className="text-4xl  text-white-300 md:text-6xl  mb-10">
           PLEASE WATCH THIS COACHING VIDEO
         </h1>
         <h3 className="text-xl  text-white-300 md:text-2xl  font-bold mb-2">

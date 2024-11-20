@@ -8,7 +8,7 @@ import { SERVER_URL_ADMIN } from './serverURL';
       console.log(response)
       return response.data
     } catch (error:any) {
-      console.error("Error in signupApi:", error.message || error);
+      console.log("Error in signupApi:", error.message || error);
       throw new Error("Signup failed. Please try again later."); // Custom error message
     }
   }

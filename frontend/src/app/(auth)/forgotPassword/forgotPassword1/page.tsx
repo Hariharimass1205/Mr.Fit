@@ -4,7 +4,6 @@ import { forgotpasswordEmail } from '@/service/userApi';
 import { useRouter } from 'next/navigation';
 import {  useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import  bg from  '/assets/backGround/neeww.jpg';
 
 type input = {
   email:string
@@ -42,10 +41,11 @@ const ForgotPassword1: React.FC = () => {
         <h1>Mr.Fit</h1>
       </div>
     </nav>
-      <div 
-        className="flex justify-center items-start min-h-screen bg-cover bg-center pt-40" 
-        style={{ backgroundImage: `url(${bg})` }} 
-      >
+    <div 
+  className="flex justify-center items-start min-h-screen bg-cover bg-center pt-40" 
+  style={{ backgroundImage: `url('/assets/backGround/pexels-alesiakozik-7289250.jpg')` }} 
+>
+
         <div className="bg-black bg-opacity-70 p-8 rounded-lg max-w-md w-full">
           <h2 className="text-white text-3xl text-center mb-10">Forgot Password</h2>
           <form onSubmit={handleSubmit(onSubmit)}>

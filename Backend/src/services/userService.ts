@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { createUser, findUserByEmail, findUserByEmailandUpdate, updateUser, updateUserOTP, verifyAndSaveUser } from '../repository/userRepository'
 import bcrypt from 'bcrypt'
-import { error } from 'console'
 
 export const registerUser = async (user:any)=>{
     try {
@@ -62,7 +61,7 @@ export const checkUser = async (email:string,otp:string)=>{
         if(!saveOTP){
             throw new Error("user not found")
         }
-        console.log(saveOTP,'okoko');
+        console.log(saveOTP.otp,'okoko');
         return saveOTP
     } catch (error) {
         console.log("error at checkUser at service")

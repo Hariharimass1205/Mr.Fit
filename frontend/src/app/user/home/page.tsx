@@ -1,3 +1,4 @@
+"use client"
 import Image from 'next/image';
 import Navbar from '@/components/user/navbar';
 import Footer from '@/components/user/footer';
@@ -6,8 +7,12 @@ import box1 from '../../../../public/assets/sustainable_habits_124af7fc55.webp';
 import box3 from '../../../../public/assets/tailor_made_plans_326e72bd7f.webp';
 import box2 from '../../../../public/assets/Biostrap-Labs.webp';
 import bottombg from '../../../../public/assets/backGround/fittr_community_judgement_free_c2ff664eb3.webp';
+import { useSearchParams } from 'next/navigation';
 
 export default function Home() {
+  const searchParamss = useSearchParams()
+  const updatedProfile = searchParamss.get("updatedProfile") 
+  console.log(updatedProfile,"from updated profule")
   return (
     <>
       <Navbar />

@@ -2,6 +2,7 @@
 import Footer from '@/components/user/footer';
 import { signupApi } from '@/service/userApi';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 const bg = '/assets/backGround/pexels-dogu-tuncer-339534179-15917308.jpg';
 type input = {
@@ -14,6 +15,7 @@ type input = {
 }
 const Signup: React.FC = () => {
   const router = useRouter()
+  const [userExsit,SetUserExsit] = useState(false)
   const {
     register,
     handleSubmit,
@@ -33,8 +35,10 @@ const Signup: React.FC = () => {
     try {
       const response = await signupApi(reqBody);
       console.log("from back ---- ",response)
-      if(response){
+      if(response.success){
         router.push(`/otp?email=${email}`)
+      }else{
+        SetUserExsit(true)
       }
     } catch (error) {
       console.log(error);
@@ -54,6 +58,9 @@ const Signup: React.FC = () => {
         <div className="bg-black bg-opacity-70 p-10 rounded-lg max-w-md w-full">
           <form onSubmit={handleSubmit(onSubmit)}>
             <h2 className="text-white text-3xl text-center mb-6">Sign Up</h2>
+            {userExsit?
+            <small>User already Exsit</small>:""
+}
             <input
               type="text"
               placeholder=" Your full Name......."
