@@ -1,5 +1,4 @@
 "use client"
-import { useSearchParams } from 'next/navigation';
 import bg from '../../../../public/assets/backGround/pexels-dogu-tuncer-339534179-15917308.jpg';
 
 export default function CoachFillup() {

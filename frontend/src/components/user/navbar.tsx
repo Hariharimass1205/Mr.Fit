@@ -1,6 +1,5 @@
 "use client";
-import Link from 'next/link'; 
-import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { deleteCookie } from '../../../utils/deleteCookie';
 
@@ -8,6 +7,7 @@ const Navbar: React.FC = () => {
   const [user, setUser] = useState("");
   const [isAth, setIsAth] = useState<boolean>(false);
   const [isCoach,setIsCoach] = useState(false)
+  const [isApprovedBtn,setIsApprovedBtn] = useState("")
   const [quizScore,setQuizScore] = useState(0)
   const router = useRouter();
   
@@ -51,18 +51,22 @@ const Navbar: React.FC = () => {
         const user = JSON.parse(updatedUser);
         const isCoachs = user.isCoach;
         const quizScore = user.quizScore;
+        const isApproved = user.isApproved;
+       
         setQuizScore(quizScore)
         setIsCoach(isCoachs);
+        setIsApprovedBtn(isApproved)
       } catch (error) {
         console.log(error);
       }
     }
   }, [user]);
-
+  console.log(isApprovedBtn,"isApproved")
   console.log(isCoach,"isCoach")
 
  const handleBecomeCoach = ()=>{
    
+
    if(isCoach){
    router.push(`/coaches/greetings?quizScore=${quizScore}`)
    }else{
@@ -92,13 +96,22 @@ const Navbar: React.FC = () => {
       {user && isAth ? (
         <>
          <div className="flex space-x-3">
-           
+
+           {isApprovedBtn=="Pending"?
+
+           <a
+              className="text-lg hover:underline hover:text-yellow-400"
+            >
+              Approval Pending
+            </a>
+           :
             <a
               onClick={handleBecomeCoach}
               className="text-lg hover:underline hover:text-cyan-400"
             >
               Become Coach
             </a>
+          }
           </div>
           <a
             onClick={handleLogout}

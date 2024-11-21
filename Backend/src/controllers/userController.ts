@@ -4,9 +4,6 @@ import { otpGenerator } from "../utils/OtoGenerator";
 import { checkUser, forgotPassverifyOTPService, loginUser, registerUser, saveNewPassword, saveOTPtoModel, verifyOTPService } from "../services/userService";
 import { sendEmail } from "../utils/sendEmail";
 import { HttpStatus } from "../utils/httpStatusCode";
-import { json } from "stream/consumers";
-import { findUserByEmail } from "../repository/userRepository";
-import { syncBuiltinESMExports } from "module";
 
 export const register = async (req: Request, res: Response, next: NextFunction)=> {
   try {    
@@ -27,7 +24,8 @@ export const register = async (req: Request, res: Response, next: NextFunction)=
       coachId: "",
       isBlocked:false,
       isCoach:false,
-      quizScore:0      
+      quizScore:0,
+      isApproved:""    
     });
     console.log(otp,req.body.email)
      if(register){

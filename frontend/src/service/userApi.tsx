@@ -25,11 +25,10 @@ export const otpVerify = async (otp:string, email:any ): Promise<any> => {
 export const loginApi = async (reqBody: Record<string, any>)=>{
   try {
     const response = await axios.post(`${SERVER_URL_USER}/login`,reqBody)
-    console.log(response)
     return response.data
   } catch (error:any) {
-    console.log("Error in signupApi:", error.message || error);
-    throw new Error("Signup failed. Please try again later."); // Custom error message
+    console.log("Error in login API:", error.message || error);
+    throw new Error("login failed. Please try again later."); // Custom error message
   }
 }
 export const forgotpasswordEmail = async (email:string):Promise<any>=>{

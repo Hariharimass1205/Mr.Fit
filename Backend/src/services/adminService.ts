@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import { blockUserbyEmail, findUserList, unblockUserbyEmail } from '../repository/adminRepository';
 
 export const adminLOGIN = (email: string, password: string)=> {
     try {
@@ -18,5 +19,34 @@ export const adminLOGIN = (email: string, password: string)=> {
       
       return { adminToken, admin: email };
     } catch (error) {
-      throw new Error    }
+      throw new Error(error)  
+    }
+  }
+
+  export const sendUserDataService = async ()=>{
+    try {
+      const data = findUserList()
+      return data
+    } catch (error) {
+      throw new Error(error) 
+    }
+  }
+
+  export const blockUserService = async (email:string)=>{
+    try {
+      const data = blockUserbyEmail(email)
+      return data
+    } catch (error) {
+      console.log("error at handling block in admin service")
+      throw new Error(error)
+    }
+  }
+  export const unblockUserService = async (email:string)=>{
+    try {
+      const data = unblockUserbyEmail(email)
+      return data
+    } catch (error) {
+      console.log("error at handling block in admin service")
+      throw new Error(error)
+    }
   }

@@ -15,10 +15,11 @@ const ForgotPassword2: React.FC = () => {
   const [error , setError] = useState(false)
   const [timer,setTimer] = useState(60)
   const [buttonVisible,setButtonVisible] = useState(false)
+  const [resendOTPmsg,setResendOTPmsg] = useState(false)
 
   useEffect(()=>{
     if(timer>0){
-    let intervalId =  setInterval(() => { 
+    const intervalId =  setInterval(() => { 
        setTimer((prevTime)=>prevTime-1)
     }, 1000);
     return ()=> clearInterval(intervalId)
@@ -54,6 +55,9 @@ const ForgotPassword2: React.FC = () => {
   const handleResendOTP = async ()=>{
     try {
       const response = await resendOTP(email)
+      if(response){
+        setResendOTPmsg(true)
+      }
     } catch (err) {
       setError(true)
       console.log(err);
@@ -83,6 +87,9 @@ const ForgotPassword2: React.FC = () => {
              })}
               />
             <small>{errors.otp && <p className="text-red-500">{errors.otp.message}</p>}</small>
+            {resendOTPmsg?
+          <h1>OTP resend Successful</h1>  : ""
+          }
             {error?
             <h3 style={{color:"red"}}>Invalide OTP</h3>:
             ""}

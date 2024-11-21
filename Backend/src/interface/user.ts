@@ -18,4 +18,5 @@ export interface User {
     coachId?:string;     
     isCoach: boolean;
     quizScore:Number;
+    isApproved:string;
   } 

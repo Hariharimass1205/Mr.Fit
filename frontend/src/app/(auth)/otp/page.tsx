@@ -22,7 +22,7 @@ const OTP: React.FC = () => {
 
   useEffect(()=>{
    if(timer>0){
-   let intervalId =  setInterval(() => {
+   const  intervalId =  setInterval(() => {
       setTimer((prevTime)=>prevTime-1)
    }, 1000);
    return ()=> clearInterval(intervalId)

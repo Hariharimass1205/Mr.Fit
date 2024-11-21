@@ -13,7 +13,6 @@ interface User {
 
 const Quizgreeting: React.FC<QuizgreetingProps> = ({ score }) => {
   const router = useRouter();
-  const [btnVisible, setBtnVisible] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
   const [quizScore,setQuizScore] = useState(0)
 
@@ -42,7 +41,6 @@ const Quizgreeting: React.FC<QuizgreetingProps> = ({ score }) => {
       if (response.data.success) {
         localStorage.setItem('user', JSON.stringify(response.data.result));
         router.push('/user/home');
-        setBtnVisible(response.data.react.isCoach);
       }
     } catch (error) {
       console.log('Error requesting call:', error);
@@ -57,7 +55,7 @@ const Quizgreeting: React.FC<QuizgreetingProps> = ({ score }) => {
       
       {numericScore >= 12 ? (
         <h1 className="text-4xl font-bold text-center px-8 w-5/6 mt-20 mb-20">
-          Mr. {userName}, you have scored: {quizScore?quizScore:score}. That's appreciable... At the
+          Mr. {userName}, you have scored: {quizScore?quizScore:score}. That`&apos;`s appreciable... At the
           bottom of the page, you can find a button called "Request a call."
           Click to receive a call for admin approval.
         </h1>

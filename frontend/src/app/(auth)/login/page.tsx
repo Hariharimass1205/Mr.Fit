@@ -4,7 +4,6 @@ import { loginApi } from '@/service/userApi';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-
 const bg = '/assets/backGround/pexels-anush-1431283.jpg';
 
 type input = {
@@ -24,7 +23,6 @@ const Login: React.FC = () => {
   const onSubmit: SubmitHandler<input> = async (data) => {
     const { email, password } = data;
     const reqBody = { email, password };
-    
     try {
       const response = await loginApi(reqBody);
       if(response && response.user && response.token){

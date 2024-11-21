@@ -1,6 +1,5 @@
 
 "use client"
-import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { deleteCookie } from "../../../utils/deleteCookie"; 
 import { useRouter } from "next/navigation";
