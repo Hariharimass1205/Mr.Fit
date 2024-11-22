@@ -29,7 +29,6 @@ const Signup: React.FC = () => {
       email,
       phone: Number(phone),
       password,
-      confirmPassword,
       gender, 
     };
     try {

@@ -3,22 +3,35 @@
 import Link from "next/link";
 import { deleteCookie } from "../../../utils/deleteCookie"; 
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { fetchDataList } from "@/service/adminApi";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-
+  const [pending,setPending] = useState(0)
   const router = useRouter();
   const handleLogoutClick = () => {
     localStorage.removeItem("admin");
     localStorage.removeItem("adminToken");
     deleteCookie("adminToken");
-    router.push("/admin/login"); // Redirect to the home page or login page
+    router.push("/admin/login"); 
   };
-
-
+  
+  useEffect(()=>{
+    const fetchData= async ()=>{
+   try {
+    const data = await fetchDataList();
+        console.log(data)
+        setPending(data?.pendingApprovalsList)
+   } catch (error) {
+    console.log("Error fetching user list:", error);
+   }
+  }
+  fetchData()
+  },[pending])
 
   return (
     <div className="min-h-screen flex bg-teal-100">
@@ -61,7 +74,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 className={`rounded-lg block text-black text-xl p-3 font-semibold 
                   hover:text-black-300`}
               >
-                Coaches
+                Coaches  <span className="text-white pl-2.5 pr-2.5 bg-red-600 rounded-full p-1">{pending}</span>
               </Link>
               </div>
             </li>
@@ -77,22 +90,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </Link>
               </div>
             </li>
-            <li className="px-6  text-black py-3">
-              <div className={`rounded-lg block text-black text-xl p-3 font-semibold 
-                  hover:bg-teal-300`}>
-              <Link
-                href="/admin/CoachApprovals"
-                
-              >
-                Coach Approvals
-              </Link>
-              </div>
-            </li>
+           
             <li className="px-6  text-black py-3">
               
             </li>
 
-            <li className="pl-6 text-black py-3 mt-20 ">
+            <li className="pl-6 text-black py-3 mt-48 ">
               <div className={`rounded-lg block text-black text-xl mr-8 font-semibold 
                   hover:bg-teal-300`}>
               <button

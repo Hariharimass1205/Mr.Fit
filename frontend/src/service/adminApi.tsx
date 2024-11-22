@@ -1,10 +1,18 @@
 import axios from "axios";
 import { SERVER_URL_ADMIN } from './serverURL';
 
+const Axios = axios.create({
+  baseURL:`${SERVER_URL_ADMIN}`,
+  headers:{
+    "Content-Type":"application/json"
+  },
+  withCredentials:true
+})
+
   export const adminlogin = async (reqBody: Record<string, any>)=>{
     console.log("from frontt " , reqBody)
     try {
-      const response = await axios.post(`${SERVER_URL_ADMIN}/adminlogin`,reqBody)
+      const response = await Axios.post(`${SERVER_URL_ADMIN}/adminlogin`,reqBody)
       console.log(response)
       return response.data
     } catch (error:any) {
@@ -15,10 +23,10 @@ import { SERVER_URL_ADMIN } from './serverURL';
 
   export const fetchDataList = async()=>{
     try {
-      const response = await axios.post(`${SERVER_URL_ADMIN}/fetchUserList`)
-      const {userList,pendingApprovalsList,users} = response.data
+      const response = await Axios.post(`${SERVER_URL_ADMIN}/fetchUserList`)
+      const {userList,pendingApprovalsList,users,coachList,coaches} = response.data
       if(response){
-        return {userList,pendingApprovalsList,users}
+        return {userList,pendingApprovalsList,users,coachList,coaches}
       }
     } catch (error:any) {
       console.log("Error in adminUserListFetching:", error.message || error);
@@ -28,8 +36,7 @@ import { SERVER_URL_ADMIN } from './serverURL';
 
   export const handleBlockFun = async (email:string) => {
      try {
-      const response = await axios.post(`${SERVER_URL_ADMIN}/blockUser`,{email})
-      alert("user blocked")
+      const response = await Axios.post(`${SERVER_URL_ADMIN}/blockUser`,{email})
       return response.data.success
      } catch (error) {
       console.log("Error in handling block :",error);
@@ -39,11 +46,20 @@ import { SERVER_URL_ADMIN } from './serverURL';
 
   export const handleUnBlockFun = async (email:string) => {
     try {
-     const response = await axios.post(`${SERVER_URL_ADMIN}/unblockUser`,{email})
-     alert("user unblocked")
+     const response = await Axios.post(`${SERVER_URL_ADMIN}/unblockUser`,{email})
      return response.data.success
     } catch (error) {
      console.log("Error in handling unblock :",error);
      throw new Error("handling block failed. Please try again later.");
     }
+ }
+
+ export const changeCoachStatus = async (email:string,newStatus:string)=>{
+  try {
+    const response = await Axios.post(`${SERVER_URL_ADMIN}/changeStatus`,{email,newStatus})
+    return response.data.success
+  } catch (error) {
+    console.log("Error in changing status of coach :",error);
+    throw new Error("changing status of coach failed. Please try again later.");
+  }
  }

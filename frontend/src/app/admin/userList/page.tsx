@@ -6,102 +6,101 @@ import { fetchDataList, handleBlockFun, handleUnBlockFun } from "@/service/admin
 import { useEffect, useState } from "react";
 
 interface User {
-  id: string; // Ensure this is unique in your backend API response
+  id: string;
   userName: string;
   phone: string;
-  email:string;
-  isBlocked:boolean;
+  email: string;
+  isBlocked: boolean;
 }
 
 const UserList: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]); // State for users
-  const [isBlockedBtn,setIsBlockedBtn] = useState(false)
-  const [error, setError] = useState<string | null>(null); // Error handling
-  const [message,setMessage] = useState("")
+  const [users, setUsers] = useState<User[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await fetchDataList();
-        console.log("Fetched users:", data?.users); 
         setUsers(data?.users || []);
-      } catch (err: any) {
-        console.log("Error fetching users:", err);
+      } catch (err) {
         setError("Failed to fetch users. Please try again later.");
       }
     };
     fetchData();
-  }, []); 
+  }, []);
 
-  const handleBlock = async (email: string) =>{
-    console.log("block")
-   try {
-    const result = await handleBlockFun(email)
-    if(result){
-      setIsBlockedBtn(true)
+  const handleBlock = async (email: string) => {
+    try {
+      const result = await handleBlockFun(email);
+      if (result) {
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.email === email ? { ...user, isBlocked: true } : user
+          )
+        );
+      }
+    } catch (error) {
+      console.log("Error blocking user:", error);
     }
-   } catch (error) {
-    console.log("Error handling block users:", error);
-   }
-  }
-    const handleunBlock = async (email: string) =>{
-   try {
-    console.log("unblock")
-    const result = await handleUnBlockFun(email)
-    if(result){
-      setIsBlockedBtn(false)
+  };
+
+  const handleUnBlock = async (email: string) => {
+    try {
+      const result = await handleUnBlockFun(email);
+      if (result) {
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.email === email ? { ...user, isBlocked: false } : user
+          )
+        );
+      }
+    } catch (error) {
+      console.log("Error unblocking user:", error);
     }
-   } catch (error) {
-    console.log("Error handling unblock users:", error);
-   }
-  }
+  };
+
   return (
     <Layout>
       <Topbar />
-      <h1 className="text-5xl text-black font-semibold mt-10 mb-8">User List</h1>
+      <h1 className="text-4xl font-bold text-black mt-10 mb-6 text-center">
+        User Management
+      </h1>
       {error ? (
-        <p className="text-red-500">{error}</p>
+        <p className="text-red-500 text-center">{error}</p>
       ) : users.length > 0 ? (
-        <table className="w-full text-black text-center  border-gray-300 mt-10">
-          <thead>
-            <tr>
-              <th className="border border-gray-300 p-2 text-2xl">Name</th>
-              <th className="border border-gray-300 p-2 text-2xl">Phone</th>
-              <th className="border border-gray-300 p-2 text-2xl">Email</th>
-              <th className="border border-gray-300 p-2 text-2xl">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-          {users.map((user) => (
-  <tr key={user.id} className="hover:bg-gray-100">
-    <td className="border border-gray-300 p-2">{user.userName}</td>
-    <td className="border border-gray-300 p-2">{user.phone}</td>
-    <td className="border border-gray-300 p-2">{user.email}</td>
-    <td className="border border-gray-300 p-2">
-
-
-   {!user.isBlocked ?
-      <button
-        onClick={() => handleBlock(user.email)}
-        className="bg-red-500 p-2 rounded-md text-white"
-      >
-        Block
-      </button>
-      :
-      <button 
-      onClick={() => handleunBlock(user.email)}
-      className="bg-green-500 p-2 rounded-md text-white">
-        Unblock
-      </button>
-   }
-
-    </td>
-  </tr>
-))}
-          </tbody>
-        </table>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+          {users.map((user,index) => (
+            <div
+              key={index}
+              className="bg-gray-100 rounded-lg shadow-md p-4 border border-gray-300 hover:shadow-slate-700 transition-shadow duration-300"
+            >
+              <div className="flex flex-col items-center">
+                <div className="text-2xl font-semibold text-black mb-4">{user.userName.toLocaleUpperCase()}</div>
+                <div className="text-gray-700">Phone : {user.phone}</div>
+                <div className="text-gray-700 mb-4">Email : {user.email}</div>
+              </div>
+              <div className="flex justify-center">
+                {!user.isBlocked ? (
+                  <button
+                    onClick={() => handleBlock(user.email)}
+                    className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded"
+                  >
+                    Block
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleUnBlock(user.email)}
+                    className="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded"
+                  >
+                    Unblock
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
-        <p>Loading users...</p>
+        <p className="text-center text-gray-700">Loading users...</p>
       )}
     </Layout>
   );

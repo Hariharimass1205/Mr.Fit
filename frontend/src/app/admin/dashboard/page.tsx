@@ -19,12 +19,14 @@ const Dashboard: React.FC = () => {
         console.log(data)
         setUser(data?.userList)
         setPending(data?.pendingApprovalsList)
+        console.log(data?.coachList,"coach count")
       } catch (error) {
         console.log("Error fetching user list:", error);
       }
     };
     fetchData();
   }, []); 
+  console.log(user,coach,pending,"count in dashb")
   return (
     <Layout >
       <Topbar />
@@ -39,6 +41,9 @@ const Dashboard: React.FC = () => {
         </div>
         <div className="p-6 bg-white shadow-md rounded-lg">
           <h3 className="text-lg  text-black font-semibold">Waiting for aprovals : {pending}</h3>
+        </div>
+        <div className="p-6 bg-white shadow-md rounded-lg">
+          <h3 className="text-lg  text-black font-semibold">Enrolled Clients : {}</h3>
         </div>
       </div>
       </Layout>

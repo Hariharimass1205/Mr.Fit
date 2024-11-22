@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { HttpStatus } from "../utils/httpStatusCode";
-import { adminLOGIN, blockUserService, sendUserDataService, unblockUserService } from "../services/adminService";
+import { adminLOGIN, blockUserService, changeCoachStatusService, sendUserDataService, unblockUserService } from "../services/adminService";
 
 export const adminLogin = async(req:Request,res:Response,next:NextFunction)=>{
     try {
@@ -46,6 +46,16 @@ export const adminLogin = async(req:Request,res:Response,next:NextFunction)=>{
       res.status(HttpStatus.OK).json({success:true,result})
     } catch (error) {
       console.error("Error at blockUser");
+      next(error);
+    }
+  }
+  export const changeCoachStatus = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+      const {email,newStatus} = req.body
+      const result = await changeCoachStatusService(email,newStatus)
+      res.status(HttpStatus.OK).json({success:true})
+    } catch (error) {
+      console.error("Error at changing status of coach");
       next(error);
     }
   }

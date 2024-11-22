@@ -5,7 +5,7 @@ import { checkUser, forgotPassverifyOTPService, loginUser, registerUser, saveNew
 import { sendEmail } from "../utils/sendEmail";
 import { HttpStatus } from "../utils/httpStatusCode";
 
-export const register = async (req: Request, res: Response, next: NextFunction)=> {
+export const  register = async (req: Request, res: Response, next: NextFunction)=> {
   try {    
     const otp =  otpGenerator();
     await sendEmail(req.body.email, otp);
@@ -21,7 +21,7 @@ export const register = async (req: Request, res: Response, next: NextFunction)=
       state: "",
       district: "",  
       pincode: 0,
-      coachId: "",
+      coachId:null,
       isBlocked:false,
       isCoach:false,
       quizScore:0,

@@ -6,7 +6,7 @@ import React from 'react';
 
 const Topbar = () => {
   return (
-    <div className="flex justify-between items-center p-4 bg-white shadow rounded-3xl">
+    <div className="flex justify-between shadow-lg items-center p-4 bg-white  rounded-3xl">
       <div className="flex items-center">
         <input 
           type="text" 

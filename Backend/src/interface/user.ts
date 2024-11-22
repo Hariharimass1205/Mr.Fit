@@ -15,7 +15,7 @@ export interface User {
     pincode?: number;   
     reviews?: string[];   
     isBlocked?: boolean;
-    coachId?:string;     
+    coachId?:any;     
     isCoach: boolean;
     quizScore:Number;
     isApproved:string;
