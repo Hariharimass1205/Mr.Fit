@@ -25,7 +25,8 @@ export const  register = async (req: Request, res: Response, next: NextFunction)
       isBlocked:false,
       isCoach:false,
       quizScore:0,
-      isApproved:""    
+      isApproved:"",
+      role:"user"  
     });
     console.log(otp,req.body.email)
      if(register){
@@ -51,15 +52,24 @@ export const otpVerify = async (req:Request,res:Response,next:NextFunction)=>{
 }
 export const login = async(req:Request,res:Response,next:NextFunction)=>{
   try {
+    console.log("Hiiii")
     const {email,password} = req.body
-    const {user,token} = await loginUser(email,password)
-    res.cookie("token",token,{
+    const {user,refreshToken,accessToken} = await loginUser(email,password)
+    // res.cookie("userToken",userToken,{
+    //   sameSite:"strict",
+    // });
+
+    res.cookie("accessToken",accessToken,{
       sameSite:"strict",
-      maxAge:3600000
+      httpOnly:false
     });
-    res.status(HttpStatus.OK).json({user,token})
+    res.cookie("refreshToken",refreshToken,{
+      sameSite:"strict",
+      httpOnly:true
+    });
+    res.status(HttpStatus.OK).json(user)
   } catch (error) {
-    console.error("Error at otpVerification user");
+    console.error("Error at login user");
     next(error);
   }
 }
@@ -88,7 +98,7 @@ export const forgotPasswordOTPVerify = async (req:Request,res:Response,next:Next
     res.status(HttpStatus.OK).json({success:true})
     }
   } catch (error:any) {
-    console.error("Error at otpVerification user");
+    console.error("Error at resend  otpVerification user");
     next(error);
   }
 }

@@ -1,7 +1,7 @@
 import userModel from "../model/userModel"
 
 
-export const findUserList = async () =>{
+export const fetchDataRepo = async () =>{
     try {
         const users = await userModel.find({isCoach:false}).exec();
         const coaches = await userModel.find({isCoach:true}).exec();
@@ -12,7 +12,8 @@ export const findUserList = async () =>{
             pendingApprovalsList:pendingApprovals.length ,
             users,
             coachList:coaches.length,
-            coaches:coaches
+            coaches:coaches,
+            enrolledUsers:enrolledUsers
         }
         return result
     } catch (error) {
@@ -39,7 +40,8 @@ export const unblockUserbyEmail = async (email:string) =>{
 export  const changeStatusByEmail = async (email:string,newStatus:string)=>{
     try {
         const changedStatus = await userModel.updateOne({email},{isApproved:newStatus})
-        return changedStatus
+        const updatedStatus = await userModel.findOne({email})
+        return updatedStatus
     } catch (error) {
         throw new Error(error)
     }

@@ -25,12 +25,9 @@ const Login: React.FC = () => {
     const reqBody = { email, password };
     try {
       const response = await loginApi(reqBody);
-      if(response && response.user && response.token){
-        localStorage.setItem("user",JSON.stringify(response.user))
-        localStorage.setItem("token",response.token)
-      }
-      if (response) {
-        router.push(`/user/home`);
+      if(response){
+        localStorage.setItem("user",JSON.stringify(response))
+        router.replace(`/user/home`);
       }
 
     } catch (error) {
@@ -39,7 +36,7 @@ const Login: React.FC = () => {
     }
   };
   const handleForgotPassword = ()=>{
-    router.push("/forgotPassword/forgotPassword1")
+    router.replace("/forgotPassword/forgotPassword1")
   }
 
   return (

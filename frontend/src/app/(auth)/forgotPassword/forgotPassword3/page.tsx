@@ -31,7 +31,7 @@ const onsubmit:SubmitHandler<input> = async (data)=>{
     const {password} = data
     const response = await saveNewPassword(password,email)
     if(response){
-      router.push(`/login`)
+      router.replace(`/login`)
     }
   } catch (err) {
     setError(true)

@@ -17,3 +17,14 @@ export const saveScore = async  (req:Request,res:Response,next:NextFunction)=>{
          next(error);
     }
 }
+export const registerCoachController = async (req:Request,res:Response,next:NextFunction) => {
+    try {
+        console.log(req.body)
+      const {formData} = req.body
+      console.log(formData)
+      res.status(HttpStatus.OK).json({success:true})
+    } catch (error) {
+      console.error("Error at registering  coach");
+      next(error);
+    }
+}

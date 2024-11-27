@@ -18,3 +18,14 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
       throw new Error("error at sending score mail to admin  failed. Please try again later.");
     }
   }
+
+  export const registerCoach = async (formData:any)=>{
+   try {
+    console.log("hiii from front register")
+      const response = await Axios.post(`${SERVER_URL_COACH}/registerCoach`,{formData})
+      return response.data.success
+   } catch (error) {
+      console.log(error)
+      throw new Error("error at coach registration. Please try again later");
+   }
+  }

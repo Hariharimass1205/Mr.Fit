@@ -24,6 +24,7 @@ export const createUser = async (user: User): Promise<any>=> {
 
   export const verifyAndSaveUser= async (email:string,otp:string)=>{
     const user = await userModel.findOne({email})
+    console.log(user)
     console.log(user,"userRepo")
     if(user.otp==otp && user){
       user.otp = null;

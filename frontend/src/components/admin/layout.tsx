@@ -13,6 +13,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [pending,setPending] = useState(0)
   const router = useRouter();
+  
   const handleLogoutClick = () => {
     localStorage.removeItem("admin");
     localStorage.removeItem("adminToken");

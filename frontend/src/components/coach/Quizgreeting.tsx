@@ -82,7 +82,7 @@ const Quizgreeting: React.FC<QuizgreetingProps> = ({ score }) => {
         </div>
       ) : (
         <button
-          onClick={() => router.push('/user/home')}
+          onClick={() => router.push('/')}
           className="bg-cyan-500 text-white text-2xl px-6 py-3 rounded-lg hover:bg-white-600 transition mb-10 mt-10"
         >
           Back To Home

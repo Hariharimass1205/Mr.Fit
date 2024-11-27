@@ -44,7 +44,7 @@ const ForgotPassword2: React.FC = () => {
       const {otp} = data 
       const response = await verifyOTPforForgotOtp(otp,email);
       if(response){
-        router.push(`/forgotPassword/forgotPassword3?email=${email}`)
+        router.replace(`/forgotPassword/forgotPassword3?email=${email}`)
       }
      } catch (err) {
       setError(true)

@@ -19,4 +19,5 @@ export interface User {
     isCoach: boolean;
     quizScore:Number;
     isApproved:string;
+    role:string
   } 

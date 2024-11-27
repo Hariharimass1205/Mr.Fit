@@ -21,7 +21,8 @@ const userSchema = new Schema<User>({
     isBlocked:{ type: Boolean, default:false},
     isCoach:{type:Boolean,default:false},
     quizScore:{type:Number},
-    isApproved:{type:String}
+    isApproved:{type:String},
+    role:{type:String}
 })
 
 const userModel = mongoose.model("users",userSchema)

@@ -7,7 +7,12 @@ export interface Coach{
     weight:number;
     noOfStudentsCoached:number;
     Students:[string];
+    availability:String;
     achievementBadges:[string];
     package:[number];  
-    score:number; 
+    state:String;
+    city:String;
+    locality:String;
+    licenseOrAadhaar:String;
+    role:String
 }

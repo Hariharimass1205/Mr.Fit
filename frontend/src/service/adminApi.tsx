@@ -24,9 +24,9 @@ const Axios = axios.create({
   export const fetchDataList = async()=>{
     try {
       const response = await Axios.post(`${SERVER_URL_ADMIN}/fetchUserList`)
-      const {userList,pendingApprovalsList,users,coachList,coaches} = response.data
+      const {userList,pendingApprovalsList,users,coachList,coaches,enrolledUsers} = response.data
       if(response){
-        return {userList,pendingApprovalsList,users,coachList,coaches}
+        return {userList,pendingApprovalsList,users,coachList,coaches,enrolledUsers}
       }
     } catch (error:any) {
       console.log("Error in adminUserListFetching:", error.message || error);
@@ -57,6 +57,11 @@ const Axios = axios.create({
  export const changeCoachStatus = async (email:string,newStatus:string)=>{
   try {
     const response = await Axios.post(`${SERVER_URL_ADMIN}/changeStatus`,{email,newStatus})
+    const {result} = response.data
+    console.log(result,"cahnegedd roll")
+    if(result){
+      localStorage.setItem("user",JSON.stringify(result))
+    }
     return response.data.success
   } catch (error) {
     console.log("Error in changing status of coach :",error);

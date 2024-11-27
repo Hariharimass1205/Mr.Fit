@@ -13,7 +13,6 @@ const Navbar: React.FC = () => {
   
   useEffect(() => {
     const storedData = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
     if (storedData) {
       try {
         const user = JSON.parse(storedData);
@@ -22,7 +21,7 @@ const Navbar: React.FC = () => {
       } catch (error) {
         console.log(error);
       }
-      if (token && user) {
+      if (user) {
         setIsAth(true);
       } else {
         setIsAth(false);
@@ -32,15 +31,15 @@ const Navbar: React.FC = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    localStorage.removeItem("token");
-    deleteCookie("token");
+    localStorage.removeItem("userToken");
+    deleteCookie("userToken");
     setIsAth(false);  // Update isAth after logout
     router.push("/user/home");
     window.location.reload();
   };
 
   const handleLogin = () => {
-    router.push("/login");
+    router.replace("/login");
   };
 
   useEffect(() => {
@@ -80,12 +79,15 @@ const Navbar: React.FC = () => {
       <h1>Mr.Fit</h1>
     </div>
     <div className="flex gap-7">
-    <a
+      
+      {isApprovedBtn=="Accept"? "":<a
               href="/get-coach"
               className="text-lg hover:underline hover:text-cyan-400"
             >
               Get Coach
-            </a>
+            </a>}
+           
+
     {user && (
         <span className="text-lg hover:underline mr-3 hover:text-cyan-400">
           Hi.. {user}
@@ -96,20 +98,23 @@ const Navbar: React.FC = () => {
       {user && isAth ? (
         <>
          <div className="flex space-x-3">
-
            {isApprovedBtn=="Pending"?
-
            <a
               className="text-lg hover:underline hover:text-yellow-400"
             >
               Approval Pending
             </a>
-           :
+           :isApprovedBtn=="Accept"?
             <a
+            onClick={()=>router.push('/coaches/coachFillup')}
+              className="text-lg hover:underline hover:text-cyan-400"
+            >
+              Register Coach
+            </a>:<a
               onClick={handleBecomeCoach}
               className="text-lg hover:underline hover:text-cyan-400"
             >
-              Become Coach
+              Become a Coach
             </a>
           }
           </div>

@@ -12,10 +12,10 @@ const Axios = axios.create({
 export const signupApi = async (reqBody: Record<string, any>) => {
   try {
     const response = await Axios.post(`${SERVER_URL_USER}/signup`, reqBody);
-    return response.data;  // Return only the data from the response
+    return response.data;
   } catch (error: any) {
     console.log("Error in signupApi:", error.message || error);
-    throw new Error("Signup failed. Please try again later."); // Custom error message
+    throw new Error("Signup failed. Please try again later."); 
   }
 };
 
@@ -36,7 +36,7 @@ export const loginApi = async (reqBody: Record<string, any>)=>{
     return response.data
   } catch (error:any) {
     console.log("Error in login API:", error.message || error);
-    throw new Error("login failed. Please try again later."); // Custom error message
+    throw new Error("login failed. Please try again later."); 
   }
 }
 export const forgotpasswordEmail = async (email:string):Promise<any>=>{

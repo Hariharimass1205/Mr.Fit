@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { adminLogin, blockUser, changeCoachStatus, sendUserList, unblockUser } from "../controllers/adminController";
+import { adminLogin, blockUser, changeCoachStatus, fetchDataList, unblockUser } from "../controllers/adminController";
 
 const adminRouter = Router()
 
 adminRouter.post("/adminlogin",adminLogin)
 adminRouter.post("/blockUser",blockUser)
 adminRouter.post("/unblockUser",unblockUser)
-adminRouter.post("/fetchUserList",sendUserList)
+adminRouter.post("/fetchUserList",fetchDataList)
 adminRouter.post("/changeStatus",changeCoachStatus)
 export default adminRouter

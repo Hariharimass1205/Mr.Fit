@@ -10,11 +10,16 @@ const coachSchema = new Schema<Coach>({
     age:{type:Number,required:true},
     height:{type:Number,required:true},
     weight:{type:Number,required:true},
-    noOfStudentsCoached:{type:Number,required:true},
+    noOfStudentsCoached:{type:Number},
+    availability:{type:String},
     Students:{ type: [String] },
     achievementBadges:{ type: [String]},
     package:{ type: [Number] },
-    score:{ type: Number }
+    state:{ type: [String] },
+    city:{ type: [String] },
+    locality:{ type: [String]},
+    licenseOrAadhaar:{type:String},
+    role:{type:String}
 })
 
 const coachModel = mongoose.model("coaches", coachSchema)

@@ -1,31 +1,32 @@
 import jwt from 'jsonwebtoken'
-import { blockUserbyEmail, changeStatusByEmail, findUserList, unblockUserbyEmail } from '../repository/adminRepository';
+import { blockUserbyEmail, changeStatusByEmail, fetchDataRepo, unblockUserbyEmail } from '../repository/adminRepository';
 
 export const adminLOGIN = (email: string, password: string)=> {
+     
     try {
       if (process.env.ADMIN_EMAIL !== email) {
-        console.error(Error);
+        throw new Error("Invalid Credential")
       }
       if (process.env.ADMIN_PASS !== password) {
-        console.error(Error);
+        throw new Error("Invalid Credential")
       }
-      const adminToken = jwt.sign(
-        {
-          AdminEmail: email,
-        },
-        process.env.JWT_SECRET as string,
-        { expiresIn: "1h" }
-      );
       
-      return { adminToken, admin: email };
+      const accessToken = jwt.sign({email:process.env.ADMIN_EMAIL,isCoach:"admin"},process.env.JWT_SECRET!,{
+        expiresIn:"1h"
+    })
+    const refreshToken = jwt.sign({email:process.env.ADMIN_EMAIL,isCoach:"admin"},process.env.JWT_SECRE!,{
+        expiresIn:"7d"
+    })
+      
+      return { accessToken,refreshToken, admin: email };
     } catch (error) {
       throw new Error(error)  
     }
   }
 
-  export const sendUserDataService = async ()=>{
+  export const fetchDataService = async ()=>{
     try {
-      const data = findUserList()
+      const data = fetchDataRepo()
       return data
     } catch (error) {
       throw new Error(error) 
@@ -55,7 +56,6 @@ export const adminLOGIN = (email: string, password: string)=> {
     try {
       const result = await changeStatusByEmail(email,newStatus)
       return result
-      
     } catch (error) {
       console.log("error at changing status of coach in  admin service")
       throw new Error(error)

@@ -37,6 +37,8 @@ export const verifyOTPService = async (email:string,otp:string)=>{
 export const loginUser = async (email:string,password:string)=>{
  try {
     const user = await findUserByEmail(email)
+    console.log(user,email,"login")
+
     if(!user){
         throw new Error("Invalid Email/Password")
     }
@@ -44,10 +46,17 @@ export const loginUser = async (email:string,password:string)=>{
     if(!isPassword){
         throw new Error("Invalid Email/Password")
     }
-    const token = jwt.sign({userId:user._id},process.env.JWT_SECRET!,{
+
+    // const userToken = jwt.sign({userId:user._id,email:user.email,isCoach:user.isCoach},process.env.JWT_SECRET!,{
+    //     expiresIn:"1h"
+    // })
+    const accessToken = jwt.sign({userId:user._id,email:user.email,role:user.role},process.env.JWT_SECRET!,{
         expiresIn:"1h"
     })
-    return {user,token}
+    const refreshToken = jwt.sign({userId:user._id,email:user.email,role:user.role},process.env.JWT_SECRET!,{
+        expiresIn:"7d"
+    })
+    return {user,accessToken,refreshToken}
  } catch (error:any) {
     console.error('Error during login:', error);
     throw new Error(error.message);
