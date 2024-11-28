@@ -4,11 +4,18 @@ import { adminLOGIN, blockUserService, changeCoachStatusService, fetchDataServic
 
 export const adminLogin = async(req:Request,res:Response,next:NextFunction)=>{
     try {
+      console.log("hiii")
       const {email,password} = req.body
       const result = adminLOGIN(email,password)
       if (result) {
-        res.cookie("accessToken", result.accessToken);
-        res.cookie("refreshToken", result.refreshToken);
+        res.cookie("accessToken",
+          result.accessToken,
+        {httpOnly:false}
+        );
+        res.cookie("refreshToken",
+           result.refreshToken,
+          {httpOnly:true}
+        );
         res.json({ admin:result.admin });
       } else {
         res.status(HttpStatus.UNAUTHORIZED).json({ message:"Login failed" });

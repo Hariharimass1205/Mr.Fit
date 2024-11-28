@@ -1,20 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-const ADMIN_ROUTES = new Set(["/admin", "/dashboard","/coachList","/userList"]);
-const COACH_ROUTES = new Set(["/becomeACoach", "/coachFillup","/coachProfile","/greetings","/quiz"]);
-const USER_ROUTES = new Set(["/user/home","/coaches/becomeACoach"]);
+const ADMIN_ROUTES = new Set(["/admin/dashboard","/admin/coachList","/admin/userList"]);
+const COACH_ROUTES = new Set(["coaches/becomeACoach","/coaches/quiz","/coaches/coachFillup","/coaches/greetings"]);
+const USER_ROUTES = new Set(["/user/home"]);
 const PUBLIC_ROUTES = new Set([
   "/login", 
   "/signup", 
   "/otp", 
   "/forgotPassword/forgotPassword1", 
   "/forgotPassword/forgotPasswordOTP",
-  "/forgotPassword/forgotPassword3"
+  "/forgotPassword/forgotPassword3",
+  "/admin/login"
 ]);
 const UNPROTECTED_ROUTES = new Set(["/_next/", "/favicon.ico", "/api/"]);
-
 export async function middleware(req: NextRequest) {
+
     const { pathname } = req.nextUrl;
     // Allow unprotected or public routes without requiring authentication
     if ([...UNPROTECTED_ROUTES].some(route => pathname.startsWith(route)) || pathname === "/user/home") {
@@ -25,25 +26,21 @@ export async function middleware(req: NextRequest) {
         console.log(`Allowing access to public page: ${pathname}`);
         return NextResponse.next();
       }
-
       const tokenData = await verifyToken("accessToken", req);
       const role = tokenData?.role;
-     console.log(role)
       if (!role) {
         console.log(`Redirecting unauthenticated user from ${pathname} to /login`);
         return NextResponse.redirect(new URL("/login", req.url));
       }
 
-        // Role-based access control
-  if (role == "admin" && !ADMIN_ROUTES.has(pathname)) {
+      if (role == "admin" && !ADMIN_ROUTES.has(pathname)) {
     console.log(`Unauthorized access attempt by admin to ${pathname}. Redirecting to /admin`);
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    return NextResponse.redirect(new URL("/admin/dashboard", req.url));
   }
   if (role == "coach" && !COACH_ROUTES.has(pathname)) {
     console.log(`Unauthorized access attempt by doctor to ${pathname}. Redirecting to /home`);
     return NextResponse.redirect(new URL("/user/home", req.url));
   }
-
   if (role == "user" && !USER_ROUTES.has(pathname)) {
     console.log(`Unauthorized access attempt by user to ${pathname}. Redirecting to /userHome`);
     return NextResponse.redirect(new URL("/user/home", req.url));
@@ -57,7 +54,7 @@ export async function middleware(req: NextRequest) {
 
 
 
-async function verifyToken(tokenName: string, req: NextRequest): Promise<{ role:any | null }> {
+async function verifyToken(tokenName: string, req: NextRequest): Promise<{ role:string | null }> {
     const token = req.cookies.get(tokenName);
     if (!token?.value) {
       console.error("Token not found in cookies");
@@ -83,7 +80,7 @@ async function verifyToken(tokenName: string, req: NextRequest): Promise<{ role:
   
       console.log(`Verified role: ${role}`);
       return { role };
-    } catch (err: any) {
+    } catch (err:any) {
       console.error(`Failed to verify token: ${err.message}`);
       return { role: null };
     }

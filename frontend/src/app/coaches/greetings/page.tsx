@@ -3,6 +3,7 @@ import Quizgreeting from '@/components/coach/Quizgreeting'
 import React from 'react'
 import { useSearchParams } from 'next/navigation'
 
+
 const Greeting = () => {
     const searchParams = useSearchParams()
     const score = searchParams.get("score") || "0"

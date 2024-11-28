@@ -1,9 +1,12 @@
 "use client"
 import Footer from '@/components/user/footer';
+import { toast,ToastContainer } from 'react-toastify';
 import { signupApi } from '@/service/userApi';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import 'react-toastify/dist/ReactToastify.css';
+
 const bg = '/assets/backGround/pexels-dogu-tuncer-339534179-15917308.jpg';
 type input = {
   userName: string,
@@ -23,7 +26,7 @@ const Signup: React.FC = () => {
     formState: { errors }
   } = useForm<input>()
   const onSubmit: SubmitHandler<input> = async (data) => {
-    const { userName, email, phone, password, confirmPassword, gender } = data;
+    const { userName, email, phone, password, gender } = data;
     const reqBody = {
       userName,
       email,
@@ -33,18 +36,28 @@ const Signup: React.FC = () => {
     };
     try {
       const response = await signupApi(reqBody);
-      console.log("from back ---- ",response)
       if(response.success){
-        router.push(`/otp?email=${email}`)
-      }else{
-        SetUserExsit(true)
+        toast.success("Successfully signed in")
+        router.replace(`/otp?email=${email}`)
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error:any) {
+      toast.error(error?.message)
+      SetUserExsit(true)
     }
   };
   return (
     <div>
+      <ToastContainer 
+  position="top-right"
+  autoClose={3000}
+  hideProgressBar
+  newestOnTop
+  closeOnClick
+  rtl={true}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
       <nav className="bg-black text-white flex justify-between items-center p-4">
       <div className="text-2xl font-bold">
         <h1>Mr.Fit</h1>
@@ -58,8 +71,7 @@ const Signup: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <h2 className="text-white text-3xl text-center mb-6">Sign Up</h2>
             {userExsit?
-            <small>User already Exsit</small>:""
-}
+            <small className='text-slate-100'>User already Exsit</small>:""}
             <input
               type="text"
               placeholder=" Your full Name......."

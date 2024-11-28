@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SERVER_URL_ADMIN } from './serverURL';
+import { SERVER_URL_ADMIN } from '../../utils/serverURL';
 
 const Axios = axios.create({
   baseURL:`${SERVER_URL_ADMIN}`,

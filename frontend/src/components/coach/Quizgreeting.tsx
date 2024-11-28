@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { saveQuizScore } from '@/service/coachApi';
+import 'react-toastify/dist/ReactToastify.css';
+import { toast,ToastContainer} from 'react-toastify';
 
 type QuizgreetingProps = {
   score: string;
@@ -40,7 +42,8 @@ const Quizgreeting: React.FC<QuizgreetingProps> = ({ score }) => {
       console.log(response.data);
       if (response.data.success) {
         localStorage.setItem('user', JSON.stringify(response.data.result));
-        router.push('/user/home');
+        toast.success('Request successful',{onClose:()=>router.replace('/user/home')})
+        ;
       }
     } catch (error) {
       console.log('Error requesting call:', error);
@@ -48,6 +51,8 @@ const Quizgreeting: React.FC<QuizgreetingProps> = ({ score }) => {
   };
 
   return (
+    <>
+    <ToastContainer/>
     <div
       className="min-h-screen flex flex-col justify-center items-center text-black bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/assets/backGround/pexels-zakaria-2827392.jpg')" }}
@@ -56,7 +61,7 @@ const Quizgreeting: React.FC<QuizgreetingProps> = ({ score }) => {
       {numericScore >= 10 ? (
         <h1 className="text-4xl font-bold text-center px-8 w-5/6 mt-20 mb-20">
           Mr. {userName}, you have scored: {quizScore?quizScore:score}. That&apos;s appreciable... At the
-          bottom of the page, you can find a button called "Request a call."
+          bottom of the page, you can find a button called Request a call."
           Click to receive a call for admin approval.
         </h1>
       ) : (
@@ -89,6 +94,7 @@ const Quizgreeting: React.FC<QuizgreetingProps> = ({ score }) => {
         </button>
       )}
     </div>
+    </>
   );
 };
 

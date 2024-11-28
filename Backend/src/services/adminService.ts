@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken'
+import { generateAccessToken,generateRefreshToken } from '../utils/JWTgenerator';
 import { blockUserbyEmail, changeStatusByEmail, fetchDataRepo, unblockUserbyEmail } from '../repository/adminRepository';
 
 export const adminLOGIN = (email: string, password: string)=> {
@@ -10,14 +10,11 @@ export const adminLOGIN = (email: string, password: string)=> {
       if (process.env.ADMIN_PASS !== password) {
         throw new Error("Invalid Credential")
       }
-      
-      const accessToken = jwt.sign({email:process.env.ADMIN_EMAIL,isCoach:"admin"},process.env.JWT_SECRET!,{
-        expiresIn:"1h"
-    })
-    const refreshToken = jwt.sign({email:process.env.ADMIN_EMAIL,isCoach:"admin"},process.env.JWT_SECRE!,{
-        expiresIn:"7d"
-    })
-      
+      console.log("hiiiiii")
+      const accessToken = generateAccessToken(process.env.ADMIN_EMAIL,process.env.ADMIN_ROLE)
+      const refreshToken = generateRefreshToken(process.env.ADMIN_EMAIL,process.env.ADMIN_ROLE)
+      console.log(accessToken,"accc")
+      console.log(refreshToken,"ref")
       return { accessToken,refreshToken, admin: email };
     } catch (error) {
       throw new Error(error)  

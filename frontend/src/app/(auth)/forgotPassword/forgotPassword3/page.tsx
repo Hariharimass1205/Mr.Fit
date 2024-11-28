@@ -5,6 +5,9 @@ import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSearchParams } from 'next/navigation';
 import { saveNewPassword } from '@/service/userApi';
+import { toast,ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const bg = '/assets/backGround/neeww.jpg';
 
 type input = {
@@ -31,15 +34,16 @@ const onsubmit:SubmitHandler<input> = async (data)=>{
     const {password} = data
     const response = await saveNewPassword(password,email)
     if(response){
-      router.replace(`/login`)
+      toast.success("Successfully password changed",{onClose:()=>router.replace(`/login`)})
     }
   } catch (err) {
     setError(true)
     console.log(err)
   }
 }
-
   return (
+    <>
+    <ToastContainer></ToastContainer>
     <div>
       <nav className="bg-black text-white flex justify-between items-center p-4">
       <div className="text-2xl font-bold">
@@ -89,6 +93,7 @@ const onsubmit:SubmitHandler<input> = async (data)=>{
       </div>
       <Footer />
     </div>
+    </>
   );
 };
 

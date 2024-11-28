@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SERVER_URL_COACH } from './serverURL';
+import { SERVER_URL_COACH } from '../../utils/serverURL';
 
 const Axios = axios.create({
   baseURL:`${SERVER_URL_COACH}`,
@@ -8,6 +8,12 @@ const Axios = axios.create({
   },
   withCredentials:true
 })
+export const handleAxiosError = (error:any)=>{
+  console.log(error)
+  const errorMessage = error?.response?.data?.errorMessage || "Unexpected error occurred"
+  console.log(errorMessage)
+  return new Error(errorMessage)
+}
 
 export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
     try {
@@ -15,7 +21,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
       return response
     } catch (error) {
       console.log(error)
-      throw new Error("error at sending score mail to admin  failed. Please try again later.");
+      throw handleAxiosError(error) 
     }
   }
 
@@ -26,6 +32,6 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
       return response.data.success
    } catch (error) {
       console.log(error)
-      throw new Error("error at coach registration. Please try again later");
+      throw handleAxiosError(error) 
    }
   }

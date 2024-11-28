@@ -2,16 +2,35 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { deleteCookie } from '../../../utils/deleteCookie';
-
+import { fetchData, logoutApi } from '@/service/userApi';
+import axios from 'axios';
+import { useAppSelector } from '@/store/hooks/hooks';
+import { User } from '../../../utils/types';
+import { SERVER_URL_USER } from '../../../utils/serverURL';
+import { ContainerWithChildren } from 'postcss/lib/container';
 const Navbar: React.FC = () => {
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState();
+  const [userStatus,setUserStatus] = useState("")
   const [isAth, setIsAth] = useState<boolean>(false);
   const [isCoach,setIsCoach] = useState(false)
   const [isApprovedBtn,setIsApprovedBtn] = useState("")
   const [quizScore,setQuizScore] = useState(0)
   const router = useRouter();
+  const userdataRedux = useAppSelector(state => state?.user?.user)
+ console.log(userdataRedux)
+
+
+   useEffect(() => {
+    (async function fetchuserData(){
+    try {
+      const data = await fetchData()
+      console.log(data.result.data.isApproved)
+      setUserStatus(data.result.data.isApproved)
+    } catch (error) {
+      console.log(error)
+    }
+  })()
   
-  useEffect(() => {
     const storedData = localStorage.getItem("user");
     if (storedData) {
       try {
@@ -28,14 +47,18 @@ const Navbar: React.FC = () => {
       }
     }
   }, [user]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("userToken");
-    deleteCookie("userToken");
-    setIsAth(false);  // Update isAth after logout
-    router.push("/user/home");
-    window.location.reload();
+  const handleLogout = async () => {
+    try {
+      const result = await logoutApi()
+      if(result){
+      localStorage.removeItem("user");
+      }
+      setIsAth(false);  
+      router.replace("/user/home");
+      window.location.reload();  
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   const handleLogin = () => {
@@ -80,7 +103,7 @@ const Navbar: React.FC = () => {
     </div>
     <div className="flex gap-7">
       
-      {isApprovedBtn=="Accept"? "":<a
+      {userStatus=="Accept"? "":<a
               href="/get-coach"
               className="text-lg hover:underline hover:text-cyan-400"
             >
@@ -98,13 +121,13 @@ const Navbar: React.FC = () => {
       {user && isAth ? (
         <>
          <div className="flex space-x-3">
-           {isApprovedBtn=="Pending"?
+           {userStatus=="Pending"?
            <a
               className="text-lg hover:underline hover:text-yellow-400"
             >
               Approval Pending
             </a>
-           :isApprovedBtn=="Accept"?
+           :userStatus=="Accept"?
             <a
             onClick={()=>router.push('/coaches/coachFillup')}
               className="text-lg hover:underline hover:text-cyan-400"

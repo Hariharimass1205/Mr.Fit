@@ -27,7 +27,7 @@ const Login: React.FC = () => {
     try {
       const response = await adminlogin(reqBody);
       if (response) {
-        router.push(`/admin/dashboard`);
+        router.replace(`/admin/dashboard`);
       }
     } catch (error) {
       setError(true)

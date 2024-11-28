@@ -1,5 +1,6 @@
-import axios from 'axios';
-import { SERVER_URL_USER } from './serverURL';
+import axios, { AxiosError } from 'axios';
+import { SERVER_URL_USER } from '../../utils/serverURL';
+import { log } from 'console';
 
 const Axios = axios.create({
   baseURL:`${SERVER_URL_USER}`,
@@ -9,13 +10,20 @@ const Axios = axios.create({
   withCredentials:true
 })
 
+export const handleAxiosError = (error:any)=>{
+  console.log(error)
+  const errorMessage = error?.response?.data?.errorMessage || "Unexpected error occurred"
+  console.log(errorMessage)
+  return new Error(errorMessage)
+}
+
+
 export const signupApi = async (reqBody: Record<string, any>) => {
   try {
     const response = await Axios.post(`${SERVER_URL_USER}/signup`, reqBody);
     return response.data;
   } catch (error: any) {
-    console.log("Error in signupApi:", error.message || error);
-    throw new Error("Signup failed. Please try again later."); 
+    throw handleAxiosError(error) 
   }
 };
 
@@ -26,7 +34,7 @@ export const otpVerify = async (otp:string, email:any ): Promise<any> => {
     return response;
   } catch (error) {
     console.log("Error in otpVerify:", error);
-    throw error;
+    throw handleAxiosError(error) 
   }
 };
 
@@ -36,7 +44,7 @@ export const loginApi = async (reqBody: Record<string, any>)=>{
     return response.data
   } catch (error:any) {
     console.log("Error in login API:", error.message || error);
-    throw new Error("login failed. Please try again later."); 
+    throw handleAxiosError(error) 
   }
 }
 export const forgotpasswordEmail = async (email:string):Promise<any>=>{
@@ -46,7 +54,7 @@ export const forgotpasswordEmail = async (email:string):Promise<any>=>{
     return response.data.success
   } catch (err) {
     console.log("error at sending email to backend while forgot password",err)
-    throw new Error("error at forgot password")
+    throw handleAxiosError(err) 
   }
 }
 
@@ -57,7 +65,7 @@ export const verifyOTPforForgotOtp = async (otp:string, email:any ): Promise<any
     return response;
   } catch (error) {
     console.log("Error in otpVerify:", error);
-    throw error;
+    throw handleAxiosError(error) 
   }
 };
 export const saveNewPassword = async (password:string,email:any):Promise<any>=>{
@@ -67,7 +75,7 @@ export const saveNewPassword = async (password:string,email:any):Promise<any>=>{
     return response
   } catch (error) {
     console.log("Error in saving new password:", error);
-    throw error;
+    throw handleAxiosError(error) 
   }
 }
 export const resendOTP = async (email:any):Promise<any>=>{
@@ -76,6 +84,28 @@ export const resendOTP = async (email:any):Promise<any>=>{
     return response
   } catch (error) {
     console.log("Error in resending OTP:", error);
-    throw error;
+    throw handleAxiosError(error) 
+  }
+}
+
+export const logoutApi = async()=>{
+  try {
+    const response = await Axios.post(`${SERVER_URL_USER}/logout`)
+    console.log(response.data)
+    return response.data
+  } catch (error) {
+    console.log("Error in logout:", error);
+    throw handleAxiosError(error) 
+  }
+}
+
+export const fetchData = async ()=>{
+  try {
+    const {data} = await Axios.post(`${SERVER_URL_USER}/fetchdata`)
+   if(data){
+    return data
+   }
+  } catch (error) {
+    console.log(error)
   }
 }

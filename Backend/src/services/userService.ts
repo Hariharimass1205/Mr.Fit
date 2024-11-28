@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken'
-import { createUser, findUserByEmail, findUserByEmailandUpdate, updateUser, updateUserOTP, verifyAndSaveUser } from '../repository/userRepository'
+import { generateRefreshToken,generateAccessToken } from '../utils/JWTgenerator'
+import { createUser, fetchuserDataRepo, findUserByEmail, findUserByEmailandUpdate, updateUser, updateUserOTP, verifyAndSaveUser } from '../repository/userRepository'
 import bcrypt from 'bcrypt'
 
 export const registerUser = async (user:any)=>{
@@ -7,7 +7,7 @@ export const registerUser = async (user:any)=>{
         const exsitingUser = await findUserByEmail(user.email)
         if(exsitingUser){
             if(exsitingUser.otpVerified){
-                throw new Error("User already exists and is verified.");
+                throw new Error("Email already Exist");
             }
         }
         const hashedpassword =  await bcrypt.hash(user.password,10)
@@ -34,11 +34,19 @@ export const verifyOTPService = async (email:string,otp:string)=>{
     }
 }
 
+export const fetchuserdataService = async (userId:string)=>{
+    try {
+        const data = await fetchuserDataRepo(userId)
+        return data
+    } catch (error) {
+        throw new Error("error at fetching data for navbar");
+    }
+}
+
 export const loginUser = async (email:string,password:string)=>{
  try {
     const user = await findUserByEmail(email)
-    console.log(user,email,"login")
-
+    const userId = user._id.toString()
     if(!user){
         throw new Error("Invalid Email/Password")
     }
@@ -46,16 +54,8 @@ export const loginUser = async (email:string,password:string)=>{
     if(!isPassword){
         throw new Error("Invalid Email/Password")
     }
-
-    // const userToken = jwt.sign({userId:user._id,email:user.email,isCoach:user.isCoach},process.env.JWT_SECRET!,{
-    //     expiresIn:"1h"
-    // })
-    const accessToken = jwt.sign({userId:user._id,email:user.email,role:user.role},process.env.JWT_SECRET!,{
-        expiresIn:"1h"
-    })
-    const refreshToken = jwt.sign({userId:user._id,email:user.email,role:user.role},process.env.JWT_SECRET!,{
-        expiresIn:"7d"
-    })
+    const accessToken = generateAccessToken(userId,user.role)
+    const refreshToken = generateRefreshToken(userId,user.role)
     return {user,accessToken,refreshToken}
  } catch (error:any) {
     console.error('Error during login:', error);

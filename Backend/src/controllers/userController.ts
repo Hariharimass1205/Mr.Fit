@@ -1,9 +1,10 @@
 // userController.ts
 import { NextFunction, Request, Response } from "express";    
 import { otpGenerator } from "../utils/OtoGenerator";
-import { checkUser, forgotPassverifyOTPService, loginUser, registerUser, saveNewPassword, saveOTPtoModel, verifyOTPService } from "../services/userService";
+import { checkUser, fetchuserdataService, forgotPassverifyOTPService, loginUser, registerUser, saveNewPassword, saveOTPtoModel, verifyOTPService } from "../services/userService";
 import { sendEmail } from "../utils/sendEmail";
 import { HttpStatus } from "../utils/httpStatusCode";
+import { CustomRequest } from "../middlesware/jwtVerification";
 
 export const  register = async (req: Request, res: Response, next: NextFunction)=> {
   try {    
@@ -29,7 +30,7 @@ export const  register = async (req: Request, res: Response, next: NextFunction)
       role:"user"  
     });
     console.log(otp,req.body.email)
-     if(register){
+     if(registerUser){
      res.status(HttpStatus.OK).json({success:true});
      }else{
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({success:false});
@@ -52,13 +53,9 @@ export const otpVerify = async (req:Request,res:Response,next:NextFunction)=>{
 }
 export const login = async(req:Request,res:Response,next:NextFunction)=>{
   try {
-    console.log("Hiiii")
+
     const {email,password} = req.body
     const {user,refreshToken,accessToken} = await loginUser(email,password)
-    // res.cookie("userToken",userToken,{
-    //   sameSite:"strict",
-    // });
-
     res.cookie("accessToken",accessToken,{
       sameSite:"strict",
       httpOnly:false
@@ -70,6 +67,30 @@ export const login = async(req:Request,res:Response,next:NextFunction)=>{
     res.status(HttpStatus.OK).json(user)
   } catch (error) {
     console.error("Error at login user");
+    next(error);
+  }
+}
+
+export const logout = (req:Request,res:Response,next:NextFunction)=>{
+  try {
+    res.clearCookie("refreshToken")
+    res.status(HttpStatus.OK).json({success:true})
+  } catch (error) {
+    console.error("Error at logout user");
+    next(error);
+  }
+}
+
+export const fetchUserData = async (req:CustomRequest,res:Response,next:NextFunction)=>{
+  try {
+      const {id} = req?.user
+      const result = await fetchuserdataService(id)
+      console.log(result,"from controlre")
+      if(result){
+        res.status(HttpStatus.OK).json({success:true,result})
+      }
+  } catch (error) {
+    console.error("Error at fetching user data");
     next(error);
   }
 }

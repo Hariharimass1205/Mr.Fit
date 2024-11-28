@@ -4,7 +4,11 @@ import { loginApi } from '@/service/userApi';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import 'react-toastify/dist/ReactToastify.css';
+import { toast,ToastContainer} from 'react-toastify';
 const bg = '/assets/backGround/pexels-anush-1431283.jpg';
+import { useAppDispatch } from "@/store/hooks/hooks";
+import { setUser } from '@/store/slices/userSlice';
 
 type input = {
   email: string;
@@ -13,6 +17,7 @@ type input = {
 
 const Login: React.FC = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch()
   const [errorr,setErrorr] = useState(false)
   const {
     register,
@@ -27,10 +32,10 @@ const Login: React.FC = () => {
       const response = await loginApi(reqBody);
       if(response){
         localStorage.setItem("user",JSON.stringify(response))
-        router.replace(`/user/home`);
+        dispatch(setUser(response))
+        toast.success('Login Successful', { onClose:()=>router.replace(`/user/home`) });
       }
-
-    } catch (error) {
+    } catch (error:any) {
       setErrorr(true)
       console.log(error);
     }
@@ -40,7 +45,18 @@ const Login: React.FC = () => {
   }
 
   return (
-    //navabr
+    <>
+      <ToastContainer 
+      autoClose={2000}
+     position="top-center"
+  // hideProgressBar
+  // newestOnTop
+  // closeOnClick
+  // rtl={true}
+  // pauseOnFocusLoss
+  // draggable
+  // pauseOnHover
+/>
     <div>
       <nav className="bg-black text-white flex justify-between items-center p-4">
       <div className="text-2xl font-bold">
@@ -92,6 +108,7 @@ const Login: React.FC = () => {
       </div>
       <Footer />
     </div>
+    </>
   );
 };
 

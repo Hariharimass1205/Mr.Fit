@@ -1,4 +1,3 @@
-import { Schema } from "inspector/promises";
 import { Types } from "mongoose";
 export interface Coach{
     userId:Types.ObjectId;

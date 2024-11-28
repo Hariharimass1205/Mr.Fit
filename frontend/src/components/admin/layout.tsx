@@ -15,10 +15,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const router = useRouter();
   
   const handleLogoutClick = () => {
-    localStorage.removeItem("admin");
-    localStorage.removeItem("adminToken");
-    deleteCookie("adminToken");
-    router.push("/admin/login"); 
+    deleteCookie("accessToken");
+    deleteCookie("refreshToken");
+    router.replace("/admin/login"); 
   };
   
   useEffect(()=>{
@@ -75,7 +74,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 className={`rounded-lg block text-black text-xl p-3 font-semibold 
                   hover:text-black-300`}
               >
-                Coaches  <span className="text-white pl-2.5 pr-2.5 bg-red-600 rounded-full p-1">{pending}</span>
+                Coaches  <span className="text-white pl-2.5 pr-2.5 bg-red-600 rounded-full p-1">{pending?pending:0}</span>
               </Link>
               </div>
             </li>

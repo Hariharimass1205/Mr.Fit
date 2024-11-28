@@ -47,7 +47,7 @@ const OTP: React.FC = () => {
         const response = await otpVerify(otp,email);
         console.log(response)
         if(response){
-          router.push('/login')
+          router.replace('/login')
         }
       } catch (err) {
         setError(true)

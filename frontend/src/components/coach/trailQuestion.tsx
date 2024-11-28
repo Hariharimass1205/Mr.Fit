@@ -112,7 +112,7 @@ const Quiz = () => {
   const [score, setScore] = useState(null);
   const router = useRouter()
 
-  const handleAnswerChange = (questionIndex:any, optionIndex:any) => {
+  const handleAnswerChange = (questionIndex:number, optionIndex:number) => {
     const updatedAnswers = [...selectedAnswers];
     updatedAnswers[questionIndex] = optionIndex;
     setSelectedAnswers(updatedAnswers);

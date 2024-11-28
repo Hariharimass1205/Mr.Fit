@@ -11,6 +11,15 @@ export const findUserByEmail = async (email:String)=>{
         throw new Error('Database Error');
     }
 }
+export const  fetchuserDataRepo = async (userId:string)=>{
+  try {
+    const user = await userModel.findOne({ _id:userId, isBlocked: false }).exec();
+    return {data:user}
+  } catch (error) {
+    console.error('Error fetching user by email:', error);
+    throw new Error('Database Error');
+  }
+}
 
 export const createUser = async (user: User): Promise<any>=> {
     try {
