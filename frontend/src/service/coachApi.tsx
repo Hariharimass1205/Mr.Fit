@@ -35,3 +35,16 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
       throw handleAxiosError(error) 
    }
   }
+
+  export const fetchCoachData = async ()=>{
+    try {
+      const {data} = await Axios.post(`${SERVER_URL_COACH}/fetchCoachdata`)
+     if(data){
+      return data.result.data
+     }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  

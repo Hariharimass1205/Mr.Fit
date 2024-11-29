@@ -46,7 +46,10 @@ export const fetchuserdataService = async (userId:string)=>{
 export const loginUser = async (email:string,password:string)=>{
  try {
     const user = await findUserByEmail(email)
-    const userId = user._id.toString()
+    const userId = user._id?.toString()
+    if(user.isBlocked){
+        throw new Error("User is Blocked")
+    }
     if(!user){
         throw new Error("Invalid Email/Password")
     }

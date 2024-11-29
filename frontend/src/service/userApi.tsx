@@ -43,7 +43,7 @@ export const loginApi = async (reqBody: Record<string, any>)=>{
     const response = await Axios.post(`${SERVER_URL_USER}/login`,reqBody)
     return response.data
   } catch (error:any) {
-    console.log("Error in login API:", error.message || error);
+    console.log(error);
     throw handleAxiosError(error) 
   }
 }
@@ -103,6 +103,7 @@ export const fetchData = async ()=>{
   try {
     const {data} = await Axios.post(`${SERVER_URL_USER}/fetchdata`)
    if(data){
+    console.log(data.result.data,"from front")
     return data
    }
   } catch (error) {

@@ -4,7 +4,8 @@ import { User } from "../interface/user";
 
 export const findUserByEmail = async (email:String)=>{
     try {
-        const user = await userModel.findOne({ email, isBlocked: false }).exec();
+        const user = await userModel.findOne({ email }).exec();
+        console.log(email,"email")
         return user
     } catch (error) {
         console.error('Error finding user by email:', error);

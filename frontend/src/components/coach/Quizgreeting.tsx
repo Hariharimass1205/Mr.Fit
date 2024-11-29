@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { saveQuizScore } from '@/service/coachApi';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast,ToastContainer} from 'react-toastify';
-
+import bg from '../../../public/assets/backGround/pexels-goumbik-669578.jpg'
 type QuizgreetingProps = {
   score: string;
 };
@@ -54,9 +54,9 @@ const Quizgreeting: React.FC<QuizgreetingProps> = ({ score }) => {
     <>
     <ToastContainer/>
     <div
-      className="min-h-screen flex flex-col justify-center items-center text-black bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('/assets/backGround/pexels-zakaria-2827392.jpg')" }}
-    >
+  className="min-h-screen flex flex-col justify-center items-center text-black bg-cover bg-center bg-no-repeat"
+  style={{ backgroundImage: `url(${bg.src})` }}
+>
       
       {numericScore >= 10 ? (
         <h1 className="text-4xl font-bold text-center px-8 w-5/6 mt-20 mb-20">

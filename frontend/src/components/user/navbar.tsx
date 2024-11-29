@@ -1,16 +1,13 @@
 "use client";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { deleteCookie } from '../../../utils/deleteCookie';
 import { fetchData, logoutApi } from '@/service/userApi';
-import axios from 'axios';
 import { useAppSelector } from '@/store/hooks/hooks';
-import { User } from '../../../utils/types';
-import { SERVER_URL_USER } from '../../../utils/serverURL';
-import { ContainerWithChildren } from 'postcss/lib/container';
+
 const Navbar: React.FC = () => {
   const [user, setUser] = useState();
   const [userStatus,setUserStatus] = useState("")
+  const [isRegistered,setIsRegistered] = useState(false)
   const [isAth, setIsAth] = useState<boolean>(false);
   const [isCoach,setIsCoach] = useState(false)
   const [isApprovedBtn,setIsApprovedBtn] = useState("")
@@ -19,18 +16,18 @@ const Navbar: React.FC = () => {
   const userdataRedux = useAppSelector(state => state?.user?.user)
  console.log(userdataRedux)
 
-
    useEffect(() => {
     (async function fetchuserData(){
     try {
       const data = await fetchData()
-      console.log(data.result.data.isApproved)
-      setUserStatus(data.result.data.isApproved)
+
+      setUserStatus(data?.result?.data?.isApproved)
+      setIsRegistered(data?.result?.data?.isRegisted)
+      console.log(isRegistered,"raw data")
     } catch (error) {
       console.log(error)
     }
   })()
-  
     const storedData = localStorage.getItem("user");
     if (storedData) {
       try {
@@ -46,7 +43,8 @@ const Navbar: React.FC = () => {
         setIsAth(false);
       }
     }
-  }, [user]);
+  }, [user,isRegistered]);
+console.log(isRegistered,"out")
   const handleLogout = async () => {
     try {
       const result = await logoutApi()
@@ -83,8 +81,6 @@ const Navbar: React.FC = () => {
       }
     }
   }, [user]);
-  console.log(isApprovedBtn,"isApproved")
-  console.log(isCoach,"isCoach")
 
  const handleBecomeCoach = ()=>{
    
@@ -103,14 +99,12 @@ const Navbar: React.FC = () => {
     </div>
     <div className="flex gap-7">
       
-      {userStatus=="Accept"? "":<a
+      {userStatus =="Accept"? "":<a
               href="/get-coach"
               className="text-lg hover:underline hover:text-cyan-400"
             >
               Get Coach
             </a>}
-           
-
     {user && (
         <span className="text-lg hover:underline mr-3 hover:text-cyan-400">
           Hi.. {user}
@@ -119,45 +113,55 @@ const Navbar: React.FC = () => {
 
       {/* Conditional rendering for logged-in user */}
       {user && isAth ? (
-        <>
-         <div className="flex space-x-3">
-           {userStatus=="Pending"?
-           <a
-              className="text-lg hover:underline hover:text-yellow-400"
-            >
-              Approval Pending
-            </a>
-           :userStatus=="Accept"?
-            <a
-            onClick={()=>router.push('/coaches/coachFillup')}
-              className="text-lg hover:underline hover:text-cyan-400"
-            >
-              Register Coach
-            </a>:<a
-              onClick={handleBecomeCoach}
-              className="text-lg hover:underline hover:text-cyan-400"
-            >
-              Become a Coach
-            </a>
-          }
-          </div>
+  <>
+    <div className="flex space-x-3">
+      {userStatus === "Pending" ? (
+        <a className="text-lg hover:underline hover:text-yellow-400">
+          Approval Pending
+        </a>
+      ) : userStatus === "Accept" ? (
+        isRegistered ? (
           <a
-            onClick={handleLogout}
-            className="text-lg hover:underline hover:text-cyan-400 mr-3"
+            onClick={() => router.push('/coaches/coachProfile')}
+            className="text-lg hover:underline hover:text-cyan-400"
           >
-            Logout
+            Profile
           </a>
-         
-        </>
+          
+        ) : (
+          <a
+            onClick={() => router.push('/coaches/coachFillup')}
+            className="text-lg hover:underline hover:text-cyan-400"
+          >
+            Register Coach
+          </a>
+        )
       ) : (
-        // Conditional rendering for guest user
         <a
-          onClick={handleLogin}
+          onClick={handleBecomeCoach}
           className="text-lg hover:underline hover:text-cyan-400"
         >
-          Login
+          Become a Coach
         </a>
       )}
+    </div>
+    <a
+      onClick={handleLogout}
+      className="text-lg hover:underline hover:text-cyan-400 mr-3"
+    >
+      Logout
+    </a>
+  </>
+) : (
+  // Conditional rendering for guest user
+  <a
+    onClick={handleLogin}
+    className="text-lg hover:underline hover:text-cyan-400"
+  >
+    Login
+  </a>
+)}
+
     </div>
   </nav>
   );

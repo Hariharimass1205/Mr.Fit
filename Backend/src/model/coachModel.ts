@@ -7,6 +7,8 @@ const coachSchema = new Schema<Coach>({
         ref:"users",
         required:true
     },
+    name:{type:String},
+    phone:{type:Number},
     age:{type:Number,required:true},
     height:{type:Number,required:true},
     weight:{type:Number,required:true},
@@ -19,7 +21,8 @@ const coachSchema = new Schema<Coach>({
     city:{ type: [String] },
     locality:{ type: [String]},
     licenseOrAadhaar:{type:String},
-    role:{type:String}
+    role:{type:String},
+   
 })
 
 const coachModel = mongoose.model("coaches", coachSchema)

@@ -27,7 +27,8 @@ export const  register = async (req: Request, res: Response, next: NextFunction)
       isCoach:false,
       quizScore:0,
       isApproved:"",
-      role:"user"  
+      role:"user" ,
+      isRegisted:false
     });
     console.log(otp,req.body.email)
      if(registerUser){
@@ -53,7 +54,6 @@ export const otpVerify = async (req:Request,res:Response,next:NextFunction)=>{
 }
 export const login = async(req:Request,res:Response,next:NextFunction)=>{
   try {
-
     const {email,password} = req.body
     const {user,refreshToken,accessToken} = await loginUser(email,password)
     res.cookie("accessToken",accessToken,{

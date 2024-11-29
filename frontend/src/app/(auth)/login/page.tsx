@@ -2,11 +2,10 @@
 import Footer from '@/components/user/footer';
 import { loginApi } from '@/service/userApi';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast,ToastContainer} from 'react-toastify';
-const bg = '/assets/backGround/pexels-anush-1431283.jpg';
+import bg from "../../../../public/assets/backGround/pexels-zakaria-2827392.jpg"
 import { useAppDispatch } from "@/store/hooks/hooks";
 import { setUser } from '@/store/slices/userSlice';
 
@@ -18,7 +17,6 @@ type input = {
 const Login: React.FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch()
-  const [errorr,setErrorr] = useState(false)
   const {
     register,
     handleSubmit,
@@ -36,8 +34,7 @@ const Login: React.FC = () => {
         toast.success('Login Successful', { onClose:()=>router.replace(`/user/home`) });
       }
     } catch (error:any) {
-      setErrorr(true)
-      console.log(error);
+      toast.error(error.message)
     }
   };
   const handleForgotPassword = ()=>{
@@ -67,9 +64,9 @@ const Login: React.FC = () => {
 
       <div
         className="flex justify-center items-start min-h-screen bg-cover bg-center pt-40"
-        style={{ backgroundImage: `url(${bg})` }}
+        style={{ backgroundImage: `url(${bg.src})` }}
       >
-        <div className="bg-black bg-opacity-70 p-8 rounded-lg max-w-md w-full">
+        <div className="bg-black bg-opacity-20 p-8 rounded-lg max-w-md w-full">
           <form onSubmit={handleSubmit(onSubmit)}>
             <h2 className="text-white text-3xl text-center mb-6">Login</h2>
             <input
@@ -77,7 +74,7 @@ const Login: React.FC = () => {
               placeholder="Email Address..."
               id="email"
               {...register("email", { required: "Your email is required" })}
-              className="w-full p-3 mb-4 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 mb-1 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <small>{errors.email && <p className="text-red-500">{errors.email.message}</p>}</small>
 
@@ -86,11 +83,9 @@ const Login: React.FC = () => {
               placeholder="Password..."
               id="password"
               {...register("password", { required: "Your Passcode is required" })}
-              className="w-full p-3 mb-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 mb-1 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <small>{errors.password && <p className="text-red-500">{errors.password.message}</p>}</small>
-
-            {errorr?<h2 style={{color:"red"}}>Password Incorrect</h2>:""}
             <div className="text-right mb-4">
 
               <a onClick={handleForgotPassword} href="#" className="text-gray-400 hover:text-gray-300 text-sm">

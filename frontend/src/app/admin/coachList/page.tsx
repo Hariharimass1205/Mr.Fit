@@ -102,7 +102,7 @@ const CoachList: React.FC = () => {
         <p className="text-red-500 text-center">{error}</p>
       ) : coach.length > 0 ? (
         <div className="text-black overflow-x-auto px-4 py-4">
-          <table className="min-w-full table-auto border-collapse border border-gray-300">
+          <table className="min-w-full table-auto border-collapse border border-gray-900">
             <thead>
               <tr className="bg-gray-200">
                 <th className="border px-4 py-2">Username</th>

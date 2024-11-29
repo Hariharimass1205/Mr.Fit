@@ -3,6 +3,7 @@ import { HttpStatus } from '../utils/httpStatusCode';
 
 export const errorHandles = (err:any,req:Request,res:Response,next:NextFunction)=>{
     let errorMessage = err?.message || 'An unexpected error';
+    console.log(errorMessage)
     res.status(HttpStatus.NOT_FOUND).send({errorMessage,success:false})
 }
 

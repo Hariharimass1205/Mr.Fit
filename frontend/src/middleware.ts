@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
 const ADMIN_ROUTES = new Set(["/admin/dashboard","/admin/coachList","/admin/userList"]);
-const COACH_ROUTES = new Set(["coaches/becomeACoach","/coaches/quiz","/coaches/coachFillup","/coaches/greetings"]);
-const USER_ROUTES = new Set(["/user/home"]);
+const COACH_ROUTES = new Set(["/coaches/becomeACoach","/coaches/coachProfile","/coaches/quiz","/coaches/coachFillup","/coaches/greetings"]);
+const USER_ROUTES = new Set(["/user/home","/coaches/becomeACoach","/coaches/coachProfile","/coaches/quiz","/coaches/coachFillup","/coaches/greetings"]);
 const PUBLIC_ROUTES = new Set([
   "/login", 
   "/signup", 
@@ -17,6 +17,7 @@ const UNPROTECTED_ROUTES = new Set(["/_next/", "/favicon.ico", "/api/"]);
 export async function middleware(req: NextRequest) {
 
     const { pathname } = req.nextUrl;
+    console.log(pathname)
     // Allow unprotected or public routes without requiring authentication
     if ([...UNPROTECTED_ROUTES].some(route => pathname.startsWith(route)) || pathname === "/user/home") {
       console.log(`Allowing access to public route: ${pathname}`);

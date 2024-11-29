@@ -24,14 +24,15 @@ export type User = {
 
 export type Coach = {
     userId:Types.ObjectId;
+    name:String;
     age:number;
     height:number;
     weight:number;
     noOfStudentsCoached:number;
-    Students:[string];
+    Students: string[];
     availability:String;
-    achievementBadges:[string];
-    package:[number];  
+    achievementBadges: string[];
+    package: number[];  
     state:String;
     city:String;
     locality:String;

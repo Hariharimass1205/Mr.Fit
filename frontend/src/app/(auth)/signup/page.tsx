@@ -37,7 +37,7 @@ const Signup: React.FC = () => {
     try {
       const response = await signupApi(reqBody);
       if(response.success){
-        toast.success("Successfully signed in")
+        toast.success("Successfully otp sent successfully")
         router.replace(`/otp?email=${email}`)
       }
     } catch (error:any) {
@@ -70,13 +70,12 @@ const Signup: React.FC = () => {
         <div className="bg-black bg-opacity-70 p-10 rounded-lg max-w-md w-full">
           <form onSubmit={handleSubmit(onSubmit)}>
             <h2 className="text-white text-3xl text-center mb-6">Sign Up</h2>
-            {userExsit?
-            <small className='text-slate-100'>User already Exsit</small>:""}
+          
             <input
               type="text"
               placeholder=" Your full Name......."
               id="userName"
-              className="w-full p-3 mb-5 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3  text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               {...register("userName", {
                 required: "Your userName is required"
               })}
@@ -89,7 +88,7 @@ const Signup: React.FC = () => {
               {...register("email", {
                 required: "Your email is required"
               })}
-              className="w-full p-3 mb-5 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 mt-3 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
              <small>{errors.email && <p className="text-red-500">{errors.email.message}</p>}</small>
             <input
@@ -103,7 +102,7 @@ const Signup: React.FC = () => {
                 }
               })}
               placeholder="Phone..."
-              className="w-full p-3 mb-5 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 mt-3 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <small> {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}</small>
 
@@ -119,9 +118,8 @@ const Signup: React.FC = () => {
                   },
                 })}
                 placeholder="password..."
-                className="w-full  p-3 mb-5 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full  p-3 mt-3 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <small>{errors.password && <p className="text-red-500">{errors.password.message}</p>}</small>
               <input
                 type="password"
                 id="confirmPassword"
@@ -130,10 +128,10 @@ const Signup: React.FC = () => {
                   validate: value => value === getValues("password") || "Passwords do not match",
                 })}
                 placeholder="confirmPassword..."
-                className="w-full p-3 mb-5 ml-4 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 mt-3 ml-4 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              <small>{errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}</small>
             </div>
+            <small>{errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}</small>
             <div className='mb-10 mt-10'>
               <h2>Select Gender:</h2>
 

@@ -22,7 +22,8 @@ const userSchema = new Schema<User>({
     isCoach:{type:Boolean,default:false},
     quizScore:{type:Number},
     isApproved:{type:String},
-    role:{type:String}
+    role:{type:String},
+    isRegisted:{type:Boolean}
 })
 
 const userModel = mongoose.model("users",userSchema)
