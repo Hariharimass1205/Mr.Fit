@@ -14,7 +14,6 @@ export const findUserByEmailandUpdateCoach =async (score,email)=>{
 
 export const findUserByIdisCoach = async (id:any)=>{
     try {
-        console.log("hii")
         const updateRegistorFeild = await userModel.updateOne({id},{isRegisted:true})
         const coach = await userModel.findOne({ id, isCoach: true }).exec();
         console.log(coach,"from coach repo",updateRegistorFeild)

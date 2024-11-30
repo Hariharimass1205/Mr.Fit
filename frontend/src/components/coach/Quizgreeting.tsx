@@ -52,7 +52,9 @@ const Quizgreeting: React.FC<QuizgreetingProps> = ({ score }) => {
 
   return (
     <>
-    <ToastContainer/>
+    <ToastContainer
+    autoClose={2000}
+    />
     <div
   className="min-h-screen flex flex-col justify-center items-center text-black bg-cover bg-center bg-no-repeat"
   style={{ backgroundImage: `url(${bg.src})` }}
@@ -60,7 +62,7 @@ const Quizgreeting: React.FC<QuizgreetingProps> = ({ score }) => {
       
       {numericScore >= 10 ? (
         <h1 className="text-4xl font-bold text-center px-8 w-5/6 mt-20 mb-20">
-          Mr. {userName}, you have scored: {quizScore?quizScore:score}. That&apos;s appreciable... At the
+          <span className='text-cyan-500'>Mr.{userName}</span>, you have scored: {quizScore?quizScore:score}. That&apos;s appreciable... At the
           bottom of the page, you can find a button called Request a call."
           Click to receive a call for admin approval.
         </h1>

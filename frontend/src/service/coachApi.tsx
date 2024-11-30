@@ -8,6 +8,7 @@ const Axios = axios.create({
   },
   withCredentials:true
 })
+
 export const handleAxiosError = (error:any)=>{
   console.log(error)
   const errorMessage = error?.response?.data?.errorMessage || "Unexpected error occurred"

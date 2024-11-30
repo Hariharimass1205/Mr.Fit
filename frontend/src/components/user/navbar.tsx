@@ -120,7 +120,7 @@ console.log(isRegistered,"out")
           Approval Pending
         </a>
       ) : userStatus === "Accept" ? (
-        isRegistered ? (
+        !isRegistered ? (
           <a
             onClick={() => router.push('/coaches/coachProfile')}
             className="text-lg hover:underline hover:text-cyan-400"

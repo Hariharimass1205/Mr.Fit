@@ -1,6 +1,8 @@
-"use client"  
+"use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState } from "react";'/'
+import { FaDumbbell } from "react-icons/fa"; 
+import bgImage from '/public/assets/backGround/pexels-anush-1431283.jpg';
 
 const Quiz = () => {
   const questions = [
@@ -106,78 +108,118 @@ const Quiz = () => {
     }
   ];
 
+
   const [selectedAnswers, setSelectedAnswers] = useState(
     Array(questions.length).fill(null)
   );
   const [score, setScore] = useState(null);
-  const router = useRouter()
+  const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
 
-  const handleAnswerChange = (questionIndex:number, optionIndex:number) => {
+  const handleAnswerChange = (questionIndex: number, optionIndex: number) => {
     const updatedAnswers = [...selectedAnswers];
     updatedAnswers[questionIndex] = optionIndex;
     setSelectedAnswers(updatedAnswers);
+    setErrorMessage(""); // Clear error message when an answer is selected
   };
 
   const handleSubmit = async () => {
+    // Check if any question is unanswered
+    if (selectedAnswers.includes(null)) {
+      setErrorMessage("Please answer all questions before submitting.");
+      return;
+    } 
+
     const calculatedScore = selectedAnswers.reduce((acc, answer, index) => {
       if (answer === questions[index].correctAnswer) {
         return acc + 1;
       }
-      return acc
+      return acc;
     }, 0);
     setScore(calculatedScore);
-    router.push(`/coaches/greetings?score=${calculatedScore}`)
+    router.push(`/coaches/greetings?score=${calculatedScore}`);
   };
 
   return (
     <div
-      className="max-w-full  justify-items-center mx-auto p-5 min-h-screen bg-cover bg-center">
-      <h2 className="text-8xl text-cyan-300 font-semibold mb-10">Mr.Fit Fitness test</h2>
-      {!score && score !== 0 ? (
-        <div>
-          {questions.map((q, index) => (
-            <div key={index} className="mb-6">
-              <p className="text-lg mb-2">{q.question}</p>
-              <div className="space-y-2">
-                {q.options.map((option, optionIndex) => (
-                  <label key={optionIndex} className="block">
-                    <input
-                      type="radio"
-                      name={`question-${index}`}
-                      value={optionIndex}
-                      onChange={() => handleAnswerChange(index, optionIndex)}
-                      checked={selectedAnswers[index] === optionIndex}
-                      className="mr-2 "
-                    />
-                    {option}
-                  </label>
-                ))}
+  className="min-h-full bg-gray-900 flex flex-col items-center justify-center p-6"
+  style={{
+    backgroundImage: `url(${bgImage.src})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}
+>
+      <div >
+        <div className="flex ">
+          <FaDumbbell className="text-8xl text-cyan-500 mr-4" />
+          <h1 className="text-9xl font-bold">Mr.Fit Fitness Quiz</h1>
+          </div>
+        <div className="flex items-center justify-center mb-6">
+        </div>
+        {!score && score !== 0 ? (
+          <div>
+            {questions.map((q, index) => (
+              <div key={index} className="mb-6 border-b pb-4 border-gray-700">
+                <p className="text-lg font-medium text-cyan-300">{`Q${index + 1}: ${q.question}`}</p>
+                <div className="mt-4 space-y-2">
+                  {q.options.map((option, optionIndex) => (
+                    <label
+                      key={optionIndex}
+                      className={`flex items-center p-3 rounded-lg cursor-pointer ${
+                        selectedAnswers[index] === optionIndex
+                          ? "bg-cyan-500 text-black"
+                          : "text-lg text-white"
+                      } hover:bg-cyan-600`}
+                    >
+                      <input
+                        type="radio"
+                        name={`question-${index}`}
+                        value={optionIndex}
+                        onChange={() => handleAnswerChange(index, optionIndex)}
+                        checked={selectedAnswers[index] === optionIndex}
+                        className="mr-3"
+                      />
+                      {option}
+                    </label>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-          <button
-            onClick={handleSubmit}
-            className="mt-6 w-full bg-cyan-500 text-white p-3 rounded-lg hover:bg-green-700"
-          >
-            Submit Quiz
-          </button>
-        </div>
-      ) : (
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-4">Quiz Completed!</h2>
-          <p className="text-lg">
-            Your score: {score} out of {questions.length}
-          </p>
-          {score >= 10 ? (
-            <p className="text-green-500 mt-4">Congratulations! You passed the quiz.</p>
-          ) : (
-            <p className="text-red-500 mt-4">Sorry, you need to score higher to qualify.</p>
-          )}
-          <p className="text-gray-600 mt-6">
-            Thank you for completing the quiz! Our team will review your responses and contact you after a discussion.
-          </p>
-        </div>
-      )}
+            ))}
+            {errorMessage && (
+              <p className="text-red-500 text-sm mt-4">{errorMessage}</p>
+            )}
+            <button
+              onClick={handleSubmit}
+              className="mt-6 w-full bg-cyan-600 text-black py-3 rounded-lg text-lg font-semibold hover:bg-cyan-700 transition"
+            >
+              Submit Quiz
+            </button>
+          </div>
+        ) : (
+          <div className="text-center">
+           
+            <h2 className="text-3xl font-semibold mb-4">Quiz Completed!</h2>
+            <p className="text-xl text-cyan-300">
+              Your score:{" "}
+              <span className="font-bold text-cyan-500">{score}</span> out of{" "}
+              {questions.length}
+            </p>
+            {score >= 10 ? (
+              <p className="text-green-400 mt-4 font-medium">
+                Congratulations! You passed the quiz.
+              </p>
+            ) : (
+              <p className="text-red-400 mt-4 font-medium">
+                Sorry, you need to score higher to qualify.
+              </p>
+            )}
+            <p className="text-gray-400 mt-6">
+              Thank you for completing the quiz! Our team will review your
+              responses and contact you after a discussion.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
