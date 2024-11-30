@@ -85,7 +85,6 @@ export const fetchUserData = async (req:CustomRequest,res:Response,next:NextFunc
   try {
       const {id} = req?.user
       const result = await fetchuserdataService(id)
-      console.log(result,"from controlre")
       if(result){
         res.status(HttpStatus.OK).json({success:true,result})
       }

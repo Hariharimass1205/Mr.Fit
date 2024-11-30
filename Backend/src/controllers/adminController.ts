@@ -4,7 +4,6 @@ import { adminLOGIN, blockUserService, changeCoachStatusService, fetchDataServic
 
 export const adminLogin = async(req:Request,res:Response,next:NextFunction)=>{
     try {
-      console.log("hiii")
       const {email,password} = req.body
       const result = adminLOGIN(email,password)
       if (result) {
@@ -39,9 +38,7 @@ export const adminLogin = async(req:Request,res:Response,next:NextFunction)=>{
   export const blockUser = async (req:Request,res:Response,next:NextFunction)=>{
     try {
       const {email} = req.body
-      console.log(email,"block email")
       const result = await blockUserService(email)
-      console.log(result,"------controller result")
       res.status(HttpStatus.OK).json({success:true,result})
     } catch (error) {
       console.error("Error at blockUser");

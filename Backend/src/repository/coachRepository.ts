@@ -40,7 +40,7 @@ export const createCoach = async (coach: any): Promise<any>=> {
       const coach = await coachModel.findOne({ userId:userId }).exec();
       return {data:coach}
     } catch (error) {
-      console.error('Error fetching user by email:', error);
+      console.error('Error fetching coach by email:', error);
       throw new Error('Database Error');
     }
   }
