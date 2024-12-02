@@ -10,7 +10,8 @@ export interface Coach{
     Students: string[];
     availability:String;
     achievementBadges: string[]
-    package: number[];  
+    package: number[];
+    address:{type:String};  
     state:String;
     city:String;
     locality:String;

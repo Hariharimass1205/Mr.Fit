@@ -37,6 +37,7 @@ export const registerCoachController = async (req:CustomRequest,res:Response,nex
         state:formData.state,
         city:formData.city,
         locality:formData.locality,
+        address:formData.address,
         licenseOrAadhaar:formData.licenseOrAadhaar,
         role:role
       })

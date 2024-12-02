@@ -40,7 +40,6 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
   export const fetchCoachData = async ()=>{
     try {
       const {data} = await Axios.post(`${SERVER_URL_COACH}/fetchCoachdata`)
-      console.log(data,"from api coach")
      if(data){
       return data.result.data
      }

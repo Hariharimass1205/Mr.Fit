@@ -18,6 +18,7 @@ const coachSchema = new Schema<Coach>({
     achievementBadges:{ type: [String]},
     package:{ type: [Number] },
     state:{ type: String },
+    address:{type:String},
     city:{ type: String },
     locality:{ type: String},
     licenseOrAadhaar:{type:String},
