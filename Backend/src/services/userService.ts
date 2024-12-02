@@ -45,12 +45,16 @@ export const fetchuserdataService = async (userId:string)=>{
 
 export const loginUser = async (email:string,password:string)=>{
  try {
+    let userId = null
     const user = await findUserByEmail(email)
-    const userId = user._id?.toString()
+    if(user){
+        userId = user?._id?.toString()
+    }
     if(user.isBlocked){
         throw new Error("User is Blocked")
     }
     if(!user){
+        console.log("user not found")
         throw new Error("Invalid Email/Password")
     }
     const isPassword = await bcrypt.compare(password,user.password)

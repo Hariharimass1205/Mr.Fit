@@ -44,11 +44,11 @@ export default function CoachProfile() {
         console.log(response,"page") 
         setName(response?.name)
         setAge(response.age)
-        setStates(response.state[0])
+       setStates(response.state)
         setWeight(response.weight)
         setHeight(response.height)
         setPhone(response.phone)
-        // setCoach(response); 
+        setCoach(response); 
         setLoading(false);
       } catch (error) {
         setError("Failed to fetch coach data.");

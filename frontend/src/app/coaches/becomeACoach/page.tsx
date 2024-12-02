@@ -5,6 +5,7 @@ import topBg from '../../../../public/assets/backGround/pexels-olly-3838926.jpg'
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
 
+
 export default function Home() {
   const [quizVisible,setQuizVisible] = useState(false)
     const router = useRouter()
@@ -15,6 +16,12 @@ export default function Home() {
  }
 
     return (
+      <>
+       <nav className="bg-black text-white flex justify-between items-center p-4">
+      <div className="text-2xl font-bold">
+        <h1>Mr.Fit</h1>
+      </div>
+    </nav>
     <div className="bg-gray-900 text-white min-h-screen font-sans">
       {/* Coaching Video Section */}
       <section className="flex flex-col items-center  text-center py-12 bg-cover bg-center" style={{ backgroundImage: `url(${topBg.src})` }}>
@@ -52,12 +59,13 @@ export default function Home() {
           </p>
           <div className="flex justify-center items-center">
             {quizVisible?
-        <button onClick={()=>router.push('/coaches/quiz')} className=" bg-green-300 w-48 rounded-md  m-5 p-5  font-bold">Start Quizz..</button>
-        :""}
+        <button onClick={()=>router.replace('/coaches/quiz')} className=" bg-green-300 w-48 rounded-md  m-5 p-5  font-bold">Start Quizz..</button>
+        :<button onClick={()=>router.replace('/user/home')} className=" bg-green-300 w-48 rounded-md  m-5 p-5  font-bold">Back Home</button>}
       </div>
         </div>
       </section>
       
     </div>
+    </>
   );
 }

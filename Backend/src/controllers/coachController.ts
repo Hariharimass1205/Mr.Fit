@@ -3,7 +3,6 @@ import { HttpStatus } from "../utils/httpStatusCode";
 import { fetchCoachDataService, registerCoachService, updateCoachScore } from "../services/coachService";
 import { CustomRequest } from "../middlesware/jwtVerification";
 
-
 export const saveScore = async  (req:Request,res:Response,next:NextFunction)=>{
     try {
         const {score,coach} = req.body
@@ -21,8 +20,8 @@ export const saveScore = async  (req:Request,res:Response,next:NextFunction)=>{
 export const registerCoachController = async (req:CustomRequest,res:Response,next:NextFunction) => {
     try {
       const {role,id} = req.user
-      console.log(role,id,"from con")
       const {formData} = req.body
+      console.log(formData,id,role,"forma data from front")
       const result = registerCoachService({
         name:formData.fullName,
         userId:id,
@@ -52,7 +51,6 @@ export const fetchCoachDataController = async (req:CustomRequest,res:Response,ne
   try {
       const {id} = req?.user
       const result = await fetchCoachDataService(id)
-      console.log(result,"from coach controlre")
       if(result){
         res.status(HttpStatus.OK).json({success:true,result})
       }

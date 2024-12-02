@@ -46,13 +46,6 @@ const Login: React.FC = () => {
       <ToastContainer 
       autoClose={2000}
      position="top-center"
-  // hideProgressBar
-  // newestOnTop
-  // closeOnClick
-  // rtl={true}
-  // pauseOnFocusLoss
-  // draggable
-  // pauseOnHover
 />
     <div>
       <nav className="bg-black text-white flex justify-between items-center p-4">
@@ -88,7 +81,7 @@ const Login: React.FC = () => {
             <small>{errors.password && <p className="text-red-500">{errors.password.message}</p>}</small>
             <div className="text-right mb-4">
 
-              <a onClick={handleForgotPassword} href="#" className="text-gray-400 hover:text-gray-300 text-sm">
+              <a onClick={handleForgotPassword} href="#" className="text-black-400 hover:text-gray-300 text-sm">
                 Forgot passcode?
               </a>
             </div>

@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import 'react-toastify/dist/ReactToastify.css';
+import bg from "../../../../public/assets/backGround/pexels-olly-3775164.jpg"
 
-const bg = '/assets/backGround/pexels-dogu-tuncer-339534179-15917308.jpg';
 type input = {
   userName: string,
   email: string,
@@ -63,11 +63,11 @@ const Signup: React.FC = () => {
         <h1>Mr.Fit</h1>
       </div>
     </nav>
-      <div
-        className="flex justify-center items-start min-h-screen bg-cover bg-center pt-24"
-        style={{ backgroundImage: `url(${bg})` }}
+    <div
+        className="flex justify-center items-start min-h-screen bg-cover bg-center pt-40"
+        style={{ backgroundImage: `url(${bg.src})` }}
       >
-        <div className="bg-black bg-opacity-70 p-10 rounded-lg max-w-md w-full">
+        <div className="bg-black bg-opacity-20 p-10 rounded-lg max-w-md w-full">
           <form onSubmit={handleSubmit(onSubmit)}>
             <h2 className="text-white text-3xl text-center mb-6">Sign Up</h2>
           

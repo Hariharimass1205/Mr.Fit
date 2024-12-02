@@ -2,7 +2,6 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { fetchData, logoutApi } from '@/service/userApi';
-import { useAppSelector } from '@/store/hooks/hooks';
 
 const Navbar: React.FC = () => {
   const [user, setUser] = useState();
@@ -13,17 +12,18 @@ const Navbar: React.FC = () => {
   const [isApprovedBtn,setIsApprovedBtn] = useState("")
   const [quizScore,setQuizScore] = useState(0)
   const router = useRouter();
-  const userdataRedux = useAppSelector(state => state?.user?.user)
- console.log(userdataRedux)
+  //const userdataRedux = useAppSelector(state => state?.user?.user)
+
 
    useEffect(() => {
     (async function fetchuserData(){
     try {
       const data = await fetchData()
-
       setUserStatus(data?.result?.data?.isApproved)
       setIsRegistered(data?.result?.data?.isRegisted)
-      console.log(isRegistered,"raw data")
+      setQuizScore(quizScore)
+      setIsCoach(data?.result?.data?.isCoach);
+      setIsApprovedBtn(data?.result?.data?.isApproved)
     } catch (error) {
       console.log(error)
     }
@@ -44,7 +44,6 @@ const Navbar: React.FC = () => {
       }
     }
   }, [user,isRegistered]);
-console.log(isRegistered,"out")
   const handleLogout = async () => {
     try {
       const result = await logoutApi()
@@ -65,17 +64,12 @@ console.log(isRegistered,"out")
 
   useEffect(() => {
     const updatedUser = localStorage.getItem("user");
-    console.log(updatedUser,"updatedUser")
     if (updatedUser) {
       try {
         const user = JSON.parse(updatedUser);
         const isCoachs = user.isCoach;
         const quizScore = user.quizScore;
         const isApproved = user.isApproved;
-       
-        setQuizScore(quizScore)
-        setIsCoach(isCoachs);
-        setIsApprovedBtn(isApproved)
       } catch (error) {
         console.log(error);
       }
@@ -83,8 +77,6 @@ console.log(isRegistered,"out")
   }, [user]);
 
  const handleBecomeCoach = ()=>{
-   
-
    if(isCoach){
    router.push(`/coaches/greetings?quizScore=${quizScore}`)
    }else{
@@ -110,8 +102,6 @@ console.log(isRegistered,"out")
           Hi.. {user}
         </span>
       )}
-
-      {/* Conditional rendering for logged-in user */}
       {user && isAth ? (
   <>
     <div className="flex space-x-3">
@@ -120,7 +110,7 @@ console.log(isRegistered,"out")
           Approval Pending
         </a>
       ) : userStatus === "Accept" ? (
-        !isRegistered ? (
+        isRegistered ? (
           <a
             onClick={() => router.push('/coaches/coachProfile')}
             className="text-lg hover:underline hover:text-cyan-400"

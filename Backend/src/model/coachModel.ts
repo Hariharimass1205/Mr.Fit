@@ -17,12 +17,11 @@ const coachSchema = new Schema<Coach>({
     Students:{ type: [String] },
     achievementBadges:{ type: [String]},
     package:{ type: [Number] },
-    state:{ type: [String] },
-    city:{ type: [String] },
-    locality:{ type: [String]},
+    state:{ type: String },
+    city:{ type: String },
+    locality:{ type: String},
     licenseOrAadhaar:{type:String},
     role:{type:String},
-   
 })
 
 const coachModel = mongoose.model("coaches", coachSchema)

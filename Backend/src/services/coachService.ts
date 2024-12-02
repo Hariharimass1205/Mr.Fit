@@ -1,4 +1,4 @@
-import { fetchCoachDataRepo, findUserByEmailandUpdateCoach,  findUserByIdisCoach } from "../repository/coachRepository"
+import { fetchCoachDataRepo, findUserByEmailandUpdateCoach,  findUserByIdIsCoach } from "../repository/coachRepository"
 import { createCoach } from "../repository/coachRepository"
 
 export const updateCoachScore = async (score:number,coach:any)=>{
@@ -16,12 +16,12 @@ export const updateCoachScore = async (score:number,coach:any)=>{
 
 export const registerCoachService = async (coach:any)=>{
     try {
-        console.log("hiii from 1 2")
-        const exsitingUser = await findUserByIdisCoach(coach.id)
+        console.log(coach.userId,"userId")
+        const exsitingUser = await findUserByIdIsCoach(coach.userId)
         if(!exsitingUser){
                 throw new Error("Email id not found as user");
         }
-        console.log("hii 2")
+        console.log(coach," from ser coach")
         return await createCoach(coach)
     } catch (error) {
         throw error
