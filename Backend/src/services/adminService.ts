@@ -1,8 +1,18 @@
 import { generateAccessToken,generateRefreshToken } from '../utils/JWTgenerator';
-import { blockUserbyEmail, changeStatusByEmail, fetchDataRepo, unblockUserbyEmail } from '../repository/adminRepository';
+import { IAdminService } from '../interface/services/adminService.interface';
+import { adminLOGINInput } from '../interface/services/adminService.type';
+import { IAdminRepository } from '../interface/repository/adminRepository.interface';
 
-export const adminLOGIN = (email: string, password: string)=> {
+export class adminService implements IAdminService{
+  private adminRepository : IAdminRepository
+  constructor(adminRepository:IAdminRepository){
+    this.adminRepository = adminRepository
+}
+
+
+ adminLOGIN = async (data:adminLOGINInput):Promise<any | null> => {
     try {
+      const {email,password} = data
       if (process.env.ADMIN_EMAIL !== email) {
         throw new Error("Invalid Credential")
       }
@@ -17,27 +27,27 @@ export const adminLOGIN = (email: string, password: string)=> {
     }
   }
 
-  export const fetchDataService = async ()=>{
+   fetchDataService = async ():Promise<any|null>=>{
     try {
-      const data = fetchDataRepo()
+      const data = this.adminRepository.fetchDataRepo()
       return data
     } catch (error) {
       throw new Error(error) 
     }
   }
 
-  export const blockUserService = async (email:string)=>{
+   blockUserService = async (email:string)=>{
     try {
-      const data = blockUserbyEmail(email)
+      const data = this.adminRepository.blockUserbyEmail(email)
       return data
     } catch (error) {
       console.log("error at handling block in admin service")
       throw new Error(error)
     }
   }
-  export const unblockUserService = async (email:string)=>{
+   unblockUserService = async (email:string)=>{
     try {
-      const data = unblockUserbyEmail(email)
+      const data = this.adminRepository.unblockUserbyEmail(email)
       return data
     } catch (error) {
       console.log("error at handling block in admin service")
@@ -45,12 +55,13 @@ export const adminLOGIN = (email: string, password: string)=> {
     }
   }
 
-  export const changeCoachStatusService = async (email:string,newStatus:string)=>{
+   changeCoachStatusService = async (email:string,newStatus:string)=>{
     try {
-      const result = await changeStatusByEmail(email,newStatus)
+      const result = await this.adminRepository.changeStatusByEmail(email,newStatus)
       return result
     } catch (error) {
       console.log("error at changing status of coach in  admin service")
       throw new Error(error)
     }
   }
+}

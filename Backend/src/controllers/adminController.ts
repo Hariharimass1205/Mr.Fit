@@ -1,11 +1,19 @@
 import { NextFunction, Request, Response } from "express";
 import { HttpStatus } from "../utils/httpStatusCode";
-import { adminLOGIN, blockUserService, changeCoachStatusService, fetchDataService, unblockUserService } from "../services/adminService";
+import { IAdminController } from "../interface/controllers/adminController.interface";
+import { IAdminService } from "../interface/services/adminService.interface";
 
-export const adminLogin = async(req:Request,res:Response,next:NextFunction)=>{
+export class adminController implements IAdminController{
+  private  adminService : IAdminService;
+  constructor(adminService:IAdminService) {
+    this.adminService = adminService
+  }
+
+adminLogin = async (req:Request,res:Response,next:NextFunction)=>{
     try {
       const {email,password} = req.body
-      const result = adminLOGIN(email,password)
+      const data = {email:email,password:password}
+      const result:any = await this.adminService.adminLOGIN(data) 
       if (result) {
         res.cookie("accessToken",
           result.accessToken,
@@ -25,9 +33,9 @@ export const adminLogin = async(req:Request,res:Response,next:NextFunction)=>{
     }
   }
 
-  export const fetchDataList = async (req:Request,res:Response,next:NextFunction)=>{
+  fetchDataList = async (req:Request,res:Response,next:NextFunction)=>{
     try {
-        const result = await fetchDataService()
+        const result = await this.adminService.fetchDataService()
         res.status(HttpStatus.OK).json(result)
     } catch (error) {
       console.error("Error at sendingUserlist");
@@ -35,34 +43,34 @@ export const adminLogin = async(req:Request,res:Response,next:NextFunction)=>{
     }
   }
   
-  export const blockUser = async (req:Request,res:Response,next:NextFunction)=>{
+  blockUser = async (req:Request,res:Response,next:NextFunction)=>{
     try {
       const {email} = req.body
-      const result = await blockUserService(email)
+      const result = await this.adminService.blockUserService(email)
       res.status(HttpStatus.OK).json({success:true,result})
     } catch (error) {
       console.error("Error at blockUser");
       next(error);
     }
   }
-  export const unblockUser = async (req:Request,res:Response,next:NextFunction)=>{
+  unblockUser = async (req:Request,res:Response,next:NextFunction)=>{
     try {
       const {email} = req.body
-      const result = await unblockUserService(email)
+      const result = await this.adminService.unblockUserService(email)
       res.status(HttpStatus.OK).json({success:true,result})
     } catch (error) {
       console.error("Error at blockUser");
       next(error);
     }
   }
-  export const changeCoachStatus = async (req:Request,res:Response,next:NextFunction)=>{
+  changeCoachStatus = async (req:Request,res:Response,next:NextFunction)=>{
     try {
       const {email,newStatus} = req.body
-      const result = await changeCoachStatusService(email,newStatus)
+      const result = await this.adminService.changeCoachStatusService(email,newStatus)
       res.status(HttpStatus.OK).json({success:true,result})
     } catch (error) {
       console.error("Error at changing status of coach");
       next(error);
     }
   }
-
+}

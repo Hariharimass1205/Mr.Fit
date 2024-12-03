@@ -1,7 +1,8 @@
+import { IAdminRepository } from "../interface/repository/adminRepository.interface";
 import userModel from "../model/userModel"
 
-
-export const fetchDataRepo = async () =>{
+export class adminReository implements IAdminRepository{
+ fetchDataRepo = async () =>{
     try {
         const users = await userModel.find({isCoach:false}).exec();
         const coaches = await userModel.find({isCoach:true}).exec();
@@ -21,7 +22,7 @@ export const fetchDataRepo = async () =>{
     }
 }
 
-export const blockUserbyEmail = async (email:string) =>{
+ blockUserbyEmail = async (email:string) =>{
     try {
         const blockedUser = await userModel.updateOne({email},{isBlocked:true})
         return blockedUser
@@ -29,7 +30,7 @@ export const blockUserbyEmail = async (email:string) =>{
         throw new Error(error)
     }
 }
-export const unblockUserbyEmail = async (email:string) =>{
+ unblockUserbyEmail = async (email:string) =>{
     try {
         const unblockedUser = await userModel.updateOne({email},{isBlocked:false})
         return unblockedUser
@@ -37,7 +38,7 @@ export const unblockUserbyEmail = async (email:string) =>{
         throw new Error(error)
     }
 }
-export  const changeStatusByEmail = async (email:string,newStatus:string)=>{
+ changeStatusByEmail = async (email:string,newStatus:string)=>{
     try {
         const changedStatus = await userModel.updateOne({email},{isApproved:newStatus})
         const updatedStatus = await userModel.findOne({email})
@@ -45,4 +46,5 @@ export  const changeStatusByEmail = async (email:string,newStatus:string)=>{
     } catch (error) {
         throw new Error(error)
     }
+}
 }

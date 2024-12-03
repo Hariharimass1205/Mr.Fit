@@ -1,11 +1,16 @@
 import { Router } from "express";
-import { adminLogin, blockUser, changeCoachStatus, fetchDataList, unblockUser } from "../controllers/adminController";
+import { adminReository } from "../repository/adminRepository";
+import { adminController } from "../controllers/adminController";
+import { adminService } from "../services/adminService";
 
 const adminRouter = Router()
+const repository = new adminReository()
+const service = new adminService(repository)
+const controller = new adminController(service)
 
-adminRouter.post("/adminlogin",adminLogin)
-adminRouter.post("/blockUser",blockUser)
-adminRouter.post("/unblockUser",unblockUser)
-adminRouter.post("/fetchUserList",fetchDataList)
-adminRouter.post("/changeStatus",changeCoachStatus)
+adminRouter.post("/adminlogin",controller.adminLogin)
+adminRouter.post("/blockUser",controller.blockUser)
+adminRouter.post("/unblockUser",controller.unblockUser)
+adminRouter.post("/fetchUserList",controller.fetchDataList)
+adminRouter.post("/changeStatus",controller.changeCoachStatus)
 export default adminRouter

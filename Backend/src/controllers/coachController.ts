@@ -4,7 +4,6 @@ import { CustomRequest } from "../middlesware/jwtVerification";
 import { ICoachController } from "../interface/controllers/coachController.interface";
 import mongoose, { Types } from "mongoose";
 import { ICoachService } from "../interface/services/coachService.interface";
-import { ObjectId } from "mongodb";
 
 
 export class CoachController implements ICoachController{

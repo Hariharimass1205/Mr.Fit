@@ -15,9 +15,7 @@ const PUBLIC_ROUTES = new Set([
 ]);
 const UNPROTECTED_ROUTES = new Set(["/_next/", "/favicon.ico", "/api/"]);
 export async function middleware(req: NextRequest) {
-
     const { pathname } = req.nextUrl;
-    // Allow unprotected or public routes without requiring authentication
     if ([...UNPROTECTED_ROUTES].some(route => pathname.startsWith(route)) || pathname === "/user/home") {
       console.log(`Allowing access to public route: ${pathname}`);
       return NextResponse.next();
@@ -28,6 +26,7 @@ export async function middleware(req: NextRequest) {
       }
       const tokenData = await verifyToken("accessToken", req);
       const role = tokenData?.role;
+      
       if (!role) {
         console.log(`Redirecting unauthenticated user from ${pathname} to /login`);
         return NextResponse.redirect(new URL("/login", req.url));
@@ -53,16 +52,13 @@ export async function middleware(req: NextRequest) {
 
 
 
-
 async function verifyToken(tokenName: string, req: NextRequest): Promise<{ role:string | null }> {
     const token = req.cookies.get(tokenName);
     if (!token?.value) {
       console.error("Token not found in cookies");
       return { role: null };
     }
-   console.log(token)
     const secret = process.env.JWT_SECRET;
-    console.log(secret,"sece")
     if (!secret) {
       console.error("JWT_SECRET is not defined in environment variables");
       return { role: null };
