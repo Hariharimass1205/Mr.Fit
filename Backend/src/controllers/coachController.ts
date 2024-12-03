@@ -1,22 +1,25 @@
 import { NextFunction, Request, Response } from "express";
 import { HttpStatus } from "../utils/httpStatusCode";
-import { fetchCoachDataService, registerCoachService, updateCoachScore } from "../services/coachService";
 import { CustomRequest } from "../middlesware/jwtVerification";
 import { ICoachController } from "../interface/controllers/coachController.interface";
+import mongoose, { Types } from "mongoose";
+import { ICoachService } from "../interface/services/coachService.interface";
+import { ObjectId } from "mongodb";
 
 
-export class coachController implements ICoachController{
+export class CoachController implements ICoachController{
   private coachService : ICoachService;
   constructor(coachService:ICoachService) {
     this.coachService = coachService;
 }
 
-saveScore = async  (req:Request,res:Response,next:NextFunction)=>{
+saveScore = async  (req:Request,res:Response,next:NextFunction): Promise<void>=>{
     try {
         const {score,coach} = req.body
         const takenn = JSON.parse(coach)
+        const data = {score:score,takenn:takenn}
         console.log(coach,score,"from coach controlle")
-        const result = await updateCoachScore(score,takenn)
+        const result = await this.coachService.updateCoachScore(data)
         if(result){
        res.status(HttpStatus.OK).json({success:true,result})
         }
@@ -25,14 +28,14 @@ saveScore = async  (req:Request,res:Response,next:NextFunction)=>{
          next(error);
     }
 }
-registerCoachController = async (req:CustomRequest,res:Response,next:NextFunction) => {
+registerCoachController = async (req:CustomRequest,res:Response,next:NextFunction): Promise<void> => {
     try {
       const {role,id} = req.user
       const {formData} = req.body
       console.log(formData,id,role,"forma data from front")
-      const result = registerCoachService({
+      const result = this.coachService.registerCoachService({
         name:formData.fullName,
-        userId:id,
+        userId:new Types.ObjectId(`${id}`),
         phone:formData.phone,
         age:formData.age,
         height:formData.height,
@@ -56,10 +59,11 @@ registerCoachController = async (req:CustomRequest,res:Response,next:NextFunctio
     }
 }
 
-fetchCoachDataController = async (req:CustomRequest,res:Response,next:NextFunction)=>{
+fetchCoachDataController = async (req:CustomRequest,res:Response,next:NextFunction): Promise<void>=>{
   try {
       const {id} = req?.user
-      const result = await fetchCoachDataService(id)
+      const idd = new mongoose.Types.ObjectId(id)
+      const result = await this.coachService.fetchCoachDataService(idd)
       if(result){
         res.status(HttpStatus.OK).json({success:true,result})
       }
@@ -69,3 +73,4 @@ fetchCoachDataController = async (req:CustomRequest,res:Response,next:NextFuncti
   }
 }
 }
+

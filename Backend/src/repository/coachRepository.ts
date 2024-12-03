@@ -1,8 +1,13 @@
 import coachModel from "../model/coachModel"
 import userModel from "../model/userModel"
 import { Coach } from "../interface/coach"
+import { Types } from "mongoose"
+import { User } from "../interface/user"
+import { ICoachRepository } from "../interface/repository/coachRepository.interface"
 
-export const findUserByEmailandUpdateCoach =async (score,email)=>{
+export class CoachRepository implements ICoachRepository{ 
+
+ findUserByEmailandUpdateCoach =async (score,email):Promise<any|null> =>{
     try {
         const res = await  userModel.updateOne({email},{quizScore:score,isCoach:true,isApproved:"Pending",role:"coach"})
         const updatedScore = await userModel.findOne({email})
@@ -12,7 +17,7 @@ export const findUserByEmailandUpdateCoach =async (score,email)=>{
     }
 }
 
-export const findUserByIdIsCoach = async (id: any) => {
+ findUserByIdIsCoach = async (id:Types.ObjectId):Promise<User> => {
   try {
       const userExists = await userModel.findOne({_id:id}).exec();
       if (!userExists) {
@@ -34,7 +39,7 @@ export const findUserByIdIsCoach = async (id: any) => {
 };
 
 
-export const createCoach = async (coach: any): Promise<any>=> {
+ createCoach = async (coach: Coach): Promise<Coach>=> {
     try {
       const newCoach = new coachModel(coach);
       console.log(newCoach,"updated")
@@ -45,12 +50,13 @@ export const createCoach = async (coach: any): Promise<any>=> {
     }
   }
 
-  export const  fetchCoachDataRepo = async (userId:string)=>{
+fetchCoachDataRepo = async (userId:Types.ObjectId):Promise<Coach|null>=>{
     try {
       const coach = await coachModel.findOne({ userId:userId }).exec();
-      return {data:coach}
+      return coach
     } catch (error) {
       console.error('Error fetching coach by email:', error);
       throw new Error('Database Error');
     }
   }
+}

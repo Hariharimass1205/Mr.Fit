@@ -7,6 +7,7 @@ import { Types } from "mongoose";
 import bg from "../../../../public/assets/backGround/pexels-leonardho-1552106.jpg"
 import { useRouter } from "next/navigation";
 
+
 export default function CoachProfile() {
   const router = useRouter()
   const [coach, setCoach] = useState<Coach>({
@@ -39,11 +40,10 @@ export default function CoachProfile() {
   const [address,setAddress] = useState("")
   const [phone,setPhone] = useState(0)
   const [states,setStates] = useState("")
-  const [loading, setLoading] = useState<boolean>(true);  // To show loading state
-  const [error, setError] = useState<string | null>(null); // To handle errors
+  const [loading, setLoading] = useState<boolean>(true); 
+  const [error, setError] = useState<string | null>(null); 
 
   useEffect(() => {
-    // Fetching coach data from backend
     const fetchCoachDatafn = async () => {
       try {
         const response = await fetchCoachData();
@@ -69,7 +69,6 @@ export default function CoachProfile() {
   };
   const handlePackageSave = () => {
     setIsEditingPackage(false);
-    // Save updated package data (send to backend if needed)
   };
 
   if (loading) {
@@ -181,8 +180,6 @@ export default function CoachProfile() {
             Mr. Tamil Nadu 2024 ⭐
           </p>
         </div>
-        {/* Package Details */}
-        {/* Package Details */}
         <div className="bg-gray-700 rounded-lg shadow-md p-6">
           <h2 className="text-2xl mb-3 font-bold">
             Package Details
@@ -234,7 +231,7 @@ export default function CoachProfile() {
       </div>
       </div>
     
-      {/* Students Section */}
+ 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         {/* Students Coached */}
         <div className="bg-gray-700 rounded-lg shadow-md p-6">

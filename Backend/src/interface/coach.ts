@@ -17,5 +17,4 @@ export interface Coach{
     locality:String;
     licenseOrAadhaar:String;
     role:String;
-    
 }

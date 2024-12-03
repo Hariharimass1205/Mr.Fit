@@ -1,38 +1,49 @@
-import { fetchCoachDataRepo, findUserByEmailandUpdateCoach,  findUserByIdIsCoach } from "../repository/coachRepository"
-import { createCoach } from "../repository/coachRepository"
+import { Coach } from "../interface/coach"
+import { registerCoachServiceInput, updateCoachScoreInput } from "../interface/services/coachService.type"
+import { ICoachService } from '../interface/services/coachService.interface'
+import { Types } from "mongoose"
+import { ICoachRepository } from "../interface/repository/coachRepository.interface"
 
-export const updateCoachScore = async (score:number,coach:any)=>{
+export class CoachService implements ICoachService{
+    private coachRepository:ICoachRepository
+    constructor(coachRepository:ICoachRepository){
+      this.coachRepository=coachRepository
+    }
+
+ updateCoachScore = async (data:updateCoachScoreInput):Promise<any | null>=>{
     try {
-        let email = coach.email
-        console.log(email,coach,score,"from coachService")
-        let res = await findUserByEmailandUpdateCoach(score,email)
+        
+        const {score,takenn} = data
+        let email = takenn.email
+        let res = await this.coachRepository.findUserByEmailandUpdateCoach(score,email)
+        console.log(res,"res from ser")
         return res
     } catch (error) {
         throw new Error("error at sendind doc to db in service")
     }
 }
-//export const registerCoachService = async (coach)
 
 
-export const registerCoachService = async (coach:any)=>{
+ registerCoachService = async (coach:Coach):Promise<registerCoachServiceInput | null>=>{
     try {
         console.log(coach.userId,"userId")
-        const exsitingUser = await findUserByIdIsCoach(coach.userId)
+        const exsitingUser = await this.coachRepository.findUserByIdIsCoach(coach.userId)
         if(!exsitingUser){
                 throw new Error("Email id not found as user");
         }
         console.log(coach," from ser coach")
-        return await createCoach(coach)
+        return await this.coachRepository.createCoach(coach)
     } catch (error) {
         throw error
     }
 }
 
-export const fetchCoachDataService = async (userId:string)=>{
+ fetchCoachDataService = async (userId:Types.ObjectId):Promise<any | null>=>{
     try {
-        const coachData = await fetchCoachDataRepo(userId)
+        const coachData = await this.coachRepository.fetchCoachDataRepo(userId)
         return coachData
     } catch (error) {
         throw new Error("error at fetching data for navbar");
     }
+}
 }
