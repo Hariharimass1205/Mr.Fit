@@ -1,30 +1,40 @@
 import { generateRefreshToken,generateAccessToken } from '../utils/JWTgenerator'
-import { createUser, fetchuserDataRepo, findUserByEmail, findUserByEmailandUpdate, updateUser, updateUserOTP, verifyAndSaveUser } from '../repository/userRepository'
 import bcrypt from 'bcrypt'
+import { IUserService } from '../interface/services/userService.interface'
+import { checkUserAndOtpSentInput, fetchuserdataServiceOutput, forgotPassverifyOTPServiceInput, loginUserInput, loginUserOutput, registerUserOutput, saveNewPasswordInput, saveOTPtoModelInput, verifyOTPServiceInput } from '../interface/services/userService.type'
 
-export const registerUser = async (user:any)=>{
+export class userService implements IUserService{
+  private userRepository
+  constructor(userRepository:any){
+    this.userRepository=userRepository
+  }
+
+ registerUser = async (user:any): Promise<registerUserOutput | null>=>{
     try {
-        const exsitingUser = await findUserByEmail(user.email)
+        const exsitingUser = await this.userRepository.findUserByEmail(user.email)
         if(exsitingUser){
-            if(exsitingUser.otpVerified){
+            if(exsitingUser){
                 throw new Error("Email already Exist");
             }
         }
         const hashedpassword =  await bcrypt.hash(user.password,10)
         user.password = hashedpassword;
-        return await createUser(user)
+        return await this.userRepository.createUser(user)
     } catch (error) {
         throw error
     }
 }
-export const verifyOTPService = async (email:string,otp:string)=>{
+
+verifyOTPService = async (otpData:verifyOTPServiceInput): Promise<string | null>=>{
     try {
-        const user = await findUserByEmail(email)
+        const email = otpData.email
+        const otp = otpData.otp
+        const user = await this.userRepository.findUserByEmail(email)
         if(!user){
             throw new Error("user not found")
         }
         if(user.otp==otp){
-          await verifyAndSaveUser(email,otp)
+          await this.userRepository.verifyAndSaveUser(email,otp)
           return "User registered successfully";
         }else{
             throw new Error("OTP invalid")
@@ -34,19 +44,21 @@ export const verifyOTPService = async (email:string,otp:string)=>{
     }
 }
 
-export const fetchuserdataService = async (userId:string)=>{
+ fetchuserdataService = async (userId:string): Promise<fetchuserdataServiceOutput>=>{
     try {
-        const data = await fetchuserDataRepo(userId)
+        const data = await this.userRepository.fetchuserDataRepo(userId)
         return data
     } catch (error) {
         throw new Error("error at fetching data for navbar");
     }
 }
 
-export const loginUser = async (email:string,password:string)=>{
+ loginUser = async (loginData:loginUserInput): Promise<loginUserOutput>=>{
  try {
+    const email = loginData.email
+    const password = loginData.password
     let userId = null
-    const user = await findUserByEmail(email)
+    const user = await this.userRepository.findUserByEmail(email)
     if(user){
         userId = user?._id?.toString()
     }
@@ -61,18 +73,19 @@ export const loginUser = async (email:string,password:string)=>{
     if(!isPassword){
         throw new Error("Invalid Email/Password")
     }
-    const accessToken = generateAccessToken(userId,user.role)
-    const refreshToken = generateRefreshToken(userId,user.role)
-    return {user,accessToken,refreshToken}
- } catch (error:any) {
-    console.error('Error during login:', error);
-    throw new Error(error.message);
+    const accessToken = generateAccessToken(userId,user.role) 
+    const refreshToken = generateRefreshToken(userId,user.role) 
+    return {user,accessToken,refreshToken} 
+ } catch (error:any) { 
+    console.error('Error during login:', error); 
+    throw new Error(error.message); 
  }
 }
 
-export const checkUser = async (email:string,otp:string)=>{
+checkUserAndOtpSent = async (data:checkUserAndOtpSentInput): Promise<any|null>=>{
     try {
-        const saveOTP = await findUserByEmailandUpdate(email,otp)
+        const {email,otp} = data
+        const saveOTP = await this.userRepository.findUserByEmailandUpdate(email,otp)
         saveOTP
         if(!saveOTP){
             throw new Error("user not found")
@@ -85,14 +98,15 @@ export const checkUser = async (email:string,otp:string)=>{
     }
 }
 
-export const forgotPassverifyOTPService = async (email:string,otp:string)=>{
+ forgotPassverifyOTPService = async (data:forgotPassverifyOTPServiceInput) : Promise<string>=>{
     try {
-        const user = await findUserByEmail(email)
+        const {email,otp} = data
+        const user = await this.userRepository.findUserByEmail(email)
         if(!user){
             throw new Error("user not found")
         }
         if(user.otp==otp){
-          await verifyAndSaveUser(email,otp)
+          await this.userRepository.verifyAndSaveUser(email,otp)
           return "User registered successfully";
         }else{
             throw new Error("OTP invalid")
@@ -102,20 +116,24 @@ export const forgotPassverifyOTPService = async (email:string,otp:string)=>{
     }
 }
 
-export const saveNewPassword = async (password:string,email:string)=>{
+ saveNewPassword = async (data:saveNewPasswordInput):Promise<any|null>=>{
     try {
+        const {password,email} = data
         const hashedpassword =  await bcrypt.hash(password,10)
-        const user = await updateUser(email,hashedpassword)
+        const user = await this.userRepository.updateUser(email,hashedpassword)
         return user
     } catch (error) {
         throw new Error("error at saving chanage password");
     }
 }
-export const saveOTPtoModel = async (email:string,otp:string)=>{
+
+ saveOTPtoModel = async (data:saveOTPtoModelInput):Promise<any|null>=>{
     try {
-        const user = await updateUserOTP(email,otp)
+        const {email,otp} = data
+        const user = await this.userRepository.updateUserOTP(email,otp)
         return user
     } catch (error) {
         throw new Error("error at saving otp for resend otp");
     }
+}
 }

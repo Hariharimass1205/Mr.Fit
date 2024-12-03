@@ -1,8 +1,10 @@
 import userModel from "../model/userModel";
 import { User } from "../interface/user";
+import { IUserRepository } from "../interface/repository/userRepository.interface";
 
+export class UserRepository implements IUserRepository{
 
-export const findUserByEmail = async (email:String)=>{
+ findUserByEmail = async (email:String)=>{
     try {
         const user = await userModel.findOne({ email }).exec();
         return user
@@ -11,17 +13,17 @@ export const findUserByEmail = async (email:String)=>{
         throw new Error('Database Error');
     }
 }
-export const  fetchuserDataRepo = async (userId:string)=>{
-  try {
-    const user = await userModel.findOne({ _id:userId, isBlocked: false }).exec();
-    return {data:user}
-  } catch (error) {
-    console.error('Error fetching user by email:', error);
-    throw new Error('Database Error');
+    fetchuserDataRepo = async (userId:string)=>{
+    try {
+      const user = await userModel.findOne({ _id:userId, isBlocked: false }).exec();
+      return {data:user}
+    } catch (error) {
+      console.error('Error fetching user by email:', error);
+      throw new Error('Database Error');
+    }
   }
-}
 
-export const createUser = async (user: User): Promise<any>=> {
+ createUser = async (user: User): Promise<any>=> {
     try {
       const newUser = new userModel(user);
       return await newUser.save();
@@ -31,10 +33,8 @@ export const createUser = async (user: User): Promise<any>=> {
     }
   }
 
-  export const verifyAndSaveUser= async (email:string,otp:string)=>{
+   verifyAndSaveUser= async (email:string,otp:string)=>{
     const user = await userModel.findOne({email})
-    console.log(user)
-    console.log(user,"userRepo")
     if(user.otp==otp && user){
       user.otp = null;
       user.otpVerified=true;
@@ -43,7 +43,7 @@ export const createUser = async (user: User): Promise<any>=> {
     }
     throw new Error("Invalid OTP");
   }
-  export const findUserByEmailandUpdate = async (email,otp)=>{
+   findUserByEmailandUpdate = async (email:string,otp:string)=>{
     try {
       const user = await userModel.findOne({email})
     user.otp=otp
@@ -54,7 +54,7 @@ export const createUser = async (user: User): Promise<any>=> {
       throw new Error('Database forgototp Error');
     }
   }
-export const updateUser = async (email,hashedpassword)=>{
+ updateUser = async (email:string,hashedpassword:string)=>{
   try {
     const user = await userModel.updateOne({email},{password:hashedpassword})
     return user
@@ -64,7 +64,7 @@ export const updateUser = async (email,hashedpassword)=>{
   }
 }
 
-export const updateUserOTP = async (email,otp)=>{
+ updateUserOTP = async (email:string,otp:string)=>{
   try {
     const user = await userModel.updateOne({email},{otp:otp})
     return user
@@ -72,4 +72,5 @@ export const updateUserOTP = async (email,otp)=>{
     console.log(error)
       throw new Error('Database resend otp update  Error');
   }
+}
 }

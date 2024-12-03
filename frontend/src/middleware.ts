@@ -17,7 +17,6 @@ const UNPROTECTED_ROUTES = new Set(["/_next/", "/favicon.ico", "/api/"]);
 export async function middleware(req: NextRequest) {
 
     const { pathname } = req.nextUrl;
-    console.log(pathname)
     // Allow unprotected or public routes without requiring authentication
     if ([...UNPROTECTED_ROUTES].some(route => pathname.startsWith(route)) || pathname === "/user/home") {
       console.log(`Allowing access to public route: ${pathname}`);
@@ -78,8 +77,6 @@ async function verifyToken(tokenName: string, req: NextRequest): Promise<{ role:
         console.error("Role not found in token payload");
         return { role: null };
       }
-  
-      console.log(`Verified role: ${role}`);
       return { role };
     } catch (err:any) {
       console.error(`Failed to verify token: ${err.message}`);

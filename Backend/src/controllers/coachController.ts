@@ -2,8 +2,16 @@ import { NextFunction, Request, Response } from "express";
 import { HttpStatus } from "../utils/httpStatusCode";
 import { fetchCoachDataService, registerCoachService, updateCoachScore } from "../services/coachService";
 import { CustomRequest } from "../middlesware/jwtVerification";
+import { ICoachController } from "../interface/controllers/coachController.interface";
 
-export const saveScore = async  (req:Request,res:Response,next:NextFunction)=>{
+
+export class coachController implements ICoachController{
+  private coachService : ICoachService;
+  constructor(coachService:ICoachService) {
+    this.coachService = coachService;
+}
+
+saveScore = async  (req:Request,res:Response,next:NextFunction)=>{
     try {
         const {score,coach} = req.body
         const takenn = JSON.parse(coach)
@@ -17,7 +25,7 @@ export const saveScore = async  (req:Request,res:Response,next:NextFunction)=>{
          next(error);
     }
 }
-export const registerCoachController = async (req:CustomRequest,res:Response,next:NextFunction) => {
+registerCoachController = async (req:CustomRequest,res:Response,next:NextFunction) => {
     try {
       const {role,id} = req.user
       const {formData} = req.body
@@ -48,7 +56,7 @@ export const registerCoachController = async (req:CustomRequest,res:Response,nex
     }
 }
 
-export const fetchCoachDataController = async (req:CustomRequest,res:Response,next:NextFunction)=>{
+fetchCoachDataController = async (req:CustomRequest,res:Response,next:NextFunction)=>{
   try {
       const {id} = req?.user
       const result = await fetchCoachDataService(id)
@@ -59,4 +67,5 @@ export const fetchCoachDataController = async (req:CustomRequest,res:Response,ne
     console.error("Error at fetching user data");
     next(error);
   }
+}
 }

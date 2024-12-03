@@ -17,6 +17,8 @@ interface Coach {
 const CoachList: React.FC = () => {
   const [coach, setCoach] = useState<Coach[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,13 +35,14 @@ const CoachList: React.FC = () => {
   const handleBlock = async (email: string) => {
     try {
       const result = await handleBlockFun(email);
-      if(result){
+      if (result) {
         setCoach((prevUsers) =>
           prevUsers.map((user) =>
             user.email === email ? { ...user, isBlocked: true } : user
           )
         );
       }
+      setIsModalOpen(false); // Close the modal after blocking
     } catch (error) {
       console.log("Error blocking user:", error);
     }
@@ -48,7 +51,7 @@ const CoachList: React.FC = () => {
   const handleUnBlock = async (email: string) => {
     try {
       const result = await handleUnBlockFun(email);
-      if(result){
+      if (result) {
         setCoach((prevUsers) =>
           prevUsers.map((user) =>
             user.email === email ? { ...user, isBlocked: false } : user
@@ -68,7 +71,7 @@ const CoachList: React.FC = () => {
     );
     try {
       const result = await changeCoachStatus(email, newStatus);
-      if(result){
+      if (result) {
         console.log(`Approval status for ${email} updated to: ${newStatus}`);
       }
     } catch (error) {
@@ -77,14 +80,24 @@ const CoachList: React.FC = () => {
     }
   };
 
+  const openModal = (coach: Coach) => {
+    setSelectedCoach(coach);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedCoach(null);
+    setIsModalOpen(false);
+  };
+
   return (
     <Layout>
-      <div className="flex  justify-between shadow-lg items-center p-4 bg-white rounded-3xl">
+      <div className="flex justify-between shadow-lg items-center p-4 bg-white rounded-3xl">
         <div className="flex items-center">
-          <input 
-            type="text" 
-            placeholder="Search" 
-            className="px-4 py-2 rounded-full border border-gray-300" 
+          <input
+            type="text"
+            placeholder="Search"
+            className="px-4 py-2 rounded-full border border-gray-300"
           />
         </div>
         <div className="flex items-center space-x-4">
@@ -115,26 +128,30 @@ const CoachList: React.FC = () => {
             </thead>
             <tbody>
               {coach.map((coach, index) => (
-                <tr key={index} className= "text-center hover:bg-gray-100">
+                <tr key={index} className="text-center hover:bg-gray-100">
                   <td className="border px-4 py-2">{coach.userName}</td>
                   <td className="border px-4 py-2">{coach.phone}</td>
                   <td className="border px-4 py-2">{coach.email}</td>
                   <td className="border px-4 py-2">{coach.quizScore}</td>
                   <td className="border px-4 py-2">
-                    <select
-                      value={coach.isApproved}
-                      onChange={(e) => handleApprovalChange(coach.email, e.target.value)}
-                      className="bg-lime-400 w-32 shadow-lg items-center pl-3 text-black font-medium p-2 rounded"
-                    >
-                      <option value="Pending">Pending</option>
-                      <option value="Accept">Accept</option>
-                      <option value="Reject">Reject</option>
-                    </select>
+                    {coach.isApproved === "Accept" ? (
+                      <span className="text-green-600 font-medium">Coach Accepted</span>
+                    ) : (
+                      <select
+                        value={coach.isApproved}
+                        onChange={(e) => handleApprovalChange(coach.email, e.target.value)}
+                        className="bg-lime-400 w-32 shadow-lg items-center pl-3 text-black font-medium p-2 rounded"
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="Accept">Accept</option>
+                        <option value="Reject">Reject</option>
+                      </select>
+                    )}
                   </td>
                   <td className="border px-4 py-2">
                     {!coach.isBlocked ? (
                       <button
-                        onClick={() => handleBlock(coach.email)}
+                        onClick={() => openModal(coach)}
                         className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded"
                       >
                         Block
@@ -155,6 +172,31 @@ const CoachList: React.FC = () => {
         </div>
       ) : (
         <p className="text-center text-gray-700">Loading coaches...</p>
+      )}
+
+      {isModalOpen && selectedCoach && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl text-black font-bold mb-4">Confirm Block</h2>
+            <p className="text-black">
+              Are you sure you want to block <strong>{selectedCoach.userName}</strong>?
+            </p>
+            <div className="flex justify-end mt-6 space-x-4">
+              <button
+                onClick={closeModal}
+                className="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleBlock(selectedCoach.email)}
+                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </Layout>
   );

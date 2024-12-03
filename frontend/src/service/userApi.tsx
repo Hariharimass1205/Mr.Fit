@@ -23,6 +23,7 @@ export const signupApi = async (reqBody: Record<string, any>) => {
     const response = await Axios.post(`${SERVER_URL_USER}/signup`, reqBody);
     return response.data;
   } catch (error: any) {
+    console.log(error,"from api")
     throw handleAxiosError(error) 
   }
 };

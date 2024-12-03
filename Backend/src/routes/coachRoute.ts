@@ -1,9 +1,11 @@
 import { Router } from "express";
-import { fetchCoachDataController, saveScore } from "../controllers/coachController";
-import { registerCoachController } from "../controllers/coachController";
 import authMiddleware from "../middlesware/jwtVerification";
 
 const coachRouter = Router();
+const repository = new coachRepository()
+const service = new coachService(repository)
+const controller = new coachController(service)
+
 
 coachRouter.post("/saveQuizScore",saveScore)
 coachRouter.post("/registerCoach",authMiddleware,registerCoachController)

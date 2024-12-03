@@ -1,61 +1,72 @@
 // userController.ts
 import { NextFunction, Request, Response } from "express";    
 import { otpGenerator } from "../utils/OtoGenerator";
-import { checkUser, fetchuserdataService, forgotPassverifyOTPService, loginUser, registerUser, saveNewPassword, saveOTPtoModel, verifyOTPService } from "../services/userService";
 import { sendEmail } from "../utils/sendEmail";
 import { HttpStatus } from "../utils/httpStatusCode";
 import { CustomRequest } from "../middlesware/jwtVerification";
+import { IUserController } from "../interface/controllers/userController.intreface";
+import { IUserService } from "../interface/services/userService.interface";
 
-export const  register = async (req: Request, res: Response, next: NextFunction)=> {
-  try {    
-    const otp =  otpGenerator();
-    await sendEmail(req.body.email, otp);
-    await registerUser({
-      userName: req.body.userName,
-      email: req.body.email,
-      phone: req.body.phone,
-      DOB: "",
-      otp:otp,
-      password: req.body.password,
-      gender: req.body.gender,
-      address: "",
-      state: "",
-      district: "",  
-      pincode: 0,
-      coachId:null,
-      isBlocked:false,
-      isCoach:false,
-      quizScore:0,
-      isApproved:"",
-      role:"user" ,
-      isRegisted:false
-    });
-    console.log(otp,req.body.email)
-     if(registerUser){
-     res.status(HttpStatus.OK).json({success:true});
-     }else{
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({success:false});
-     }
-  } catch (error) {
-    console.error("Error at registering user",error);
-    next(error)
-  }
-};
+export class UserController implements IUserController{
+  private userService : IUserService;
+  constructor(userService:IUserService) {
+    this.userService = userService;
+}
 
-export const otpVerify = async (req:Request,res:Response,next:NextFunction)=>{
+  register = async (req: Request, res: Response, next: NextFunction) : Promise<void> => {
+    try {    
+      const otp =  otpGenerator();
+      await sendEmail(req.body.email, otp);
+      let registerUserRes = await this.userService.registerUser({
+        userName: req.body.userName,
+        email: req.body.email,
+        phone: req.body.phone,
+        DOB: "",
+        otp:otp,
+        password: req.body.password,
+        gender: req.body.gender,
+        address: "",
+        state: "",
+        district: "",  
+        pincode: 0,
+        coachId:null,
+        isBlocked:false,
+        isCoach:false,
+        quizScore:0,
+        isApproved:"",
+        role:"user" ,
+        isRegisted:false
+      });
+      console.log(otp,req.body.email)
+      if(registerUserRes){
+      res.status(HttpStatus.OK).json({success:true});
+      }else{
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({success:false});
+      }
+    } catch (error) {
+      console.error("Error at registering user",error);
+      next(error)
+    }
+  };
+
+
+otpVerify = async (req:Request,res:Response,next:NextFunction) : Promise<void> =>{
   try {
     const { email, otp } = req.body;
-    const result = await verifyOTPService(email,otp)
+    let otpData = {email:email,otp:otp}
+    const result = await this.userService.verifyOTPService(otpData)
     res.status(200).json({result})
   } catch (error:any) {
     console.error("Error at otpVerification user");
     next(error);
   }
 }
-export const login = async(req:Request,res:Response,next:NextFunction)=>{
+
+login = async(req:Request,res:Response,next:NextFunction) : Promise<void> =>{
   try {
     const {email,password} = req.body
-    const {user,refreshToken,accessToken} = await loginUser(email,password)
+    const loginData = {email:email,password:password}
+    const {user,refreshToken,accessToken} = await this.userService.loginUser(loginData)
     res.cookie("accessToken",accessToken,{
       sameSite:"strict",
       httpOnly:false
@@ -71,7 +82,7 @@ export const login = async(req:Request,res:Response,next:NextFunction)=>{
   }
 }
 
-export const logout = (req:Request,res:Response,next:NextFunction)=>{
+logout = async (req:Request,res:Response,next:NextFunction): Promise<void> =>{
   try {
     res.clearCookie("refreshToken")
     res.status(HttpStatus.OK).json({success:true})
@@ -81,10 +92,10 @@ export const logout = (req:Request,res:Response,next:NextFunction)=>{
   }
 }
 
-export const fetchUserData = async (req:CustomRequest,res:Response,next:NextFunction)=>{
+ fetchUserData = async (req:CustomRequest,res:Response,next:NextFunction) : Promise<void> =>{
   try {
       const {id} = req?.user
-      const result = await fetchuserdataService(id)
+      const result = await this.userService.fetchuserdataService(id)
       if(result){
         res.status(HttpStatus.OK).json({success:true,result})
       }
@@ -93,11 +104,13 @@ export const fetchUserData = async (req:CustomRequest,res:Response,next:NextFunc
     next(error);
   }
 }
-export const forgotPassword = async(req:Request,res:Response,next:NextFunction)=>{
+
+forgotPassword = async(req:Request,res:Response,next:NextFunction)  : Promise<void>=>{
   try {
     const {email} = req.body
     const otp = otpGenerator()
-    const exsitingUser = await checkUser(email,otp)
+    const data={email:email,otp:otp}
+    const exsitingUser = await this.userService.checkUserAndOtpSent(data)
   if(!exsitingUser){
      throw new Error("user not found")
   }
@@ -109,11 +122,11 @@ export const forgotPassword = async(req:Request,res:Response,next:NextFunction)=
   }
 }
 
-
-export const forgotPasswordOTPVerify = async (req:Request,res:Response,next:NextFunction)=>{
+ forgotPasswordOTPVerify = async (req:Request,res:Response,next:NextFunction) : Promise<void>=>{
   try {
     const { email, otp } = req.body;
-    const result = await forgotPassverifyOTPService(email,otp)
+    const data={email:email,otp:otp}
+    const result = await this.userService.forgotPassverifyOTPService(data)
     if(result){
     res.status(HttpStatus.OK).json({success:true})
     }
@@ -122,11 +135,11 @@ export const forgotPasswordOTPVerify = async (req:Request,res:Response,next:Next
     next(error);
   }
 }
-
-export const saveChangePassword = async (req:Request,res:Response,next:NextFunction)=>{
+saveChangePassword = async (req:Request,res:Response,next:NextFunction) : Promise<void>=>{
   try {
     const {password,email} = req.body
-    const result = await saveNewPassword(password,email)
+    const data = {password:password,email:email}
+    const result = await this.userService.saveNewPassword(data)
     if(result){
     res.status(HttpStatus.OK).json({success:true})
     }
@@ -135,18 +148,21 @@ export const saveChangePassword = async (req:Request,res:Response,next:NextFunct
     next(error);
   }
 }
-export const HandleResendOTP = async(req:Request,res:Response,next:NextFunction)=>{
+
+ HandleResendOTP = async(req:Request,res:Response,next:NextFunction) : Promise<void>=>{
 try {
   const {email} = req.body
   const otp =  otpGenerator();
   await sendEmail(req.body.email, otp);
   console.log("resend otp:",otp)
-  const result = await saveOTPtoModel(email,otp)
+  const data = {otp:otp,email:email}
+  const result = await this.userService.saveOTPtoModel(data)
   if(result){
   res.status(HttpStatus.OK).json({success:true})
   }
 } catch (error) {
   console.error("error at handling resent otp ");
   next(error);
+}
 }
 }
