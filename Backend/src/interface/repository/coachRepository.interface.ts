@@ -8,4 +8,7 @@ export interface ICoachRepository{
     findUserByIdIsCoach(id:Types.ObjectId):Promise<User|null>
     createCoach(coach:Coach):Promise<Coach|null>
     fetchCoachDataRepo(userId:Types.ObjectId):Promise<any|null>
+    updateProfilePicture(url:string,userId:Types.ObjectId):Promise<any|null>
+    updatePackage(objData:Object,userId:Types.ObjectId):Promise<any|null>
+    updateProfile(objData:Object,userId:Types.ObjectId):Promise<any|null>
 }

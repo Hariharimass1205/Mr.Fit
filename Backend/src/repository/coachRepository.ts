@@ -50,12 +50,61 @@ export class CoachRepository implements ICoachRepository{
     }
   }
 
-fetchCoachDataRepo = async (userId:Types.ObjectId):Promise<Coach|null>=>{
+fetchCoachDataRepo = async (userId:Types.ObjectId):Promise<any|null>=>{
     try {
-      const coach = await coachModel.findOne({ userId:userId }).exec();
-      return coach
+      const coachDetails = await coachModel.findOne({ userId:userId }).exec();
+      const userImage = await userModel.findOne({_id:userId})
+      const data  = {coach:coachDetails,userImg : userImage.profileImage}
+      return data
     } catch (error) {
       console.error('Error fetching coach by email:', error);
+      throw new Error('Database Error');
+    }
+  }
+  updateProfilePicture = async (url:string,userId:Types.ObjectId):Promise<any|null>=>{
+    try {
+      const updateMessage = await userModel.updateOne({_id:userId},{profileImage:url})
+      const userInfo = await userModel.findOne({_id:userId})
+      return userInfo
+    } catch (error) {
+      console.error('Error at updating profile coach by id:', error);
+      throw new Error('Database Error');
+    }
+  }
+  updatePackage = async (objData:any,userId:Types.ObjectId):Promise<any|null>=>{
+    try {
+      const updateMessage = await coachModel.updateOne(
+        { userId: userId },  
+        { $set: { "package.monthlyPackage": objData.pack.monthlyPackage,
+                  "package.quarterlyPackage": objData.pack.quarterlyPackage,
+                  "package.yearlyPackage":objData.pack.yearlyPackage
+         } }
+      );
+      const coachInfo = await coachModel.findOne({userId:userId})
+      return coachInfo
+    } catch (error) {
+      console.error('Error at updating package coach by id:', error);
+      throw new Error('Database Error');
+    }
+  }
+  updateProfile = async (objData:any,userId:Types.ObjectId):Promise<any|null>=>{
+    try {
+      const updateMessage = await coachModel.updateOne(
+        { userId: userId },  
+        { $set: { 
+                  name: objData.objData.name,
+                  age: objData.objData.age,
+                  height: objData.objData.height,
+                  weight: objData.objData.weight,
+                  phone: objData.objData.phone,
+                  state: objData.objData.state,
+                  address:objData.objData.address
+         } }
+      );
+      const coachInfo = await coachModel.findOne({userId:userId})
+      return coachInfo
+    } catch (error) {
+      console.error('Error at updating package coach by id:', error);
       throw new Error('Database Error');
     }
   }

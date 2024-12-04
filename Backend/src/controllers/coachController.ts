@@ -17,7 +17,6 @@ saveScore = async  (req:Request,res:Response,next:NextFunction): Promise<void>=>
         const {score,coach} = req.body
         const takenn = JSON.parse(coach)
         const data = {score:score,takenn:takenn}
-        console.log(coach,score,"from coach controlle")
         const result = await this.coachService.updateCoachScore(data)
         if(result){
        res.status(HttpStatus.OK).json({success:true,result})
@@ -31,7 +30,6 @@ registerCoachController = async (req:CustomRequest,res:Response,next:NextFunctio
     try {
       const {role,id} = req.user
       const {formData} = req.body
-      console.log(formData,id,role,"forma data from front")
       const result = this.coachService.registerCoachService({
         name:formData.fullName,
         userId:new Types.ObjectId(`${id}`),
@@ -43,7 +41,11 @@ registerCoachController = async (req:CustomRequest,res:Response,next:NextFunctio
         Students:[],
         availability:formData.availability,
         achievementBadges:[],
-        package:[],  
+        package: {
+          monthlyPackage: 0,
+          quarterlyPackage: 0,
+          yearlyPackage: 0
+        },  
         state:formData.state,
         city:formData.city,
         locality:formData.locality,
@@ -71,5 +73,45 @@ fetchCoachDataController = async (req:CustomRequest,res:Response,next:NextFuncti
     next(error);
   }
 }
+updateCoachProfilePic = async (req:CustomRequest,res:Response,next:NextFunction): Promise<void>=>{
+  try {
+    const {id} = req?.user
+    const idd = new mongoose.Types.ObjectId(id)
+    const url = (req.files as any)?.profilePic?.[0]?.location
+    const result = await this.coachService.saveProfilePic(url,idd) 
+    res.status(HttpStatus.OK).json(result)
+  } catch (error) {
+    console.error("Error at updating coach profile pic in con");
+    next(error);
+  }
+}
+updateCoachPackage = async (req:CustomRequest,res:Response,next:NextFunction): Promise<void>=>{
+  try {
+    const {id} = req?.user
+    const userId = new mongoose.Types.ObjectId(id)
+    const objData = req.body
+    const result = await this.coachService.updateCoachPackage(objData,userId)
+    console.log(result,"from pack con")
+    res.status(HttpStatus.OK).json(result)
+  }catch(error){
+    console.error("Error at updating coach package  in con");
+    next(error);
+  }
+}
+updateCoachProfile= async (req:CustomRequest,res:Response,next:NextFunction): Promise<void>=>{
+ try {
+  const {id} = req?.user
+  const userId = new mongoose.Types.ObjectId(id)
+  const objData = req.body
+  const result = await this.coachService.updateCoachProfile(objData,userId)
+  res.status(HttpStatus.OK).json(result)
+ } catch (error) {
+  console.error("Error at updating coach profile  in con");
+    next(error);
+ }
+}
+
+
+
 }
 

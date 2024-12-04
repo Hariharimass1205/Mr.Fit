@@ -5,6 +5,7 @@ export type registerUserInput={
     phone: number;
     password: string;
     gender: string;
+    profileImage:string;
     address?: string;
     DOB?:string;
     otp?:string
@@ -25,6 +26,7 @@ export type registerUserOutput={
     email: string;
     phone: number;
     gender: string;
+    profileImage:string;
     address: string;
     state: string;
     district: string;

@@ -22,6 +22,7 @@ export class UserController implements IUserController{
         email: req.body.email,
         phone: req.body.phone,
         DOB: "",
+        profileImage:"",
         otp:otp,
         password: req.body.password,
         gender: req.body.gender,

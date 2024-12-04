@@ -9,6 +9,7 @@ interface UserPayload extends JwtPayload {
 
   export interface CustomRequest extends Request {
     user?: UserPayload;
+    files?:""
   }
 
   const authMiddleware = (req:CustomRequest,res:Response,next:NextFunction)=>{
