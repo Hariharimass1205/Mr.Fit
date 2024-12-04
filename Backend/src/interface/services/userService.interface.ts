@@ -21,4 +21,5 @@ export interface IUserService {
   forgotPassverifyOTPService(data:forgotPassverifyOTPServiceInput): Promise<string>;
   saveNewPassword(data:saveNewPasswordInput): Promise<any | null>;
   saveOTPtoModel(data:saveOTPtoModelInput): Promise<any | null>;
+  fetchCoachListSer():Promise<any|null>
 }

@@ -21,5 +21,6 @@ userRouter.post('/forgotPassword1',controller.forgotPassword)
 userRouter.post('/ForgotOTPVerify',controller.forgotPasswordOTPVerify)
 userRouter.post('/saveNewPassword',controller.saveChangePassword)
 userRouter.post('/resendOTP',controller.HandleResendOTP)
+userRouter.get('/fetchCoachdata',controller.fetchCoachlist) 
 
 export default userRouter

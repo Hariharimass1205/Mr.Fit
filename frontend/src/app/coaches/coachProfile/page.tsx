@@ -44,7 +44,6 @@ export default function CoachProfile() {
   const [states, setStates] = useState("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [profileImage, setProfileImage] = useState<File | null>(null);
   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
 
   useEffect(() => {
@@ -106,10 +105,9 @@ export default function CoachProfile() {
     const file = e.target.files?.[0];
     console.log(file,"file")
     if (file) {
-      setProfileImage(file);
       setProfileImageUrl(URL.createObjectURL(file)); 
       const res = await changeProfilePic(file)
-        setProfileImage(res.profileImage)
+      toast.success("profile pictured changed successfuly")
     }
   };
 
@@ -145,7 +143,7 @@ export default function CoachProfile() {
             {profileImageUrl ? (
               <div className="justify-item-center">
               <img src={profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
-              <p className="my-3">....add pic</p>
+             
               </div>
             ) : (
               <input

@@ -166,4 +166,19 @@ try {
   next(error);
 }
 }
+fetchCoachlist = async (req:CustomRequest,res:Response,next:NextFunction) : Promise<void>=>{
+  try {
+    console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiii")
+      const result = await this.userService.fetchCoachListSer()
+      console.log(result,"con coach list")
+      if(result){
+        res.status(HttpStatus.OK).json({success:true,result})
+      }
+  } catch (error) {
+    console.error("error at fetching coach list ");
+  next(error);
+  }
+}
+
+
 }

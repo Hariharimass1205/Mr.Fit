@@ -104,8 +104,19 @@ export const fetchData = async ()=>{
   try {
     const {data} = await Axios.post(`${SERVER_URL_USER}/fetchdata`)
    if(data){
-    console.log(data.result.data,"from front")
     return data
+   }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const fetchcoachList = async ()=>{
+  try {
+    const {data} = await Axios.get(`${SERVER_URL_USER}/fetchCoachdata`)
+    console.log(data,"populated data")
+   if(data){
+    return data.result.data
    }
   } catch (error) {
     console.log(error)

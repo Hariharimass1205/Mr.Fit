@@ -3,7 +3,7 @@ import { jwtVerify } from "jose";
 
 const ADMIN_ROUTES = new Set(["/admin/dashboard","/admin/coachList","/admin/userList"]);
 const COACH_ROUTES = new Set(["/coaches/becomeACoach","/coaches/coachProfile","/coaches/quiz","/coaches/coachFillup","/coaches/greetings"]);
-const USER_ROUTES = new Set(["/user/home","/coaches/becomeACoach","/coaches/coachProfile","/coaches/quiz","/coaches/coachFillup","/coaches/greetings"]);
+const USER_ROUTES = new Set(["/user/home","/user/coachList","/coaches/becomeACoach","/coaches/coachProfile","/coaches/quiz","/coaches/coachFillup","/coaches/greetings"]);
 const PUBLIC_ROUTES = new Set([
   "/login", 
   "/signup", 
@@ -48,9 +48,7 @@ export async function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-
-
-
+/////////////////////////////////////////////////////////////////////////////////////////
 
 async function verifyToken(tokenName: string, req: NextRequest): Promise<{ role:string | null }> {
     const token = req.cookies.get(tokenName);

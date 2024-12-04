@@ -92,10 +92,10 @@ const Navbar: React.FC = () => {
     <div className="flex gap-7">
       
       {userStatus =="Accept"? "":<a
-              href="/get-coach"
+              href="/user/coachList"
               className="text-lg hover:underline hover:text-cyan-400"
             >
-              Get Coach
+              Get Coaches
             </a>}
     {user && (
         <span className="text-lg hover:underline mr-3 hover:text-cyan-400">

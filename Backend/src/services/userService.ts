@@ -59,15 +59,15 @@ verifyOTPService = async (otpData:verifyOTPServiceInput): Promise<string | null>
     const password = loginData.password
     let userId = null
     const user = await this.userRepository.findUserByEmail(email)
-    if(user){
-        userId = user?._id?.toString()
+    if(!user){
+        console.log("user not found")
+        throw new Error("Invalid Email/Password")
     }
     if(user.isBlocked){
         throw new Error("User is Blocked")
     }
-    if(!user){
-        console.log("user not found")
-        throw new Error("Invalid Email/Password")
+    if(user){
+        userId = user?._id?.toString()
     }
     const isPassword = await bcrypt.compare(password,user.password)
     if(!isPassword){
@@ -136,4 +136,14 @@ checkUserAndOtpSent = async (data:checkUserAndOtpSentInput): Promise<any|null>=>
         throw new Error("error at saving otp for resend otp");
     }
 }
+fetchCoachListSer= async ():Promise<any|null>=>{
+    try {
+        const data = await this.userRepository.fetchCoachListRep()
+        return data
+    } catch (error) {
+        console.log("error at fetching cocah list in service")
+        throw new Error("error at fetching data for navbar");
+    }
+}
+
 }

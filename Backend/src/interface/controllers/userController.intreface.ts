@@ -5,4 +5,5 @@ export interface IUserController {
     login(req: Request, res: Response, next: NextFunction): Promise<void>
     logout(req: Request, res: Response, next: NextFunction): Promise<void>
     fetchUserData(req: Request, res: Response, next: NextFunction): Promise<void>
+    fetchCoachlist(req: Request, res: Response, next: NextFunction): Promise<void>
 }

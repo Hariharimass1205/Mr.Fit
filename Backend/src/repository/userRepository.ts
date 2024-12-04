@@ -1,6 +1,7 @@
 import userModel from "../model/userModel";
 import { User } from "../interface/user";
 import { IUserRepository } from "../interface/repository/userRepository.interface";
+import coachModel from "../model/coachModel";
 
 export class UserRepository implements IUserRepository{
 
@@ -73,4 +74,16 @@ export class UserRepository implements IUserRepository{
       throw new Error('Database resend otp update  Error');
   }
 }
+
+fetchCoachListRep = async ()=>{
+  try {
+    const user = await coachModel.find().populate("userId","profileImage")
+    return {data:user}
+  } catch (error) {
+    console.error('Error fetching coach List:', error);
+    throw new Error('Database Error');
+  }
+}
+
+
 }

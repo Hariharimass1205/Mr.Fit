@@ -8,4 +8,5 @@ export interface IUserRepository{
     findUserByEmailandUpdate(email:string,otp:string):Promise<any|null>
     updateUser(email:string,hashedpassword:string):Promise<any|null>
     updateUserOTP(email:string,otp:string):Promise<any|null>
+    fetchCoachListRep():Promise<any|null>
 }
