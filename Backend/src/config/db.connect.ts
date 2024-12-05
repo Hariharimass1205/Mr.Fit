@@ -11,7 +11,6 @@ export const connectToMongoDB = async (): Promise<void> => {
         process.exit(1);
     }
 
-
     mongoose.connection.on("connected", () => {
         console.log("Mongoose connected to DB");
     });

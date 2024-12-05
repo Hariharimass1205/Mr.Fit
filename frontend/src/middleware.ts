@@ -11,11 +11,13 @@ const PUBLIC_ROUTES = new Set([
   "/forgotPassword/forgotPassword1", 
   "/forgotPassword/forgotPasswordOTP",
   "/forgotPassword/forgotPassword3",
-  "/admin/login"
+  "/admin/login",
+  "/user/coachList"
 ]);
 const UNPROTECTED_ROUTES = new Set(["/_next/", "/favicon.ico", "/api/"]);
 export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
+
     if ([...UNPROTECTED_ROUTES].some(route => pathname.startsWith(route)) || pathname === "/user/home") {
       console.log(`Allowing access to public route: ${pathname}`);
       return NextResponse.next();
