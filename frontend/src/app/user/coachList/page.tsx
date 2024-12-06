@@ -6,6 +6,7 @@ import Footer from "@/components/user/footer";
 import Navbar from "@/components/user/navbar";
 
 interface Coach {
+  _id: any;
   userId: any;
   state: string;
   package: { monthlyPackage: number };
@@ -199,6 +200,7 @@ export default function CoachList() {
               className="bg-gray-800  rounded-md overflow-hidden shadow-lg"
             >
               <img
+              onClick={()=>router.push(`/user/coachDetails?coach=${coach._id}`)}
                 src={coach.userId.profileImage}
                 alt={coach.name}
                 className="w-full h-48 object-cover"

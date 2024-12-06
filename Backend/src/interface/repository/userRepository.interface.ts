@@ -1,3 +1,4 @@
+import { Types } from "mongoose"
 import { User } from "../user"
 
 export interface IUserRepository{
@@ -9,4 +10,5 @@ export interface IUserRepository{
     updateUser(email:string,hashedpassword:string):Promise<any|null>
     updateUserOTP(email:string,otp:string):Promise<any|null>
     fetchCoachListRep():Promise<any|null>
+    fetchCoachDetailsRep(id:Types.ObjectId):Promise<any|null>
 }

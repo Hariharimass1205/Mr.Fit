@@ -6,6 +6,7 @@ import { HttpStatus } from "../utils/httpStatusCode";
 import { CustomRequest } from "../middlesware/jwtVerification";
 import { IUserController } from "../interface/controllers/userController.intreface";
 import { IUserService } from "../interface/services/userService.interface";
+import mongoose from "mongoose";
 
 export class UserController implements IUserController{
   private userService : IUserService;
@@ -177,6 +178,15 @@ fetchCoachlist = async (req:CustomRequest,res:Response,next:NextFunction) : Prom
   next(error);
   }
 }
-
-
+fetchCoachDetails = async(req:Request,res:Response,next:NextFunction)=>{
+   try {
+      const {id} = req.params
+      const coach_Id = new mongoose.Types.ObjectId(id)
+      const result = await this.userService.fetchCoachDetails(coach_Id)
+      res.status(HttpStatus.OK).json({success:true,coachDetails:result})
+   } catch (error) {
+    console.error("error at fetching coach Details ");
+    next(error);
+   }
+}
 }

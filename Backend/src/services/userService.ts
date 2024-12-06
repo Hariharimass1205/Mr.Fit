@@ -2,6 +2,7 @@ import { generateRefreshToken,generateAccessToken } from '../utils/JWTgenerator'
 import bcrypt from 'bcrypt'
 import { IUserService } from '../interface/services/userService.interface'
 import { checkUserAndOtpSentInput, fetchuserdataServiceOutput, forgotPassverifyOTPServiceInput, loginUserInput, loginUserOutput, registerUserOutput, saveNewPasswordInput, saveOTPtoModelInput, verifyOTPServiceInput } from '../interface/services/userService.type'
+import { Types } from 'mongoose'
 
 export class userService implements IUserService{
   private userRepository
@@ -145,5 +146,16 @@ fetchCoachListSer= async ():Promise<any|null>=>{
         throw new Error("error at fetching data for navbar");
     }
 }
+
+fetchCoachDetails= async (id:Types.ObjectId):Promise<any|null>=>{
+    try {
+        const data = await this.userRepository.fetchCoachDetailsRep(id)
+        return data
+    } catch (error) {
+        console.log("error at fetching cocah list in service")
+        throw new Error("error at fetching data for navbar");
+    }
+}
+
 
 }

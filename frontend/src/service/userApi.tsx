@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { SERVER_URL_USER } from '../../utils/serverURL';
 import { log } from 'console';
+import { Types } from 'mongoose';
 
 const Axios = axios.create({
   baseURL:`${SERVER_URL_USER}`,
@@ -117,6 +118,18 @@ export const fetchcoachList = async ()=>{
     console.log(data,"populated data")
    if(data){
     return data.result.data
+   }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const fetchCoachDetails = async (coach_id:string):Promise<any>=>{
+  try {
+    const {data} = await Axios.get(`${SERVER_URL_USER}/fetchCoachDetails/${coach_id}`)
+    console.log(data.coachDetails.data,"from back coach deatils")
+   if(data){
+    return data.coachDetails.data[0]
    }
   } catch (error) {
     console.log(error)

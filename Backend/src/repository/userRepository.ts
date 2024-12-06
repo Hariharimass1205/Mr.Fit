@@ -2,6 +2,7 @@ import userModel from "../model/userModel";
 import { User } from "../interface/user";
 import { IUserRepository } from "../interface/repository/userRepository.interface";
 import coachModel from "../model/coachModel";
+import { Types } from "mongoose";
 
 export class UserRepository implements IUserRepository{
 
@@ -84,6 +85,14 @@ fetchCoachListRep = async ()=>{
     throw new Error('Database Error');
   }
 }
-
+fetchCoachDetailsRep = async (id:Types.ObjectId)=>{
+  try {
+    const user = await coachModel.find({_id:id}).populate("userId","profileImage quizScore")
+    return {data:user}
+  } catch (error) {
+    console.error('Error fetching coach List:', error);
+    throw new Error('Database Error');
+  }
+}
 
 }
