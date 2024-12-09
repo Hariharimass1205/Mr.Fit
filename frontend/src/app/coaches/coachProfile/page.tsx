@@ -105,6 +105,17 @@ export default function CoachProfile() {
       toast.error("Please add an achievement before saving.");
       return;
     }
+   
+    const trimmedAchievementOne = achievementsOne.trim();
+  const trimmedAchievementTwo = achievementsTwo.trim();
+  const trimmedAchievementThree = achievementsThree.trim();
+
+  
+  if (!trimmedAchievementOne || !trimmedAchievementTwo || !trimmedAchievementThree) {
+    toast.error("Please fill in all achievements fields with valid information.");
+    return; 
+  }
+
     try {
       let achieve={
           achievementsOne:achievementsOne,
@@ -113,7 +124,7 @@ export default function CoachProfile() {
       }
       let dataSet = { coachId: coach.userId, achievement: achieve };
       const res = await saveAchievementBackend(dataSet);
-      console.log(res,"111111111111111111111")
+      
       setCoach(res);
       setIsEditingAchievement(false);
       toast.success("Achievement successfully added!");
@@ -345,23 +356,22 @@ export default function CoachProfile() {
             <div className="text-center p-2 bg-gray-900 rounded-xl shadow-lg mt-2 max-w-3xl mx-auto">
   <h2 className="text-3xl font-extrabold text-slate-600-600 mb-6">Coach Achievements</h2>
   <div className="flex justify-around gap-4 flex-wrap">
-    <div className="bg-orange-800 p-2 rounded-lg shadow-md w-48 h-16 text-center flex flex-col justify-between items-center">
-      <h3 className="text-gray-300 text-sm">Achievement One</h3>
+    {achievementsOne && achievementsTwo && achievementsThree}
+  {achievementsOne?<div className="bg-orange-800 p-2 rounded-lg shadow-md w-48 h-16 text-center flex flex-col justify-between items-center">
       <p className="text-xl font-semibold text-white mb-2">{achievementsOne}</p>
-    </div>
-    <div className="bg-orange-800 p-2 rounded-lg shadow-md w-48 h-16 text-center flex flex-col justify-between items-center">
-      <h3 className="text-gray-300 text-sm">Achievement Two</h3>
+    </div>:<div className="bg-orange-800 p-2 rounded-lg shadow-md w-48 h-16 text-center flex flex-col justify-between items-center">
+      <p className="text-xl font-semibold text-white mb-2">Add your Achievement</p>
+    </div>}
+     {achievementsTwo?<div className="bg-orange-800 p-2 rounded-lg shadow-md w-48 h-16 text-center flex flex-col justify-between items-center">
       <p className="text-xl font-semibold text-white mb-2">{achievementsTwo}</p>
-    </div>
-    <div className="bg-orange-800 p-2 rounded-lg shadow-md w-48 h-16 text-center flex flex-col justify-between items-center">
-      <h3 className="text-gray-300 text-sm">Achievement Three</h3>
+    </div>:""}
+    
+    {achievementsThree?<div className="bg-orange-800 p-2 rounded-lg shadow-md w-48 h-16 text-center flex flex-col justify-between items-center">
       <p className="text-xl font-semibold text-white mb-2">{achievementsThree}</p>
-    </div>
+    </div>:""}
   </div>
 </div>
-
-          
-          )}
+      )}
         </div> 
 
 
