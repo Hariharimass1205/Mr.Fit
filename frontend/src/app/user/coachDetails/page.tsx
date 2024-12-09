@@ -14,7 +14,11 @@ interface coachState {
   weight: number;
   noOfStudentsCoached: number;
   availability: string;
-  achievementBadges: string[];
+  achievementBadges: {
+    achievementsOne:String,
+    achievementsTwo:String,
+    achievementsThree:String
+  },
   package: {
     monthlyPackage: number;
     quarterlyPackage: number;
@@ -34,7 +38,7 @@ export default function GymProfile() {
     const router = useRouter()
   const serachParams = useSearchParams();
   const [coach, setCoach] = useState< coachState | null>(null);
-
+  
   useEffect(() => {
     const fetchdatafn = async () => {
       const coach_id = serachParams.get("coach");
@@ -49,7 +53,7 @@ export default function GymProfile() {
     fetchdatafn();
   }, []);
 
-  console.log(coach?.userId?.profileImage,"ojegnvekv");
+  console.log(coach?.achievementBadges?.achievementsOne,"ojegnvekv");
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -180,9 +184,9 @@ export default function GymProfile() {
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
         <h3 className="font-semibold text-lg mb-4 text-center">Achievements</h3>
         <ul className="space-y-4">
-          {coach?.achievementBadges?.map((badge, index) => (
-            <li key={index}>{badge}</li>
-          ))}
+         <li>{coach?.achievementBadges?.achievementsOne}</li>
+         <li>{coach?.achievementBadges?.achievementsTwo}</li>
+         <li>{coach?.achievementBadges?.achievementsThree}</li>
         </ul>
       </div>
     </div>
