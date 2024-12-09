@@ -69,4 +69,14 @@ updateCoachPackage= async (objData:any,userId:Types.ObjectId):Promise<any | null
             throw new Error("error at updating package in coach side");
         }
         }
-}
+
+        updateCoachACHIEVEMENT = async (coachId:Types.ObjectId,achievements:string):Promise<any | null>=>{
+            try {
+                return await this.coachRepository.updatecoachAchiRepo(coachId,achievements)
+            } catch (error) {
+                throw new Error("error at updating achiii in coach side");
+            }
+            }
+        }
+    
+

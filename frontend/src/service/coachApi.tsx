@@ -84,9 +84,20 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
   export const saveProfiletoBackend = async (objData:Object)=>{
     try {
       const {data} = await Axios.patch(`${SERVER_URL_COACH}/updatProfile`,{objData})
+      console.log(data,"::::::::::::::::::::;")
       return data
     } catch (error) {
       console.log(error,"error at updating profile")
       throw handleAxiosError(error) 
     }
   }
+  
+  export const saveAchievementBackend = async (dataset:{}):Promise<any>=>{
+    try {
+       const result = await Axios.patch(`${SERVER_URL_COACH}/saveCoachAchievement`,{dataset})
+       console.log(result,"from back about achievement")
+      return result
+    } catch (error) {
+      console.log(error)
+    }
+}

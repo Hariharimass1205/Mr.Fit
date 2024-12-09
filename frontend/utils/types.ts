@@ -31,7 +31,11 @@ export type Coach = {
     noOfStudentsCoached:number;
     Students: string[];
     availability:String;
-    achievementBadges: string[];
+    achievementBadges:{
+        AchievementsOne:string,
+        AchievementsTwo:string,
+        AchievementsThree:string
+    }
     package: number[];  
     state:String;
     city:String;

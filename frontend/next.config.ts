@@ -7,4 +7,7 @@ const nextConfig: NextConfig = {
   },
 };
 
+// src={"https://mr.fit.s3.eu-north-1.amazonaws.com/1733321344309"}
+
+
 export default nextConfig;

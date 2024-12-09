@@ -7,7 +7,6 @@ import dotenv from "dotenv";
 dotenv.config()
 
 const uploadDir = path.join(__dirname, 'uploads');
-console.log(uploadDir,"from mid")
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir);
 }

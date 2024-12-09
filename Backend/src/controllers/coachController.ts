@@ -40,7 +40,11 @@ registerCoachController = async (req:CustomRequest,res:Response,next:NextFunctio
         noOfStudentsCoached:0,
         Students:[],
         availability:formData.availability,
-        achievementBadges:[],
+        achievementBadges: {
+          achievementsOne:"",
+          achievementsTwo:"",
+          achievementsThree:""
+        },
         package: {
           monthlyPackage: 0,
           quarterlyPackage: 0,
@@ -111,7 +115,19 @@ updateCoachProfile= async (req:CustomRequest,res:Response,next:NextFunction): Pr
  }
 }
 
-
+updateCoachAchievement= async (req:CustomRequest,res:Response,next:NextFunction) : Promise<void>=>{
+  try {
+    const {dataset} = req.body
+    const coachId = dataset.coachId
+    const achievements = dataset.achievement
+    const result = await this.coachService.updateCoachACHIEVEMENT(coachId,achievements)
+    console.log(result,"-------------------------")
+    res.status(HttpStatus.OK).json({success:true,result})
+  } catch (error) {
+    console.error("error at updating  coach achievement ");
+    next(error);
+  }
+}
 
 }
 

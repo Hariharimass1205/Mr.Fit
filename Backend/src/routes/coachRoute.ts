@@ -17,5 +17,6 @@ coachRouter.post("/fetchCoachdata",authMiddleware,controller.fetchCoachDataContr
 coachRouter.patch("/updateProfilePic",authMiddleware,uploadMiddleware,controller.updateCoachProfilePic)
 coachRouter.patch("/updatPackage",authMiddleware,controller.updateCoachPackage)
 coachRouter.patch("/updatProfile",authMiddleware,controller.updateCoachProfile)
+coachRouter.patch("/saveCoachAchievement",authMiddleware,controller.updateCoachAchievement)
 
 export default coachRouter

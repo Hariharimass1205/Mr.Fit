@@ -9,4 +9,5 @@ export interface ICoachService{
     saveProfilePic(url:string,userId:Types.ObjectId):Promise<any | null>;
     updateCoachPackage(objData:Object,userId:Types.ObjectId):Promise<any | null>;
     updateCoachProfile(objData:Object,userId:Types.ObjectId):Promise<any | null>;
+    updateCoachACHIEVEMENT(coachId:Types.ObjectId,achievements:any,):Promise<any | null>;
 }

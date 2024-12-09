@@ -1,7 +1,7 @@
 import coachModel from "../model/coachModel"
 import userModel from "../model/userModel"
 import { Coach } from "../interface/coach"
-import { Types } from "mongoose"
+import mongoose, { Types } from "mongoose"
 import { User } from "../interface/user"
 import { ICoachRepository } from "../interface/repository/coachRepository.interface"
 
@@ -108,4 +108,36 @@ fetchCoachDataRepo = async (userId:Types.ObjectId):Promise<any|null>=>{
       throw new Error('Database Error');
     }
   }
+  updatecoachAchiRepo= async (coachId:Types.ObjectId,achievement:any):Promise<any|null>=>{
+try {
+  if (!Types.ObjectId.isValid(coachId)) {
+    throw new Error('Invalid coachId format');
+  }
+  const acheve1 = achievement.achievementsOne
+  const acheve2 = achievement.achievementsTwo
+  const acheve3 = achievement.achievementsThree
+  const userId = new Types.ObjectId(coachId);
+  const res = await coachModel.updateOne(
+    { userId: userId }, 
+    { 
+      $set: { 
+        "achievementBadges.achievementsOne": acheve1,
+        "achievementBadges.achievementsTwo": acheve2,
+        "achievementBadges.achievementsThree": acheve3
+      }
+    }
+  );
+  if (res.modifiedCount === 0) {
+    console.log("No updates made");
+  } else {
+    console.log("Achievements updated successfully");
+  }
+  const res2 = await coachModel.find({ userId: userId})
+  console.log(res2,"res222")
+  return res2
+} catch (error) {
+  console.error('Error at updating achievemeent coach by id:', error);
+      throw new Error('Database Error');
+}
+}
 }

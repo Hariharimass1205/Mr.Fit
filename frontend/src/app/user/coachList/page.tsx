@@ -4,6 +4,7 @@ import { fetchcoachList } from "@/service/userApi";
 import { useRouter } from "next/navigation";
 import Footer from "@/components/user/footer";
 import Navbar from "@/components/user/navbar";
+import Image from "next/image";
 
 interface Coach {
   _id: any;

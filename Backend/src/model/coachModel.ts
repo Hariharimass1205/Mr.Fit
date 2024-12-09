@@ -15,7 +15,11 @@ const coachSchema = new Schema<Coach>({
     noOfStudentsCoached:{type:Number},
     availability:{type:String},
     Students:{ type: [String] },
-    achievementBadges:{ type: [String]},
+    achievementBadges: {
+      achievementsOne:String,
+      achievementsTwo:String,
+      achievementsThree:String
+    },
     package:{ type: {
         monthlyPackage: {
           type: Number

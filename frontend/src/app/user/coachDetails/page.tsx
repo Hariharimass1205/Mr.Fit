@@ -1,10 +1,10 @@
 "use client";
-
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { fetchCoachDetails } from "@/service/userApi";
 import img from "../../../../public/assets/backGround/pexels-ronin-10754972.jpg";
+import Image from "next/image";
+
 
 interface coachState {
   age: number;
@@ -40,6 +40,7 @@ export default function GymProfile() {
       const coach_id = serachParams.get("coach");
       if (coach_id) {
         const data = await fetchCoachDetails(coach_id);
+        console.log(data)
         setCoach(data);
       } else {
         console.log("coach_id missing in coach details");
@@ -48,7 +49,7 @@ export default function GymProfile() {
     fetchdatafn();
   }, []);
 
-  console.log(coach?.userId?.profileImage);
+  console.log(coach?.userId?.profileImage,"ojegnvekv");
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -61,10 +62,11 @@ export default function GymProfile() {
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         <div className="relative z-10 flex flex-col items-center">
           {/* Profile Picture */}
-          <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-red-500">
-            <Image
-              src={coach?.userId?.profileImage.src || "/default-avatar.jpg"}
-              alt="Coach Avatar"
+          <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-cyan-500">
+                
+            <img
+              src={coach?.userId?.profileImage || "/default-avatar.jpg"}
+              alt="Coach Avatar"    
               width={128}
               height={128}
             />
@@ -76,7 +78,6 @@ export default function GymProfile() {
             fitness programs and coaching."
           </p>
 
-          {/* Action Buttons */}
           <div className="flex space-x-4 mt-6">
             <button className="bg-cyan-500 px-6 py-2 rounded-lg font-semibold hover:bg-red-600">
               Book a Slot
@@ -88,20 +89,18 @@ export default function GymProfile() {
           onClick={()=>router.push("/user/coachList")}
           className=" top-4 right-4 bg-cyan-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600"
         >
-          Back to Home
+          Back to List
         </button>
           </div>
         </div>
       </div>
 
-      {/* Transformation Packages */}
       <section className="py-12 bg-gray-900">
         <div className="container mx-auto px-6">
           <h2 className="text-5xl font-bold font-sans text-center mb-20">
             Choose Your Transformation Package
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Monthly Package */}
             <div className="bg-gray-700  p-6 ml-10 rounded-3xl shadow-lg text-center">
               <h3 className="text-xl font-semibold">Monthly</h3>
               <p className="mt-4 text-2xl font-bold text-red-500">
@@ -115,7 +114,6 @@ export default function GymProfile() {
               </button>
             </div>
 
-            {/* Quarterly Package */}
             <div className="bg-gray-700 p-6  rounded-3xl shadow-lg text-center">
               <h3 className="text-xl font-semibold">Quarterly</h3>
               <p className="mt-4 text-2xl font-bold text-red-500">
@@ -129,7 +127,6 @@ export default function GymProfile() {
               </button>
             </div>
 
-            {/* Yearly Package */}
             <div className="bg-gray-700 p-6 mr-10 rounded-3xl shadow-lg text-center">
               <h3 className="text-xl font-semibold">Yearly</h3>
               <p className="mt-4 text-2xl font-bold text-red-500">
@@ -145,18 +142,13 @@ export default function GymProfile() {
           </div>
         </div>
       </section>
-           {/* Achievement Section */}
-      
-
-      {/* What Happens After You Enroll */}
-     {/* Coach Details Section */}
+ 
 <section className="py-12 mt-10 w-fit mx-auto rounded-3xl bg-black-800">
   <div className="container mx-auto px-6 flex flex-col items-center">
     <h2 className="text-4xl font-bold font-sans text-center mb-10">
       Coach Details
     </h2>
     <div className="flex flex-wrap justify-center gap-10 text-gray-300">
-      {/* General Info */}
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
         <h3 className="font-semibold text-lg mb-4 text-center">General Info</h3>
         <ul className="space-y-4">
@@ -167,7 +159,6 @@ export default function GymProfile() {
         </ul>
       </div>
 
-      {/* Training Info */}
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
         <h3 className="font-semibold text-lg mb-4 text-center">Training Info</h3>
         <ul className="space-y-4">
@@ -176,7 +167,6 @@ export default function GymProfile() {
         </ul>
       </div>
 
-      {/* Locating Info */}
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
         <h3 className="font-semibold text-lg mb-4 text-center">Locating Info</h3>
         <ul className="space-y-4">
@@ -187,7 +177,6 @@ export default function GymProfile() {
         </ul>
       </div>
 
-      {/* Achievements */}
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
         <h3 className="font-semibold text-lg mb-4 text-center">Achievements</h3>
         <ul className="space-y-4">

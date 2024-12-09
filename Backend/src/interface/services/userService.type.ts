@@ -7,6 +7,7 @@ export type registerUserInput={
     gender: string;
     profileImage:string;
     address?: string;
+    enrolledPackage:String;
     DOB?:string;
     otp?:string
     state?: string;
@@ -26,6 +27,7 @@ export type registerUserOutput={
     email: string;
     phone: number;
     gender: string;
+    enrolledPackage:String;
     profileImage:string;
     address: string;
     state: string;

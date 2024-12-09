@@ -16,7 +16,11 @@ export type registerCoachServiceInput = {
     noOfStudentsCoached:number;
     Students: string[];
     availability:String;
-    achievementBadges: string[]
+    achievementBadges: {
+        achievementsOne:String,
+        achievementsTwo:String,
+        achievementsThree:String
+      }
     package:  {
         monthlyPackage: number;
         quarterlyPackage: number;

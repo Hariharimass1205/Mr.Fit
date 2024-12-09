@@ -6,4 +6,5 @@ export interface ICoachController{
     updateCoachProfilePic(req: Request, res: Response, next: NextFunction): Promise<void>
     updateCoachPackage(req: Request, res: Response, next: NextFunction): Promise<void>
     updateCoachProfile(req: Request, res: Response, next: NextFunction): Promise<void>
+    updateCoachAchievement(req: Request, res: Response, next: NextFunction): Promise<void>
 }

@@ -8,7 +8,8 @@ export interface User {
     gender?: string;   
     otp?: string;   
     DOB?:string
-    otpVerified?: boolean;   
+    otpVerified?: boolean;  
+    enrolledPackage:String;
     address?: string;   
     state?: string;   
     district?: string;   

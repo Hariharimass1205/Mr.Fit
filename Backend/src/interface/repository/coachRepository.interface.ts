@@ -11,4 +11,5 @@ export interface ICoachRepository{
     updateProfilePicture(url:string,userId:Types.ObjectId):Promise<any|null>
     updatePackage(objData:Object,userId:Types.ObjectId):Promise<any|null>
     updateProfile(objData:Object,userId:Types.ObjectId):Promise<any|null>
+    updatecoachAchiRepo(coachId:Types.ObjectId,achievement:any):Promise<any|null>
 }
