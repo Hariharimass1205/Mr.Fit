@@ -65,7 +65,7 @@ export default function GymProfile() {
     // localStorage.setItem("coach",JSON.stringify(coach))
     router.push(`/user/payment?coach_Id=${coach?._id}&user_Id=${user?._id}&packageAmount=${packageAmount}&packageDuration=${packageDuration}&userEmail=${user?.email}&userName=${user.userName}`)
   }
-
+  console.log(user.enrolledPackage>0,"ooooooooooooooooo",user.enrolledPackage)
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div
@@ -105,9 +105,10 @@ export default function GymProfile() {
           </div>
         </div>
       </div>
+      {user.enrolledPackage<=0?
       <section className="py-12 bg-gray-900">
         <div className="container mx-auto px-6">
-                                                                          
+                                                                        
           <h2 className="text-5xl font-bold font-sans text-center mb-20">
             Choose Your Transformation Package
           </h2>
@@ -153,7 +154,7 @@ export default function GymProfile() {
             </div>
           </div>
         </div>
-      </section>
+      </section>:""}
  
 <section className="py-12 mt-10 w-fit mx-auto rounded-3xl bg-black-800">
   <div className="container mx-auto px-6 flex flex-col items-center">

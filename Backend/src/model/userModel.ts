@@ -17,7 +17,7 @@ const userSchema = new Schema<User>({
     district: { type: String },
     pincode: { type: Number },
     reviews: { type: [String] },
-    enrolledPackage:{type:String},
+    enrolledPackage:{type:Number},
     coachId:{type:Schema.Types.ObjectId,default:null},
     isBlocked:{ type: Boolean, default:false},
     isCoach:{type:Boolean,default:false},

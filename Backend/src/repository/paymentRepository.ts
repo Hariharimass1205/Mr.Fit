@@ -44,7 +44,7 @@ updateBookingStatus=async(bookingData:any): Promise<any|null>=> {
         amount,
         userId,"in repoooo")
         const updatedPayment = await paymentModel.updateOne({userEmail:email},{$set:{paymentStatus:"completed"}})
-        const userCoachIdUpdate = await userModel.updateOne({_id:userId},{$set:{enrolledPackage:"yes",coachId:coachId}})
+        const userCoachIdUpdate = await userModel.updateOne({_id:userId},{$set:{enrolledPackage:amount,coachId:coachId}})
         const updatedUser =  await userModel.findOne({_id:userId})
         console.log(updatedUser,"user after payment")
         return updatedPayment

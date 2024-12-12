@@ -9,7 +9,7 @@ export interface User {
     otp?: string;   
     DOB?:string
     otpVerified?: boolean;  
-    enrolledPackage:String;
+    enrolledPackage:number;
     address?: string;   
     state?: string;   
     district?: string;   

@@ -7,7 +7,7 @@ export type registerUserInput={
     gender: string;
     profileImage:string;
     address?: string;
-    enrolledPackage:String;
+    enrolledPackage:number;
     DOB?:string;
     otp?:string
     state?: string;

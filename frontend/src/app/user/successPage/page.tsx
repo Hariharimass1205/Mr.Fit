@@ -4,12 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 const EnrollmentSuccess = () => {
-  const searchParams = useSearchParams()
    const router = useRouter();
-  const data = searchParams.get("userName")
-  console.log(data)
-  // Extract query parameters (e.g., userName and packageName) from the URL
-  //const { userName, packageName, amount } = router.query;
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
       <div className="max-w-lg bg-white rounded-lg shadow-lg p-8 text-center">
@@ -22,7 +17,7 @@ const EnrollmentSuccess = () => {
           package.
         </p>
         <p className="text-xl text-gray-700 font-medium mb-8">
-          Amount Paid: <span className="text-green-600">₹amount</span>
+          Amount Paid: <span className="text-green-600">$amount</span>
         </p>
         <button
           onClick={() => router.push("/user/home")}

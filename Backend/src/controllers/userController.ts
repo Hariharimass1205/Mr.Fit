@@ -25,7 +25,7 @@ export class UserController implements IUserController{
         DOB: "",
         profileImage:"",
         otp:otp,
-        enrolledPackage:'',
+        enrolledPackage:0,
         password: req.body.password,
         gender: req.body.gender,
         address: "",
@@ -190,5 +190,4 @@ fetchCoachDetails = async(req:Request,res:Response,next:NextFunction)=>{
     next(error);
    }
 }
-
 }

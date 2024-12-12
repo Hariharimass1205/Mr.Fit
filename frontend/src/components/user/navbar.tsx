@@ -7,6 +7,7 @@ const Navbar: React.FC = () => {
   const [user, setUser] = useState();
   const [userStatus,setUserStatus] = useState("")
   const [isRegistered,setIsRegistered] = useState(false)
+  const [enrolledPackage,setEnrolledPackage] = useState(0)
   const [isAth, setIsAth] = useState<boolean>(false);
   const [isCoach,setIsCoach] = useState(false)
   const [isApprovedBtn,setIsApprovedBtn] = useState("")
@@ -15,12 +16,15 @@ const Navbar: React.FC = () => {
   //const userdataRedux = useAppSelector(state => state?.user?.user)
 
 
+
+
    useEffect(() => {
     (async function fetchuserData(){
     try {
       const data = await fetchData()
       setUserStatus(data?.result?.data?.isApproved)
       setIsRegistered(data?.result?.data?.isRegisted)
+      setEnrolledPackage(data?.result?.data?.enrolledPackage)
       setQuizScore(quizScore)
       setIsCoach(data?.result?.data?.isCoach);
       setIsApprovedBtn(data?.result?.data?.isApproved)
@@ -44,6 +48,8 @@ const Navbar: React.FC = () => {
       }
     }
   }, [user,isRegistered]);
+
+ 
   const handleLogout = async () => {
     try {
       const result = await logoutApi()
@@ -123,7 +129,6 @@ const Navbar: React.FC = () => {
           >
             Profile
           </a>
-          
         ) : (
           <a
             onClick={() => router.push('/coaches/coachFillup')}
@@ -137,7 +142,7 @@ const Navbar: React.FC = () => {
           onClick={handleBecomeCoach}
           className="text-lg hover:underline hover:text-cyan-400"
         >
-          Become a Coach
+          {enrolledPackage<0?"Become a Coach":"Profile"}
         </a>
       )}
     </div>
