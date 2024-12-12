@@ -97,15 +97,15 @@ logout = async (req:Request,res:Response,next:NextFunction): Promise<void> =>{
 
  fetchUserData = async (req:CustomRequest,res:Response,next:NextFunction) : Promise<void> =>{
   try {
-      const {id} = req?.user
-      const result = await this.userService.fetchuserdataService(id)
-      if(result){
-        res.status(HttpStatus.OK).json({success:true,result})
-      }
-  } catch (error) {
-    console.error("Error at fetching user data");
-    next(error);
-  }
+    const {id} = req?.user
+    const result = await this.userService.fetchuserdataService(id)
+    if(result){
+      res.status(HttpStatus.OK).json({success:true,result})
+    }
+} catch (error) {
+  console.error("Error at fetching user data");
+  next(error);
+}
 }
 
 forgotPassword = async(req:Request,res:Response,next:NextFunction)  : Promise<void>=>{

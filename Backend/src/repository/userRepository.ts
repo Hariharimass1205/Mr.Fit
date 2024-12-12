@@ -87,7 +87,7 @@ fetchCoachListRep = async ()=>{
 }
 fetchCoachDetailsRep = async (id:Types.ObjectId)=>{
   try {
-    const user = await coachModel.find({_id:id}).populate("userId","profileImage quizScore")
+    const user = await coachModel.find({_id:id}).populate("userId","profileImage quizScore email")
     return {data:user}
   } catch (error) {
     console.error('Error fetching coach List:', error);

@@ -7,6 +7,7 @@ import { connectToMongoDB } from "./config/db.connect";
 import coachRouter from "./routes/coachRoute";
 import adminRouter from "./routes/adminRoute";
 import { errorHandles } from "./middlesware/errrorHandlers";
+import paymentRouter from "./routes/paymentRoute";
 
 dotenv.config()
 
@@ -18,11 +19,12 @@ app.use(cors({
     origin:'http://localhost:3000',
     credentials:true,
 }));
-
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 app.use(cookieParser())
 
 app.use("/user",userRouter)
+app.use("/payment",paymentRouter)
 app.use("/coach",coachRouter)
 app.use("/admin",adminRouter)
 

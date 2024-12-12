@@ -3,16 +3,18 @@ import { jwtVerify } from "jose";
 
 const ADMIN_ROUTES = new Set(["/admin/dashboard","/admin/coachList","/admin/userList"]);
 const COACH_ROUTES = new Set(["/coaches/becomeACoach","/coaches/coachProfile","/coaches/quiz","/coaches/coachFillup","/coaches/greetings"]);
-const USER_ROUTES = new Set(["/user/home","/user/coachDetails","/user/coachList","/coaches/becomeACoach","/coaches/coachProfile","/coaches/quiz","/coaches/coachFillup","/coaches/greetings"]);
+const USER_ROUTES = new Set(["/user/home","/user/payment","/user/FreeWorkOutPlans","/user/coachDetails","/user/coachList","/coaches/becomeACoach","/coaches/coachProfile","/coaches/quiz","/coaches/coachFillup","/coaches/greetings"]);
 const PUBLIC_ROUTES = new Set([
   "/login", 
-  "/signup", 
+  "/signup",
   "/otp", 
   "/forgotPassword/forgotPassword1", 
   "/forgotPassword/forgotPasswordOTP",
   "/forgotPassword/forgotPassword3",
   "/admin/login",
-  "/user/coachList"
+  "/user/coachList",
+  "/user/payment",
+  "/user/successPage"
 ]);
 const UNPROTECTED_ROUTES = new Set(["/_next/", "/favicon.ico", "/api/"]);
 export async function middleware(req: NextRequest) {
@@ -27,7 +29,9 @@ export async function middleware(req: NextRequest) {
         return NextResponse.next();
       }
       const tokenData = await verifyToken("accessToken", req);
+      console.log(tokenData,"--------------------")
       const role = tokenData?.role;
+      console.log(role,"-----------------------------------------------")
       
       if (!role) {
         console.log(`Redirecting unauthenticated user from ${pathname} to /login`);
@@ -54,6 +58,7 @@ export async function middleware(req: NextRequest) {
 
 async function verifyToken(tokenName: string, req: NextRequest): Promise<{ role:string | null }> {
     const token = req.cookies.get(tokenName);
+    console.log(token,"from verify fn middle")
     if (!token?.value) {
       console.error("Token not found in cookies");
       return { role: null };

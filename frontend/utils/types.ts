@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+
 export type User = {   
     userName: string;   
     phone?: number;   

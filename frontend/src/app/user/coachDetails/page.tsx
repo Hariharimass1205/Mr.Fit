@@ -4,9 +4,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { fetchCoachDetails } from "@/service/userApi";
 import img from "../../../../public/assets/backGround/pexels-ronin-10754972.jpg";
 import Image from "next/image";
+import { Types } from "mongoose";
+import { Coach } from "../../../../utils/types";
 
 
 interface coachState {
+  _id:Types.ObjectId
   age: number;
   name: string;
   phone: number;
@@ -29,23 +32,27 @@ interface coachState {
   city: string;
   locality: string;
   userId: {
+    _id:Types.ObjectId;
     profileImage: any;
     quizScore: number;
   };
 }
 
 export default function GymProfile() {
-    const router = useRouter()
+    const router = useRouter() 
   const serachParams = useSearchParams();
-  const [coach, setCoach] = useState< coachState | null>(null);
+  const [coach, setCoach] = useState< any | null>({ });
+  const [user, setUser] = useState< any | null>({ });
   
   useEffect(() => {
     const fetchdatafn = async () => {
       const coach_id = serachParams.get("coach");
       if (coach_id) {
+        const user = JSON.parse(localStorage.getItem("user") as string)
+        setUser(user)
         const data = await fetchCoachDetails(coach_id);
-        console.log(data)
         setCoach(data);
+        console.log(data,".......................")
       } else {
         console.log("coach_id missing in coach details");
       }
@@ -53,7 +60,11 @@ export default function GymProfile() {
     fetchdatafn();
   }, []);
 
-  console.log(coach?.achievementBadges?.achievementsOne,"ojegnvekv");
+  console.log(user,"caoch detail b4 payment")
+  const redirectToPayment =(packageAmount: number | undefined,packageDuration: string)=>{
+    // localStorage.setItem("coach",JSON.stringify(coach))
+    router.push(`/user/payment?coach_Id=${coach?._id}&user_Id=${user?._id}&packageAmount=${packageAmount}&packageDuration=${packageDuration}&userEmail=${user?.email}&userName=${user.userName}`)
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -61,8 +72,6 @@ export default function GymProfile() {
         className="relative bg-cover bg-center bg-fixed py-16"
         style={{ backgroundImage: `url(${img.src})` }}
       >
-        
-
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         <div className="relative z-10 flex flex-col items-center">
           {/* Profile Picture */}
@@ -75,13 +84,11 @@ export default function GymProfile() {
               height={128}
             />
           </div>
-
           <h1 className="text-3xl font-bold mt-4">{coach?.name}</h1>
           <p className="mt-2 text-gray-300 text-center max-w-lg">
             "Transforming lives one rep at a time. Specializing in personalized
             fitness programs and coaching."
           </p>
-
           <div className="flex space-x-4 mt-6">
             <button className="bg-cyan-500 px-6 py-2 rounded-lg font-semibold hover:bg-red-600">
               Book a Slot
@@ -98,12 +105,13 @@ export default function GymProfile() {
           </div>
         </div>
       </div>
-
       <section className="py-12 bg-gray-900">
         <div className="container mx-auto px-6">
+                                                                          
           <h2 className="text-5xl font-bold font-sans text-center mb-20">
             Choose Your Transformation Package
           </h2>
+                                                                        
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-gray-700  p-6 ml-10 rounded-3xl shadow-lg text-center">
               <h3 className="text-xl font-semibold">Monthly</h3>
@@ -113,7 +121,7 @@ export default function GymProfile() {
               <p className="mt-2 text-gray-300">
                 Access to gym workouts and online coaching
               </p>
-              <button className="mt-4 bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-600">
+              <button onClick={()=>redirectToPayment(coach?.package?.monthlyPackage,"monthlyPackage")} className="mt-4 bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-600">
                 Select Plan
               </button>
             </div>
@@ -126,7 +134,7 @@ export default function GymProfile() {
               <p className="mt-2 text-gray-300">
                 Advanced plans with trainer guidance
               </p>
-              <button className="mt-4 bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-600">
+              <button onClick={()=>redirectToPayment(coach?.package?.quarterlyPackage,"quarterlyPackage")} className="mt-4 bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-600">
                 Select Plan
               </button>
             </div>
@@ -139,7 +147,7 @@ export default function GymProfile() {
               <p className="mt-2 text-gray-300">
                 Full transformation plan with VIP perks
               </p>
-              <button className="mt-4 bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-600">
+              <button onClick={()=>redirectToPayment(coach?.package?.yearlyPackage,"yearlyPackage")} className="mt-4 bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-600">
                 Select Plan
               </button>
             </div>
