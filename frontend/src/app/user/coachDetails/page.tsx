@@ -89,6 +89,7 @@ export default function GymProfile() {
             "Transforming lives one rep at a time. Specializing in personalized
             fitness programs and coaching."
           </p>
+          {user.enrolledPackage>=0?
           <div className="flex space-x-4 mt-6">
             <button className="bg-cyan-500 px-6 py-2 rounded-lg font-semibold hover:bg-red-600">
               Book a Slot
@@ -96,13 +97,13 @@ export default function GymProfile() {
             <button className="bg-gray-800 px-6 py-2 rounded-lg font-semibold hover:bg-gray-700">
               Chat with Coach
             </button>
+          </div>:""}
             <button
           onClick={()=>router.push("/user/coachList")}
-          className=" top-4 right-4 bg-cyan-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600"
+          className=" top-4 right-4 mt-3 bg-cyan-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600"
         >
           Back to List
         </button>
-          </div>
         </div>
       </div>
       {user.enrolledPackage<=0?

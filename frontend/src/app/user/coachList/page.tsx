@@ -19,8 +19,8 @@ interface Coach {
 }
 
 export default function CoachList() {
-  const [coaches, setCoaches] = useState<Coach[]>([]); // Original fetched data
-  const [filteredCoaches, setFilteredCoaches] = useState<Coach[]>([]); // Filtered data
+  const [coaches, setCoaches] = useState<Coach[]>([]);
+  const [filteredCoaches, setFilteredCoaches] = useState<Coach[]>([]); 
   const [filters, setFilters] = useState({
     search: "",
     location: "",
@@ -31,8 +31,8 @@ export default function CoachList() {
     minStudents: "",
     maxStudents: "",
   });
-  const router = useRouter();
 
+  const router = useRouter();
   // Handle filter changes
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -96,7 +96,6 @@ export default function CoachList() {
     };
     fetchData();
   }, []);
-
   return (
     <>
     <div className="min-h-screen bg-gradient-to-r from-cyan-300 to-cyan-1000 text-white flex flex-col">
@@ -201,7 +200,7 @@ export default function CoachList() {
               className="bg-gray-800  rounded-md overflow-hidden shadow-lg"
             >
               <img
-              onClick={()=>router.push(`/user/coachDetails?coach=${coach._id}`)}
+                onClick={()=>router.push(`/user/coachDetails?coach=${coach._id}`)}
                 src={coach.userId.profileImage}
                 alt={coach.name}
                 className="w-full h-48 object-cover"
