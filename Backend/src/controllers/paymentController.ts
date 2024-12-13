@@ -14,7 +14,7 @@ export class PaymentController implements IPaymentController {
   payment = async (req: CustomRequest , res: Response, next: NextFunction): Promise<any> => {
     try {
       const { txnid, amount, productinfo, username, email, udf1 } = req.body;
-      if (!txnid || !amount || !productinfo || !username || !email || !udf1) {
+        if (!txnid || !amount || !productinfo || !username || !email || !udf1) {
         return res.status(HttpStatus.BAD_REQUEST).send("Mandatory fields missing");
       }
       const hash = await this.paymentService.generatePaymentHash({

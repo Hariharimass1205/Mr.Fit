@@ -7,7 +7,7 @@ export class adminReository implements IAdminRepository{
         const users = await userModel.find({isCoach:false}).exec();
         const coaches = await userModel.find({isCoach:true}).exec();
         const pendingApprovals = await userModel.find({isApproved:"Pending"}).exec();
-        const enrolledUsers = await userModel.countDocuments({coachId:{$ne:null}}).exec();
+        const enrolledUsers = await userModel.find({enrolledPackage:{$gt:0}}).populate("coachId","name")
         const result = {
             userList : users.length ,
             pendingApprovalsList:pendingApprovals.length ,

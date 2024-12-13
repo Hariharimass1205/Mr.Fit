@@ -78,11 +78,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </Link>
               </div>
             </li>
+
             <li className="px-6  text-black py-3">
             <div className={`rounded-lg block text-black text-xl  font-semibold 
                   hover:bg-teal-300`}>
               <Link
-                href="/admin/coachList"
+                href="/admin/enrolledUserList"
                 className={`rounded-lg block text-black text-xl p-3 font-semibold 
                   hover:text-black-300`}
               >

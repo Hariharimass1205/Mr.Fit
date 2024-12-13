@@ -9,7 +9,8 @@ export type User = {
     gender?: string;   
     otp?: string;   
     DOB?:string
-    otpVerified?: boolean;   
+    otpVerified?: boolean;
+    enrolledPackage?:number;   
     address?: string;   
     state?: string;   
     district?: string;   
@@ -30,7 +31,9 @@ export type Coach = {
     height:number;
     weight:number;
     noOfStudentsCoached:number;
-    Students: string[];
+    Students: [{ 
+        type: Types.ObjectId, 
+    }],
     availability:String;
     achievementBadges:{
         AchievementsOne:string,

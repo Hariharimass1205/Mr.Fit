@@ -8,6 +8,7 @@ import { IUserController } from "../interface/controllers/userController.intrefa
 import { IUserService } from "../interface/services/userService.interface";
 import mongoose from "mongoose";
 
+
 export class UserController implements IUserController{
   private userService : IUserService;
   constructor(userService:IUserService) {
@@ -26,6 +27,7 @@ export class UserController implements IUserController{
         profileImage:"",
         otp:otp,
         enrolledPackage:0,
+        enrolledDate:"",
         password: req.body.password,
         gender: req.body.gender,
         address: "",
@@ -189,5 +191,19 @@ fetchCoachDetails = async(req:Request,res:Response,next:NextFunction)=>{
     console.error("error at fetching coach Details ");
     next(error);
    }
+}
+fetchUserDetails = async(req:Request,res:Response,next:NextFunction)=>{
+  try {
+     const {userId,coachId} = req.query
+     console.log(userId,coachId,"came back")
+     const coach_Id = new mongoose.Types.ObjectId(coachId as string);
+     const user_Id = new mongoose.Types.ObjectId(userId as string);
+     const result = await this.userService.fetchUserDetails(coach_Id,user_Id)
+     console.log(result,"<<<<<<<<<<<<<<<<<<<<<")
+     res.status(HttpStatus.OK).json({success:true,usercoachDeatails:result})
+  } catch (error) {
+   console.error("error at fetching coach Details ");
+   next(error);
+  }
 }
 }

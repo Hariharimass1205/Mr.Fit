@@ -17,7 +17,7 @@ const Dashboard: React.FC = () => {
         const data = await fetchDataList();
         setUser(data?.userList)
         setPending(data?.pendingApprovalsList)
-        setEnrolledUsersList(data?.enrolledUsers)
+        setEnrolledUsersList(data?.enrolledUsers?.length)
         setCoach(data?.coachList)
       } catch (error) {
         console.log("Error fetching user list:", error);

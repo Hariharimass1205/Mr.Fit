@@ -4,12 +4,12 @@ const paymentSchema = new mongoose.Schema({
       coachId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'Doctor', 
+        ref: 'coaches', 
       },
       userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'Patient', 
+        ref: 'users', 
       },
       paymentStatus: {
         type: String,
@@ -20,11 +20,11 @@ const paymentSchema = new mongoose.Schema({
         type: Number,
         required: true,
       },
-      userEmail: {
+      coachEmail: {
         type: String,
         required: true,
       },
-      userName: {
+      coachName: {
         type: String,
         required: true,
       },

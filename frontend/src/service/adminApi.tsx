@@ -9,7 +9,7 @@ const Axios = axios.create({
   withCredentials:true
 })
 
-  export const adminlogin = async (reqBody: Record<string, any>)=>{
+  export const adminlogin = async (reqBody: Record<string,any>)=>{
     console.log("from frontt " , reqBody)
     try {
       const response = await Axios.post(`${SERVER_URL_ADMIN}/adminlogin`,reqBody)
@@ -25,6 +25,7 @@ const Axios = axios.create({
     try {
       const response = await Axios.post(`${SERVER_URL_ADMIN}/fetchUserList`)
       const {userList,pendingApprovalsList,users,coachList,coaches,enrolledUsers} = response.data
+      console.log(response.data,"from api page")
       if(response){
         return {userList,pendingApprovalsList,users,coachList,coaches,enrolledUsers}
       }

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-const ADMIN_ROUTES = new Set(["/admin/dashboard","/admin/coachList","/admin/userList"]);
+const ADMIN_ROUTES = new Set(["/admin/dashboard","/admin/coachList","/admin/userList","/admin/enrolledUserList"]);
 const COACH_ROUTES = new Set(["/coaches/becomeACoach","/coaches/coachProfile","/coaches/quiz","/coaches/coachFillup","/coaches/greetings"]);
-const USER_ROUTES = new Set(["/user/home","/user/payment","/user/FreeWorkOutPlans","/user/coachDetails","/user/coachList","/coaches/becomeACoach","/coaches/coachProfile","/coaches/quiz","/coaches/coachFillup","/coaches/greetings"]);
+const USER_ROUTES = new Set(["/user/home","/user/payment","/user/profile","/user/FreeWorkOutPlans","/user/coachDetails","/user/coachList","/coaches/becomeACoach","/coaches/coachProfile","/coaches/quiz","/coaches/coachFillup","/coaches/greetings"]);
 const PUBLIC_ROUTES = new Set([
   "/login", 
   "/signup",

@@ -83,11 +83,15 @@ const Navbar: React.FC = () => {
   }, [user]);
 
  const handleBecomeCoach = ()=>{
+  if(enrolledPackage<0){
    if(isCoach){
    router.push(`/coaches/greetings?quizScore=${quizScore}`)
    }else{
     router.push('/coaches/becomeACoach')
    }
+  }else{
+    router.push("/user/profile")
+  }
  }
 
   return (
@@ -110,7 +114,7 @@ const Navbar: React.FC = () => {
           Hi.. {user}
         </span>
         <span>
-        <a href="/user/FreeWorkOutPlans" className='ml-7 hover:underline mr-3 hover:text-orange-400'>Free training</a>
+        <a href="/user/FreeWorkOutPlans" className='ml-7 hover:underline mr-3 hover:text-orange-400'>Free t training</a>
         </span>
         </span>
       )}

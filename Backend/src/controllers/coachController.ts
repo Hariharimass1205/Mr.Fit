@@ -55,7 +55,7 @@ registerCoachController = async (req:CustomRequest,res:Response,next:NextFunctio
         locality:formData.locality,
         address:formData.address,
         licenseOrAadhaar:formData.licenseOrAadhaar,
-        role:role
+        role:"coach"
       })
       res.status(HttpStatus.OK).json({success:true})
     } catch (error) {

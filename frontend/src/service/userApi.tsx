@@ -93,7 +93,6 @@ export const resendOTP = async (email:any):Promise<any>=>{
 export const logoutApi = async()=>{
   try {
     const response = await Axios.post(`${SERVER_URL_USER}/logout`)
-    console.log(response.data)
     return response.data
   } catch (error) {
     console.log("Error in logout:", error);
@@ -115,7 +114,6 @@ export const fetchData = async ()=>{
 export const fetchcoachList = async ()=>{
   try {
     const {data} = await Axios.get(`${SERVER_URL_USER}/fetchCoachdata`)
-    console.log(data,"populated data")
    if(data){
     return data.result.data
    }
@@ -127,7 +125,6 @@ export const fetchcoachList = async ()=>{
 export const fetchCoachDetails = async (coach_id:string):Promise<any>=>{
   try {
     const {data} = await Axios.get(`${SERVER_URL_USER}/fetchCoachDetails/${coach_id}`)
-    console.log(data.coachDetails.data,"from back coach deatils")
    if(data){
     return data.coachDetails.data[0]
    }
@@ -135,3 +132,17 @@ export const fetchCoachDetails = async (coach_id:string):Promise<any>=>{
     console.log(error)
   }
 }
+
+  export const fetchDataUserDetails = async (user_id:string,coach_id:string):Promise<any>=>{
+    try {
+      const {data} = await Axios.get(`${SERVER_URL_USER}/fetchUserDetails?userId=${user_id}&coachId=${coach_id}`)
+      const {coach,user} = data.usercoachDeatails
+      console.log(coach[0],user,">>>>>>>>>>")
+     if(data){
+      return {coach,user}
+     }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+

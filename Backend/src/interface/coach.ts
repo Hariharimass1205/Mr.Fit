@@ -7,7 +7,7 @@ export interface Coach{
     height:number;
     weight:number;
     noOfStudentsCoached:number;
-    Students: string[];
+    Students: [];
     availability:String;
     achievementBadges: {
       achievementsOne:String,

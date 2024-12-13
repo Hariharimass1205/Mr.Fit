@@ -25,4 +25,5 @@ export interface IUserService {
   saveOTPtoModel(data:saveOTPtoModelInput): Promise<any | null>;
   fetchCoachListSer():Promise<any|null>
   fetchCoachDetails(coach_Id:Types.ObjectId):Promise<Coach|null>;
+  fetchUserDetails(coach_Id:Types.ObjectId,user_Id:Types.ObjectId):Promise<any|null>
 }

@@ -7,4 +7,5 @@ export interface IUserController {
     fetchUserData(req: Request, res: Response, next: NextFunction): Promise<void>
     fetchCoachlist(req: Request, res: Response, next: NextFunction): Promise<void>
     fetchCoachDetails(req: Request, res: Response, next: NextFunction): Promise<void>
+    fetchUserDetails(req: Request, res: Response, next: NextFunction): Promise<any>
 }

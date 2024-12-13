@@ -10,6 +10,7 @@ export interface User {
     DOB?:string
     otpVerified?: boolean;  
     enrolledPackage:number;
+    enrolledDate:string;
     address?: string;   
     state?: string;   
     district?: string;   

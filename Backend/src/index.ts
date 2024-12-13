@@ -8,11 +8,14 @@ import coachRouter from "./routes/coachRoute";
 import adminRouter from "./routes/adminRoute";
 import { errorHandles } from "./middlesware/errrorHandlers";
 import paymentRouter from "./routes/paymentRoute";
+import morgan from 'morgan';
 
+
+
+const myFormat = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"';
 dotenv.config()
 
 const app = express()
-const morganFormat = ":method :url :status :response-time ms"
 connectToMongoDB()    
 
 app.use(cors({
@@ -22,6 +25,7 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 app.use(cookieParser())
+app.use(morgan(myFormat))
 
 app.use("/user",userRouter)
 app.use("/payment",paymentRouter)

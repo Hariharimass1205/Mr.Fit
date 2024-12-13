@@ -79,6 +79,7 @@ export class UserRepository implements IUserRepository{
 fetchCoachListRep = async ()=>{
   try {
     const user = await coachModel.find().populate("userId","profileImage")
+    console.log(user,"repoo 1st")
     return {data:user}
   } catch (error) {
     console.error('Error fetching coach List:', error);
@@ -94,5 +95,16 @@ fetchCoachDetailsRep = async (id:Types.ObjectId)=>{
     throw new Error('Database Error');
   }
 }
-
+fetchUserDetailsRep = async (coach_Id:Types.ObjectId,user_Id:Types.ObjectId)=>{
+  try {
+    const coach = await coachModel.find({_id:coach_Id}).populate("userId","profileImage quizScore")
+    const user = await userModel.findOne({_id:user_Id})
+    console.log(user,coach,"in repo")
+    const data = {user:user,coach:coach}
+    return data
+  } catch (error) {
+    console.error('Error fetching coach List:', error);
+    throw new Error('Database Error');
+  }
+}
 }

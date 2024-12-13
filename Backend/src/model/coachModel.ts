@@ -14,7 +14,10 @@ const coachSchema = new Schema<Coach>({
     weight:{type:Number,required:true},
     noOfStudentsCoached:{type:Number},
     availability:{type:String},
-    Students:{ type: [String] },
+    Students: [{ 
+      type: Schema.Types.ObjectId, 
+      ref: "users" 
+  }],
     achievementBadges: {
       achievementsOne:String,
       achievementsTwo:String,
