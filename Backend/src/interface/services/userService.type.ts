@@ -9,6 +9,7 @@ export type registerUserInput={
     address?: string;
     enrolledPackage:number;
     enrolledDate:string;
+    enrolledDuration:string;
     DOB?:string;
     otp?:string
     state?: string;
@@ -29,6 +30,7 @@ export type registerUserOutput={
     phone: number;
     gender: string;
     enrolledPackage:String;
+    enrolledDuration:string;
     enrolledDate:string;
     profileImage:string;
     address: string;

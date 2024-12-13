@@ -27,6 +27,7 @@ export class UserController implements IUserController{
         profileImage:"",
         otp:otp,
         enrolledPackage:0,
+        enrolledDuration:"",
         enrolledDate:"",
         password: req.body.password,
         gender: req.body.gender,
@@ -183,10 +184,13 @@ fetchCoachlist = async (req:CustomRequest,res:Response,next:NextFunction) : Prom
 }
 fetchCoachDetails = async(req:Request,res:Response,next:NextFunction)=>{
    try {
-      const {id} = req.params
-      const coach_Id = new mongoose.Types.ObjectId(id)
-      const result = await this.userService.fetchCoachDetails(coach_Id)
-      res.status(HttpStatus.OK).json({success:true,coachDetails:result})
+      const {coach,user} = req.query
+      console.log(user,coach,"nnnnnnnnnnnnnnn")
+      const coach_Id = new mongoose.Types.ObjectId(coach as string)
+      const user_Id = new mongoose.Types.ObjectId(user as string)
+      const result = await this.userService.fetchCoachDetails(coach_Id,user_Id)
+      console.log(result)
+      res.status(HttpStatus.OK).json({success:true,coachUserDetails:result})
    } catch (error) {
     console.error("error at fetching coach Details ");
     next(error);
@@ -202,7 +206,7 @@ fetchUserDetails = async(req:Request,res:Response,next:NextFunction)=>{
      console.log(result,"<<<<<<<<<<<<<<<<<<<<<")
      res.status(HttpStatus.OK).json({success:true,usercoachDeatails:result})
   } catch (error) {
-   console.error("error at fetching coach Details ");
+   console.error("error at fetching coach/user Details ");
    next(error);
   }
 }

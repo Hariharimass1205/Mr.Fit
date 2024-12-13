@@ -22,6 +22,7 @@ const PayUPage = () => {
   const user_Id = searchParams.get('user_Id');
   const coach_Id = searchParams.get('coach_Id');
   const packageData = searchParams.get('packageAmount');
+  const packageDuration = searchParams.get('packageDuration');
   const userEmail = searchParams.get('userEmail');
   const userName = searchParams.get('userName');
 
@@ -29,6 +30,8 @@ const PayUPage = () => {
   if (!user_Id || !coach_Id || !packageData || !userEmail || !userName) {
     return <div>Missing necessary query parameters!</div>;
   }
+
+ console.log(packageDuration,"packageDuration")
 
   const BookedData = {
     advanceAmount: packageData,
@@ -56,8 +59,9 @@ const PayUPage = () => {
       username,
       email,
       udf1,
+      packageDuration,
     };
-
+console.log(data,"99999999999999")
     const makePaymentRequest = async () => {
       try {
         console.log("Sending Payment Request:", data);
@@ -143,6 +147,7 @@ const PayUPage = () => {
                   Complete Payment
                 </button>
               ) : (
+
                 <button
                   type="button"
                   className="w-full bg-gray-400 text-white px-4 py-3 rounded-lg font-medium cursor-not-allowed"

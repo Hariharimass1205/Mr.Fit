@@ -16,6 +16,7 @@ useEffect(() => {
     async function fetchuserData(){
     try {
       const userFromLocalStorage = JSON.parse(localStorage.getItem("user") as string)
+      console.log(userFromLocalStorage,"userFromLocalStorage")
       const {coach,user} = await fetchDataUserDetails(userFromLocalStorage._id,userFromLocalStorage.coachId)
       setUser(user)
       setCoach(coach[0])
@@ -103,11 +104,11 @@ useEffect(() => {
         {/* Coaching Details */}
         <div className="mt-8 bg-white p-6  rounded-lg shadow">
           <div className="flex items-center gap-4">
-          <img
+          {/* <img
                 src={coach?.userId?.profileImage}
                 alt="Img"
                 className="w-48x` h-48 object-cover"
-              />
+              /> */}
             <div>
               <h3 className="text-xl font-bold">Your Coaching Details</h3>
               <p>Package: 3 Months</p>

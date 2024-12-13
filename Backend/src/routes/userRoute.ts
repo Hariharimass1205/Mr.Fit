@@ -23,6 +23,6 @@ userRouter.post('/saveNewPassword',controller.saveChangePassword)
 userRouter.post('/resendOTP',controller.HandleResendOTP)
 userRouter.get('/fetchCoachdata',controller.fetchCoachlist) 
 userRouter.get('/fetchUserDetails',controller.fetchUserDetails) 
-userRouter.get('/fetchCoachDetails/:id',controller.fetchCoachDetails) 
+userRouter.get('/fetchCoachDetails',controller.fetchCoachDetails) 
 
 export default userRouter

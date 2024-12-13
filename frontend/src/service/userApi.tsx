@@ -122,11 +122,12 @@ export const fetchcoachList = async ()=>{
   }
 }
 
-export const fetchCoachDetails = async (coach_id:string):Promise<any>=>{
+export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<any>=>{
   try {
-    const {data} = await Axios.get(`${SERVER_URL_USER}/fetchCoachDetails/${coach_id}`)
+    const {data} = await Axios.get(`${SERVER_URL_USER}/fetchCoachDetails?coach=${coach_id}&user=${user_id}`)
+    console.log(data,"nnnnnnnnnn")
    if(data){
-    return data.coachDetails.data[0]
+    return data.coachUserDetails
    }
   } catch (error) {
     console.log(error)
@@ -135,6 +136,7 @@ export const fetchCoachDetails = async (coach_id:string):Promise<any>=>{
 
   export const fetchDataUserDetails = async (user_id:string,coach_id:string):Promise<any>=>{
     try {
+      console.log(user_id,coach_id,"kkkkkkkkkkkkk")
       const {data} = await Axios.get(`${SERVER_URL_USER}/fetchUserDetails?userId=${user_id}&coachId=${coach_id}`)
       const {coach,user} = data.usercoachDeatails
       console.log(coach[0],user,">>>>>>>>>>")

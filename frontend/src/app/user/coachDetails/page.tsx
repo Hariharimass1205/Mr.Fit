@@ -43,6 +43,7 @@ export default function GymProfile() {
   const serachParams = useSearchParams();
   const [coach, setCoach] = useState< any | null>({ });
   const [user, setUser] = useState< any | null>({ });
+  const [btnVisiblity,setBtnVisiblity] = useState(0)
   
   useEffect(() => {
     const fetchdatafn = async () => {
@@ -50,8 +51,9 @@ export default function GymProfile() {
       if (coach_id) {
         const user = JSON.parse(localStorage.getItem("user") as string)
         setUser(user)
-        const data = await fetchCoachDetails(coach_id);
-        setCoach(data);
+        const data = await fetchCoachDetails(coach_id,user._id);
+        setCoach(data.coach);
+        setUser(data.user)
         console.log(data,".......................")
       } else {
         console.log("coach_id missing in coach details");
@@ -59,12 +61,14 @@ export default function GymProfile() {
     };
     fetchdatafn();
   }, []);
-
-  console.log(user,"caoch detail b4 payment")
+console.log(user,coach,"^^^^^^^^^^^^^^^^^^^^^^^^^^^")
   const redirectToPayment =(packageAmount: number | undefined,packageDuration: string)=>{
     // localStorage.setItem("coach",JSON.stringify(coach))
     router.push(`/user/payment?coach_Id=${coach?._id}&user_Id=${user?._id}&packageAmount=${packageAmount}&packageDuration=${packageDuration}&userEmail=${user?.email}&userName=${user.userName}`)
   }
+
+
+
   console.log(user.enrolledPackage>0,"ooooooooooooooooo",user.enrolledPackage)
   return (
     <div className="min-h-screen bg-gray-900 text-white">

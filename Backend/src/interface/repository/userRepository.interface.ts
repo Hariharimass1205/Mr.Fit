@@ -10,6 +10,6 @@ export interface IUserRepository{
     updateUser(email:string,hashedpassword:string):Promise<any|null>
     updateUserOTP(email:string,otp:string):Promise<any|null>
     fetchCoachListRep():Promise<any|null>
-    fetchCoachDetailsRep(id:Types.ObjectId):Promise<any|null>
+    fetchCoachDetailsRep(coach_id:Types.ObjectId,user_Id:Types.ObjectId):Promise<any|null>
     fetchUserDetailsRep(coach_Id:Types.ObjectId,user_Id:Types.ObjectId):Promise<any|null>
 }

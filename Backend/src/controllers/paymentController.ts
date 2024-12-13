@@ -3,7 +3,7 @@ import { IPaymentController } from "../interface/controllers/paymentController.i
 import { IPaymentService } from "../interface/services/paymentService.interface";
 import { HttpStatus } from "../utils/httpStatusCode";
 import { CustomRequest } from '../middlesware/jwtVerification';
-
+let a  = 10
 
 export class PaymentController implements IPaymentController {
   private paymentService: IPaymentService;
@@ -13,7 +13,7 @@ export class PaymentController implements IPaymentController {
 
   payment = async (req: CustomRequest , res: Response, next: NextFunction): Promise<any> => {
     try {
-      const { txnid, amount, productinfo, username, email, udf1 } = req.body;
+      const { txnid, amount, productinfo, username, email, udf1  } = req.body;
         if (!txnid || !amount || !productinfo || !username || !email || !udf1) {
         return res.status(HttpStatus.BAD_REQUEST).send("Mandatory fields missing");
       }

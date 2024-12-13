@@ -5,10 +5,11 @@ import userModel from "../model/userModel";
 
 
 export class PaymentRepository implements IPaymentRepository{
- paymentDetails=async(bookingData:any): Promise<any|null>=> {
+  paymentDetails=async(bookingData:any): Promise<any|null>=> {
     try {
-       const{ txnid,amount,productinfo, username,email,udf1}=bookingData
-       const paymentDetail= await paymentModel.create({
+      console.log("cdjdkvnjcjleskdckce payment 2")
+      const{ txnid,amount,productinfo, username,email,udf1}=bookingData
+      const paymentDetail= await paymentModel.create({
        coachName:username,
        coachEmail:email,
        userId:udf1,
@@ -31,13 +32,15 @@ export class PaymentRepository implements IPaymentRepository{
 }
 updateBookingStatus=async(bookingData:any): Promise<any|null>=> {
   try {
+    console.log("it cam 4 ")
     const{ 
       txnid,
       email,
       coachId,
       status,
       amount,
-      userId,}=bookingData
+      userId
+    }=bookingData
       console.log( 
         txnid,
         email,

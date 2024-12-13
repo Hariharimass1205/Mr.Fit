@@ -148,9 +148,9 @@ fetchCoachListSer= async ():Promise<any|null>=>{
     }
 }
 
-fetchCoachDetails= async (id:Types.ObjectId):Promise<any|null>=>{
+fetchCoachDetails= async (coach_id:Types.ObjectId,user_Id:Types.ObjectId):Promise<any|null>=>{
     try {
-        const data = await this.userRepository.fetchCoachDetailsRep(id)
+        const data = await this.userRepository.fetchCoachDetailsRep(coach_id,user_Id)
         return data
     } catch (error) {
         console.log("error at fetching cocah list in service")

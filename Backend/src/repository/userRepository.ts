@@ -86,10 +86,12 @@ fetchCoachListRep = async ()=>{
     throw new Error('Database Error');
   }
 }
-fetchCoachDetailsRep = async (id:Types.ObjectId)=>{
+fetchCoachDetailsRep = async (coach_id:Types.ObjectId,user_Id:Types.ObjectId)=>{
   try {
-    const user = await coachModel.find({_id:id}).populate("userId","profileImage quizScore email")
-    return {data:user}
+    const coach = await coachModel.findOne({_id:coach_id}).populate("userId","profileImage quizScore email")
+    const user = await userModel.findOne({_id:user_Id})
+    let data = {coach:coach,user:user}
+    return data
   } catch (error) {
     console.error('Error fetching coach List:', error);
     throw new Error('Database Error');
