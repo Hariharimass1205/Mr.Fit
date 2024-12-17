@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
     const fetchData = async () => {
       try {
         const data = await fetchDataList();
-        setUser(data?.userList)
+        setUser(data?.userList.length)
         setPending(data?.pendingApprovalsList)
         setEnrolledUsersList(data?.enrolledUsers?.length)
         setCoach(data?.coachList)

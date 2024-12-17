@@ -14,12 +14,14 @@ interface Coach {
   id: number;
   name: string;
   location: string;
+  students:[string]
   age: number;
   noOfStudentsCoached: number;
 }
 
 export default function CoachList() {
   const [coaches, setCoaches] = useState<Coach[]>([]);
+  const [user, setUser] = useState<any>();
   const [filteredCoaches, setFilteredCoaches] = useState<Coach[]>([]); 
   const [filters, setFilters] = useState({
     search: "",
@@ -87,11 +89,13 @@ export default function CoachList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        let storedItem = JSON.parse(localStorage.getItem("user") as string)
+        setUser(storedItem)
         const data = await fetchcoachList();
         setCoaches(data);
-        setFilteredCoaches(data); // Initialize filtered data
+        setFilteredCoaches(data); 
       } catch (error) {
-        //console.error("Failed to fetch coaches:", error);
+        console.log(error)
       }
     };
     fetchData();

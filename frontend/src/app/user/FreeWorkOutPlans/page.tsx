@@ -63,14 +63,13 @@ export default function Home() {
 
   useEffect(() => {
     const allWorkouts = goal === "Weight Gain" ? weightGainWorkouts : weightLoseWorkouts;
-
     const workoutPlan: Record<string, Workout[]> = {};
     days.forEach((day) => {
       workoutPlan[day] = day === "Sunday" ? [] : shuffleWorkouts(allWorkouts);
     });
-
     setWeeklyWorkouts(workoutPlan);
   }, [goal]);
+
 
   useEffect(() => {
     if (weeklyWorkouts[selectedDay]) {
@@ -86,13 +85,11 @@ export default function Home() {
       >
         Back
       </button>
-
       <header className="flex text-center py-6">
         <h1 className="text-7xl font-extrabold text-cyan-400 drop-shadow-md">
           Gym Workout Planner
         </h1>
       </header>
-
       <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-8">
         <select
           value={selectedDay}
@@ -105,7 +102,6 @@ export default function Home() {
             </option>
           ))}
         </select>
-
         <select
           value={goal}
           onChange={(e) => setGoal(e.target.value)}
@@ -139,7 +135,7 @@ export default function Home() {
           <p className="text-lg font-medium text-gray-400">No workouts for today!</p>
         )}
       </div>
-      <h1 className="mt-20 text-2xl text-gray-500">: Step to follow : </h1>
+      <h1 className="mt-20 text-2xl text-gray-500">: Steps to follow : </h1>
       <p className="w-auto text-gray-500 text-sm mr-10 ml-10">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsam, rerum aspernatur sequi recusandae quasi expedita, quidem non a omnis odio praesentium, reprehenderit itaque doloribus quam. Expedita animi in rerum corrupti quis accusantium consequatur ab non tenetur praesentium vitae, doloribus id voluptas quo repellat quibusdam repudiandae aperiam sed natus nisi sunt doloremque culpa? Aliquam odit enim rerum quas consequatur sit quisquam, autem, sapiente aliquid illum quo unde suscipit. Laboriosam rerum sit aliquid perspiciatis, voluptatum ipsum quod dolorem adipisci debitis eos sequi consequuntur vitae numquam fuga ex nostrum quaerat inventore voluptas consectetur! Iure velit voluptas harum totam rem nostrum eum nihil incidunt asperiores fugiat eius dolorem ratione ducimus commodi expedita recusandae eligendi porro temporibus assumenda, et quis aperiam minus deserunt. Laboriosam nostrum architecto perspiciatis suscipit error at id vel veniam iste velit ex, dolorem culpa commodi sed eius quidem repellendus consequatur, laudantium maiores. Delectus quas maiores fugiat libero officiis natus aliquid ipsum sed? Asperiores, accusantium culpa excepturi nemo soluta debitis adipisci laboriosam quas ducimus. Dignissimos reprehenderit at autem ratione voluptatum provident nam voluptate error animi quisquam quis, eius facere atque sed aliquam dolorum necessitatibus nesciunt perferendis amet magni porro quos fuga sunt. Autem dolorem quae quod obcaecati, ea labore cupiditate beatae quos, officia et molestias, provident eum quia quo consectetur quas repellat exercitationem? Quas consequatur maxime atque qui ratione quia, cupiditate dolore animi excepturi alias eaque quo ex, incidunt eligendi natus iste et ipsa in suscipit fugiat sed sapiente eius? Vel natus, optio sapiente est repellendus, aut asperiores, quo suscipit officiis excepturi sit quod. Quae voluptatum officiis beatae laborum explicabo. Voluptatum, deserunt. Doloremque incidunt, eum sequi, fugit deleniti consequatur distinctio laborum enim tempore necessitatibus iure deserunt ducimus temporibus nisi aut facere. Neque voluptates quam, libero deserunt perspiciatis aliquid porro ullam laboriosam. Eos qui, neque quasi amet sunt voluptatem expedita laudantium sed animi.</p>
     </div>
   );

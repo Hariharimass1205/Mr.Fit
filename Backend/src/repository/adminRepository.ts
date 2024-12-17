@@ -1,4 +1,5 @@
 import { IAdminRepository } from "../interface/repository/adminRepository.interface";
+import paymentModel from "../model/paymentModel";
 import userModel from "../model/userModel"
 
 export class adminReository implements IAdminRepository{
@@ -8,13 +9,15 @@ export class adminReository implements IAdminRepository{
         const coaches = await userModel.find({isCoach:true}).exec();
         const pendingApprovals = await userModel.find({isApproved:"Pending"}).exec();
         const enrolledUsers = await userModel.find({enrolledPackage:{$gt:0}}).populate("coachId","name")
+        const paymentList = await paymentModel.find({paymentStatus:"completed"})
         const result = {
-            userList : users.length ,
-            pendingApprovalsList:pendingApprovals.length ,
+            userList : users,
+            pendingApprovalsList:pendingApprovals.length,
             users,
             coachList:coaches.length,
             coaches:coaches,
-            enrolledUsers:enrolledUsers
+            enrolledUsers:enrolledUsers,
+            paymentList
         }
         return result
     } catch (error) {

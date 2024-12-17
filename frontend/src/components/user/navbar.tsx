@@ -5,6 +5,7 @@ import { fetchData, logoutApi } from '@/service/userApi';
 
 const Navbar: React.FC = () => {
   const [user, setUser] = useState();
+  const [score,setScore] = useState(0)
   const [userStatus,setUserStatus] = useState("")
   const [isRegistered,setIsRegistered] = useState(false)
   const [enrolledPackage,setEnrolledPackage] = useState(0)
@@ -22,7 +23,9 @@ const Navbar: React.FC = () => {
     (async function fetchuserData(){
     try {
       const data = await fetchData()
+      console.log(data,"navv")
       setUserStatus(data?.result?.data?.isApproved)
+      setScore(data?.result?.data?.quizScore)
       setIsRegistered(data?.result?.data?.isRegisted)
       setEnrolledPackage(data?.result?.data?.enrolledPackage)
       setQuizScore(quizScore)
@@ -83,7 +86,7 @@ const Navbar: React.FC = () => {
   }, [user]);
 
  const handleBecomeCoach = ()=>{
-  if(enrolledPackage<0){
+  if(enrolledPackage<=0){
    if(isCoach){
    router.push(`/coaches/greetings?quizScore=${quizScore}`)
    }else{
@@ -113,9 +116,11 @@ const Navbar: React.FC = () => {
         <span className="text-lg hover:underline mr-3 hover:text-cyan-400">
           Hi.. {user}
         </span>
+          {score <= 0 ?
         <span>
-        <a href="/user/FreeWorkOutPlans" className='ml-7 hover:underline mr-3 hover:text-orange-400'>Free t training</a>
+          <a href="/user/FreeWorkOutPlans" className='ml-7 hover:underline mr-3 hover:text-orange-400'>Free training</a>
         </span>
+        :""}
         </span>
       )}
       {user && isAth ? (
@@ -146,7 +151,7 @@ const Navbar: React.FC = () => {
           onClick={handleBecomeCoach}
           className="text-lg hover:underline hover:text-cyan-400"
         >
-          {enrolledPackage<0?"Become a Coach":"Profile"}
+          {enrolledPackage<=0?"Become a Coach":"Profile"}
         </a>
       )}
     </div>

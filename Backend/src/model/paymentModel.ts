@@ -20,11 +20,11 @@ const paymentSchema = new mongoose.Schema({
         type: Number,
         required: true,
       },
-      coachEmail: {
+      userEmail: {
         type: String,
         required: true,
       },
-      coachName: {
+      userName: {
         type: String,
         required: true,
       },

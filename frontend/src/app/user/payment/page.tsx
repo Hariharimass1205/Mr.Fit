@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { CLIENT_URL } from "../../../../utils/serverURL";
 import { useSearchParams, useRouter } from "next/navigation";
 import payUApiCalls from "../../../../utils/apiCalls/payUApiCalls";
+import Image from 'next/image';
 
 const PayUPage = () => {
   const searchParams = useSearchParams();
@@ -31,8 +32,6 @@ const PayUPage = () => {
     return <div>Missing necessary query parameters!</div>;
   }
 
- console.log(packageDuration,"packageDuration")
-
   const BookedData = {
     advanceAmount: packageData,
     vendorId: coach_Id,
@@ -45,7 +44,7 @@ const PayUPage = () => {
   const productinfo = BookedData.vendorId || "";
   const username = BookedData.username;
   const email = BookedData.userEmail;
-  const surl = `${CLIENT_URL}/api/paymentSuccess`;
+  const surl = `${CLIENT_URL}/api/paymentSuccess?packageDuration=${encodeURIComponent(JSON.stringify(packageDuration))}`;
   const furl = `${CLIENT_URL}/api/paymentFailure`;
   const udf1 = BookedData.user_Id || "";
 
@@ -61,7 +60,7 @@ const PayUPage = () => {
       udf1,
       packageDuration,
     };
-console.log(data,"99999999999999")
+
     const makePaymentRequest = async () => {
       try {
         console.log("Sending Payment Request:", data);
@@ -101,7 +100,7 @@ console.log(data,"99999999999999")
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4" style={{ backgroundImage: 'url(/gym-background.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+    <div className="relative min-h-screen flex flex-col items-center justify-center p-4">
       <div className="bg-black shadow-md rounded-lg p-6 max-w-md w-full text-white">
         {!isConfirmed ? (
           <div>
@@ -138,24 +137,13 @@ console.log(data,"99999999999999")
               <input type="hidden" name="surl" value={surl} />
               <input type="hidden" name="furl" value={furl} />
               <input type="hidden" name="hash" value={hash || ""} />
-              {hash ? (
-                <button
-                  type="submit"
-                  value="submit"
-                  className="w-full bg-red-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-red-700 transition"
-                >
-                  Complete Payment
-                </button>
-              ) : (
-
-                <button
-                  type="button"
-                  className="w-full bg-gray-400 text-white px-4 py-3 rounded-lg font-medium cursor-not-allowed"
-                  disabled
-                >
-                  Generating Payment Link...
-                </button>
-              )}
+              <button
+                type="submit"
+                value="submit"
+                className="w-full bg-red-600 text-white px-4 py-3 mt-6 rounded-lg font-medium hover:bg-red-700 transition"
+              >
+                Complete Payment
+              </button>
             </form>
           </div>
         )}

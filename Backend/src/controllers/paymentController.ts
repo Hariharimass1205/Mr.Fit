@@ -3,14 +3,11 @@ import { IPaymentController } from "../interface/controllers/paymentController.i
 import { IPaymentService } from "../interface/services/paymentService.interface";
 import { HttpStatus } from "../utils/httpStatusCode";
 import { CustomRequest } from '../middlesware/jwtVerification';
-let a  = 10
-
 export class PaymentController implements IPaymentController {
   private paymentService: IPaymentService;
   constructor(paymentService: IPaymentService) {
     this.paymentService = paymentService;
   }
-
   payment = async (req: CustomRequest , res: Response, next: NextFunction): Promise<any> => {
     try {
       const { txnid, amount, productinfo, username, email, udf1  } = req.body;
@@ -35,10 +32,9 @@ export class PaymentController implements IPaymentController {
 
  saveData= async (req: Request, res: Response, next: NextFunction):Promise<void>=> {
     try {
-      const { txnid, email, productinfo, status, amount, udf1 } = req.body;
+      const { txnid, email, productinfo, status, amount, udf1, package: packageType } = req.body;
       const userId = udf1;
       const coachId = productinfo;
-      console.log(txnid,"-------------", email,"-------------", productinfo, "-------------",status,"-------------", amount,"-------------", udf1,"-------------")
       const updatedBooking = await this.paymentService.updateBookingStatus({
         txnid,
         email,
@@ -46,9 +42,9 @@ export class PaymentController implements IPaymentController {
         status,
         amount,
         userId,
+        packageType
       });
       if (updatedBooking) {
-        console.log(updatedBooking,"result of saveData")
         res.status(HttpStatus.OK).json({ success: true, updatedBookingId: updatedBooking });
       } else {
         res

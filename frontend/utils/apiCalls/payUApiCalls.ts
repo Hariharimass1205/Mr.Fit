@@ -17,12 +17,9 @@ export const PayUUrl = {
   test: `${SERVER_URL_PAYMENT}/response/test`,
 };
 
-let a = ""
 export default {
   paymentReq: async function (data: any) {
     try {
-      console.log(data,"feiuufuivniveu")
-      a = data.packageDuration
       const reshash = await apiClient.post("/payment", JSON.stringify(data), {
         headers: {
           "Content-Type": "application/json",
@@ -35,6 +32,7 @@ export default {
   },
   saveData: async function (pd: any) {
     try {
+      console.log(pd,"pd")
       const response = await apiClient.post(`/response/saveData`, JSON.stringify(pd), {
         headers: {
           "Content-Type": "application/json",

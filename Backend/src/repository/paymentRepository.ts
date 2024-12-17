@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 import { IPaymentRepository } from "../interface/repository/paymentRepository.interface";
 import coachModel from "../model/coachModel";
 import paymentModel from "../model/paymentModel";
@@ -10,8 +11,8 @@ export class PaymentRepository implements IPaymentRepository{
       console.log("cdjdkvnjcjleskdckce payment 2")
       const{ txnid,amount,productinfo, username,email,udf1}=bookingData
       const paymentDetail= await paymentModel.create({
-       coachName:username,
-       coachEmail:email,
+       userName:username,
+       userEmail:email,
        userId:udf1,
        coachId:productinfo,
        transactionId:txnid,
@@ -30,34 +31,38 @@ export class PaymentRepository implements IPaymentRepository{
      throw new Error(error.message);
    }
 }
+
 updateBookingStatus=async(bookingData:any): Promise<any|null>=> {
   try {
-    console.log("it cam 4 ")
     const{ 
-      txnid,
-      email,
-      coachId,
-      status,
-      amount,
-      userId
+      txnid,email,coachId,status,amount,userId,packageType
     }=bookingData
-      console.log( 
-        txnid,
-        email,
-        coachId,
-        status,
-        amount,
-        userId,"in repoooo")
-        const updatedPayment = await paymentModel.updateOne({coachEmail:email},{$set:{paymentStatus:"completed"}})
-        const payment = await paymentModel.findOne({coachEmail:email,userId:userId})
+    console.log( txnid,email,coachId,status,amount,userId,"details  deatils //////////")
+    const enrolledPackage = `${packageType}`;
+        const updatedPayment = await paymentModel.updateOne({userEmail:email},{$set:{paymentStatus:"completed"}})
+
+        const payment = await paymentModel.findOne({userEmail:email,userId:userId})
         const paymentDate = new Intl.DateTimeFormat("en-US").format(new Date(payment.transactionDate));
-        const userCoachIdUpdate = await userModel.updateOne({_id:userId},{$set:{enrolledPackage:amount,coachId:coachId,enrolledDate:paymentDate}})
+        const userCoachIdUpdate = await userModel.updateOne(
+          { _id: userId },
+          {
+            $set: {
+              enrolledPackage:amount,
+              enrolledDuration:enrolledPackage, 
+              coachId: coachId,
+              enrolledDate: paymentDate,
+            },
+          }
+        );
         const addUserIdToCoach = await coachModel.updateOne(
-          { _id: coachId },
-          { $addToSet: { students: userId } }
-      );
+          { _id: new mongoose.Types.ObjectId(coachId) },
+          {
+            $addToSet: { Students: new mongoose.Types.ObjectId(userId) },
+            $inc: { noOfStudentsCoached: 1 }
+          }
+        );
+      console.log(userId,addUserIdToCoach,coachId,"coach student updated result")
         const updatedUser =  await userModel.findOne({_id:userId})
-        console.log(updatedUser,"user after payment")
         return updatedPayment
   } catch (error) {
     console.error("Error in payment doc creation:", error);

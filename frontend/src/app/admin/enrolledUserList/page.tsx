@@ -88,14 +88,14 @@ const EnrolledUserList: React.FC = () => {
       ) : users.length > 0 ? (
         <>
           <div className="p-4">
-            <table className="table-auto text-slate-950 w-full border-collapse border border-gray-300 rounded-lg">
+            <table className="table-auto text-slate-950 w-full border-collapse border justify-center border-gray-300 rounded-lg">
               <thead className="bg-gray-100">
                 <tr>
                   <th className="px-6 py-3 border border-gray-300 text-left">Date</th>
                   <th className="px-6 py-3 border border-gray-300 text-left">Name</th>
                   <th className="px-6 py-3 border border-gray-300 text-left">Package</th>
                   <th className="px-6 py-3 border border-gray-300 text-left">Coach Name</th>
-                  <th className="px-6 py-3 border border-gray-300 text-center">Transaction Id</th>
+                  <th className="px-6 py-3 border border-gray-300 text-center">Package Type</th>
                 </tr>
               </thead>
               <tbody>
@@ -105,7 +105,7 @@ const EnrolledUserList: React.FC = () => {
                     className="hover:bg-gray-50 transition-colors duration-200"
                   >
                     <td className="px-6 py-4 border border-gray-300 text-gray-700">
-                      {indexOfFirstItem + index + 1}
+                      {user.enrolledDate}
                     </td>
                     <td className="px-6 py-4 border border-gray-300 text-gray-700">
                       {user.userName.toLocaleUpperCase()}
@@ -115,6 +115,9 @@ const EnrolledUserList: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 border border-gray-300 text-gray-700">
                       {user.coachId.name}
+                    </td>
+                    <td className="px-6 py-4 border border-gray-300 justify-center text-gray-700">
+                      {user.enrolledDuration}
                     </td>
                   
                   </tr>

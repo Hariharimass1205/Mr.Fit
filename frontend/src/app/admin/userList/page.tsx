@@ -83,6 +83,7 @@
     const totalPages = Math.ceil(users.length / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    
     const currentUsers = users.slice(indexOfFirstItem, indexOfLastItem);
 
     const handleNextPage = () => {

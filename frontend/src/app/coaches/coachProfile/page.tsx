@@ -20,7 +20,11 @@ export default function CoachProfile() {
     height: 0,
     weight: 0,
     noOfStudentsCoached: 0,
-    Students: [""],
+    Students: [
+      {
+        type: new Types.ObjectId(),
+      },
+    ],
     availability: "",
     achievementBadges:{
       AchievementsOne:"",
@@ -99,40 +103,29 @@ export default function CoachProfile() {
     toast.success("profile successfully updated")
   };
 
+
   
   const handleAchievementSave = async () => {
-    if (!achievementsOne && !achievementsTwo && !achievementsThree) {
-      toast.error("Please add an achievement before saving.");
-      return;
-    }
-   
-    const trimmedAchievementOne = achievementsOne.trim();
-  const trimmedAchievementTwo = achievementsTwo.trim();
-  const trimmedAchievementThree = achievementsThree.trim();
-
-  
-  if (!trimmedAchievementOne || !trimmedAchievementTwo || !trimmedAchievementThree) {
-    toast.error("Please fill in all achievements fields with valid information.");
-    return; 
-  }
-
     try {
-      let achieve={
-          achievementsOne:achievementsOne,
-          achievementsTwo:achievementsTwo,
-          achievementsThree:achievementsThree
-      }
-      let dataSet = { coachId: coach.userId, achievement: achieve };
+      const achieve = { achievementsOne ,achievementsTwo,achievementsThree};
+      const dataSet = { coachId: coach.userId, achievement: achieve };
       const res = await saveAchievementBackend(dataSet);
-      
-      setCoach(res);
+  
+      // Update the coach state and clear the input
+      setCoach((prev) => ({
+        ...prev,
+        achievementBadges: {
+          ...prev.achievementBadges,
+          AchievementsOne: achievementsOne,
+        },
+      }));
       setIsEditingAchievement(false);
       toast.success("Achievement successfully added!");
     } catch (error) {
       toast.error("Failed to save achievement.");
     }
   };
-  console.log(achievementsOne,"AchievementsOneAchievementsOneAchievementsOne")
+  
 
 
   const handlePackageSave = async () => {
@@ -313,66 +306,82 @@ export default function CoachProfile() {
 </div>
 
 
-   <div className="bg-gray-700 rounded-lg shadow-md p-6">
-   <h2 className="text-2xl mb-4 font-extrabold text-red-600 flex justify-between items-center"> 
-          Achievement Badges
-            <button
-              onClick={() => setIsEditingAchievement(!isEditingAchievement)}
-              className="ml-4 text-sm text-blue-400 underline"
-            >
-             {isEditingAchievement ? "Cancel" : "Edit"}
-            </button>
-          </h2>
-          {isEditingAchievement ? (
-            <div>
-              <label>Add Achievement :</label>
-
+   {/* Achievements Section */}
+<div className="bg-gray-800 rounded-lg shadow-md p-6 w-full mx-auto mt-2">
+  <h2 className="text-2xl mb-4 font-extrabold text-red-500 flex justify-between items-center">
+    Achievements
+    <button
+      onClick={() => setIsEditingAchievement(!isEditingAchievement)}
+      className="ml-4 text-sm text-blue-400 hover:text-blue-600 underline"
+    >
+      {isEditingAchievement ? "Cancel" : "Edit"}
+    </button>
+  </h2>
+  
+  {isEditingAchievement ? (
+    <div>
+      <label className="block text-white mb-2">Add Achievement:</label>
+     <div className="flex">
       <input
         type="text"
         value={achievementsOne}
         onChange={(e) => setAchievementsOne(e.target.value)}
-        className="w-full bg-gray-600 text-white p-2 rounded mb-2"
+        className="w-full bg-gray-700 text-white p-3 rounded mb-4"
       />
-      <input
+       <button onClick={()=>setAchievementsOne("")} className="text-black ml-3 bg-slate-400 rounded-lg">remove</button>
+       </div>
+
+       <div className="flex">
+         <input
         type="text"
         value={achievementsTwo}
         onChange={(e) => setAchievementsTwo(e.target.value)}
-        className="w-full bg-gray-600 text-white p-2 rounded mb-2"
+        className="w-full bg-gray-700 text-white p-3 rounded mb-4"
       />
-      <input
+       <button onClick={()=>setAchievementsTwo("")} className="text-black ml-3 bg-slate-400 rounded-lg">remove</button>
+
+      </div>
+
+      <div className="flex">
+         <input
         type="text"
         value={achievementsThree}
         onChange={(e) => setAchievementsThree(e.target.value)}
-        className="w-full bg-gray-600 text-white p-2 rounded mb-2"
+        className="w-full bg-gray-700 text-white p-3 rounded mb-4"
       />
-              <button
-                onClick={handleAchievementSave}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Save
-              </button>
-            </div>
-          ) : (
-            <div className="text-center p-2 bg-gray-900 rounded-xl shadow-lg mt-2 max-w-3xl mx-auto">
-  <h2 className="text-3xl font-extrabold text-slate-600-600 mb-6">Coach Achievements</h2>
-  <div className="flex justify-around gap-4 flex-wrap">
-    {achievementsOne && achievementsTwo && achievementsThree}
-  {achievementsOne?<div className="bg-orange-800 p-2 rounded-lg shadow-md w-48 h-16 text-center flex flex-col justify-between items-center">
-      <p className="text-xl font-semibold text-white mb-2">{achievementsOne}</p>
-    </div>:<div className="bg-orange-800 p-2 rounded-lg shadow-md w-48 h-16 text-center flex flex-col justify-between items-center">
-      <p className="text-xl font-semibold text-white mb-2">Add your Achievement</p>
-    </div>}
-     {achievementsTwo?<div className="bg-orange-800 p-2 rounded-lg shadow-md w-48 h-16 text-center flex flex-col justify-between items-center">
-      <p className="text-xl font-semibold text-white mb-2">{achievementsTwo}</p>
-    </div>:""}
-    
-    {achievementsThree?<div className="bg-orange-800 p-2 rounded-lg shadow-md w-48 h-16 text-center flex flex-col justify-between items-center">
-      <p className="text-xl font-semibold text-white mb-2">{achievementsThree}</p>
-    </div>:""}
-  </div>
-</div>
+       <button onClick={()=>setAchievementsThree("")} className="text-black ml-3 bg-slate-400 rounded-lg">remove</button>
+
+      </div>
+      
+      <button
+        onClick={handleAchievementSave}
+        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
+      >
+        Save Achievement
+      </button>
+    </div>
+  ) : (
+    <div className="flex flex-col gap-2 mt-4">
+      {achievementsOne && (
+        <div className="bg-orange-500 text-white p-3 rounded-lg shadow-sm">
+          {achievementsOne}
+          
+        </div>
       )}
-        </div> 
+      {achievementsTwo && (
+        <div className="bg-orange-500 text-white p-3 rounded-lg shadow-sm">
+          {achievementsTwo}
+        </div>
+      )}
+      {achievementsThree && (
+        <div className="bg-orange-500 text-white p-3 rounded-lg shadow-sm">
+          {achievementsThree}
+        </div>
+      )}
+    </div>
+  )}
+</div>
+
 
 
 
