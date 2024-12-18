@@ -10,7 +10,9 @@ export type User = {
     otp?: string;   
     DOB?:string
     otpVerified?: boolean;
-    enrolledPackage?:number;   
+    enrolledPackage?:number; 
+    enrolledDuration:string
+    enrolledDate:string
     address?: string;   
     state?: string;   
     district?: string;   
@@ -25,6 +27,7 @@ export type User = {
   } 
 
 export type Coach = {
+    _id:Types.ObjectId;
     userId:Types.ObjectId;
     name:String;
     age:number;

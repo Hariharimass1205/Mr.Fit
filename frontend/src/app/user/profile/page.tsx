@@ -15,6 +15,27 @@ export default function Dashboard() {
     steps: "",
   });
 
+  const [packageExpired, setPackageExpired] = useState(false);
+  const [expirationDate, setExpirationDate] = useState("");
+
+  const calculateExpirationDate = (enrolledDate: string, duration: string): string => {
+    const startDate = new Date(enrolledDate);
+    switch (duration) {
+      case "monthlyPackage":
+        startDate.setMonth(startDate.getMonth() + 1);
+        break;
+      case "quarterlyPackage":
+        startDate.setMonth(startDate.getMonth() + 3);
+        break;
+      case "yearlyPackage":
+        startDate.setFullYear(startDate.getFullYear() + 1);
+        break;
+      default:
+        break;
+    }
+    return startDate.toLocaleDateString("en-US"); // Formats date as MM/DD/YYYY
+  };
+  
   const [dailyData, setDailyData] = useState({
     water: "0 L",
     calories: "0 kcal",
@@ -37,24 +58,24 @@ export default function Dashboard() {
     async function fetchUserData() {
       try {
         const userFromLocalStorage = JSON.parse(localStorage.getItem("user") as string);
-        console.log(userFromLocalStorage,"*****************")
         const { coach, user } = await fetchDataUserDetails(userFromLocalStorage._id, userFromLocalStorage.coachId);
         setUser(user);
         setCoach(coach[0]);
-        setEditableUserDetails({
-          email: user.email,
-          Name: user.userName,
-          phone: user.phone,
-          weight: user.weight,
-          height: user.height,
-        });
+
+        if (user?.enrolledDate && user?.enrolledDuration) {
+          const calculatedExpiration = calculateExpirationDate(user.enrolledDate, user.enrolledDuration);
+          setExpirationDate(calculatedExpiration);
+
+          const today = new Date();
+          setPackageExpired(new Date(calculatedExpiration) < today);
+        }
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching user data:", error);
       }
     }
     fetchUserData();
   }, []);
-  console.log(coach,"^^^&&&&&&&&&*********")
+  console.log(coach,"^^^&&&&&&&&&*********",user)
 
   const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -91,8 +112,18 @@ export default function Dashboard() {
       >
         Back
       </button>
+        {/* Package Status */}
+        {packageExpired ? (
+          <div className="text-center bg-red-500 text-white p-4 rounded-lg font-bold">
+            Your package expired on {expirationDate}. Please renew to continue.
+          </div>
+        ) : (
+          <div className="text-center bg-green-500 text-white p-4 rounded-lg font-bold">
+            Your package is active until {expirationDate}. Keep progressing!
+          </div>
+        )}
       <img
-                src={user?.profileImage}
+                src={user?.profileImage?user?.profileImage:""}
                 alt="User Profile"
                 className="w-48 h-48 object-cover rounded-full"
               />
@@ -271,16 +302,14 @@ export default function Dashboard() {
               /> */}
             <div>
               <h3 className="text-xl font-bold">Your Coaching Details</h3>
-              <p>Package: 3 Months</p>
-              <p>Coach: {coach?.name}</p>
-              <p>Date of Enroll: 23 Aug</p>
-              <p>Expiring Date: 23 Oct</p>
+              <p>Package: {user?.enrolledDuration}</p>
+              <p>PackagePrice: ${user?.enrolledPackage}</p>
+              <a  href= {`/user/coachDetails?coach=${coach?._id}`}>Coach:<span className="text-blue-500"> {coach?.name}</span></a>
+              <p>Date of Enroll: {user?.enrolledDate}</p>
+              <p>Expiration Date: {expirationDate}</p>
             </div>
           </div>
         </div>
-
-
-
         </div>
       </div>
     </div>
