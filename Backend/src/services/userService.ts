@@ -167,5 +167,13 @@ fetchUserDetails= async (coach_Id:Types.ObjectId,user_Id:Types.ObjectId):Promise
         throw new Error("error at fetching data for navbar");
     }
 }
-
+updateUserProfile = async(idd:Types.ObjectId,data:any):Promise<any|null>=>{
+    try {
+        const datas = await this.userRepository.updateUserDatas(idd,data)
+        return datas
+    } catch (error) {
+        console.log("error at saving edited data in user service")
+        throw new Error("error at saving edited data in user ");
+    }
+}
 }

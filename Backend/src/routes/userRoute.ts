@@ -24,5 +24,5 @@ userRouter.post('/resendOTP',controller.HandleResendOTP)
 userRouter.get('/fetchCoachdata',controller.fetchCoachlist) 
 userRouter.get('/fetchUserDetails',controller.fetchUserDetails) 
 userRouter.get('/fetchCoachDetails',controller.fetchCoachDetails) 
-
+userRouter.put('/updateUserData',authMiddleware,controller.updateUserProfile)
 export default userRouter

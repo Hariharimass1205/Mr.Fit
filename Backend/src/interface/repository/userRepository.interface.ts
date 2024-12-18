@@ -12,4 +12,5 @@ export interface IUserRepository{
     fetchCoachListRep():Promise<any|null>
     fetchCoachDetailsRep(coach_id:Types.ObjectId,user_Id:Types.ObjectId):Promise<any|null>
     fetchUserDetailsRep(coach_Id:Types.ObjectId,user_Id:Types.ObjectId):Promise<any|null>
+    updateUserDatas(idd:Types.ObjectId,data:any):Promise<any|null>
 }

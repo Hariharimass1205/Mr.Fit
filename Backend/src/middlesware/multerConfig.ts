@@ -66,4 +66,3 @@ export const uploadMiddleware = multer({
     { name: "profilePic", maxCount: 1 },
     { name: "coachPictures", maxCount: 3 }
 ])
-

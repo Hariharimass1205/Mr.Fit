@@ -109,4 +109,24 @@ fetchUserDetailsRep = async (coach_Id:Types.ObjectId,user_Id:Types.ObjectId)=>{
     throw new Error('Database Error');
   }
 }
+updateUserDatas= async (idd:Types.ObjectId,data:any):Promise<any|null>=>{
+  try {
+    const {Name,address,district,dob,email,phone,pincode,state} = data
+    const savedData = await userModel.updateOne({_id:idd},{$set:{
+      userName:Name,
+      address:address,
+      district:district,
+      DOB:dob,
+      email:email,
+      phone:phone,
+      pincode:pincode,
+      state:state
+    }})  
+    const user = await userModel.find({_id:idd})
+    return user
+  } catch (error) {
+    console.error('Error user data savinf after profile edit:', error);
+    throw new Error('Database Error');
+  }
+}
 }

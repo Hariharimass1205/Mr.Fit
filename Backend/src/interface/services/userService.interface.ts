@@ -26,4 +26,5 @@ export interface IUserService {
   fetchCoachListSer():Promise<any|null>
   fetchCoachDetails(coach_Id:Types.ObjectId,user_Id:Types.ObjectId):Promise<Coach|null>;
   fetchUserDetails(coach_Id:Types.ObjectId,user_Id:Types.ObjectId):Promise<any|null>
+  updateUserProfile(idd:Types.ObjectId,data:any):Promise<any | null>
 }

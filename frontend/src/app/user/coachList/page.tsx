@@ -100,6 +100,7 @@ export default function CoachList() {
     };
     fetchData();
   }, []);
+  console.log(coaches[0]?.userId?.profileImage,"llllllllllllllllliiiiiiiiiiiiiiiiiiiuuuuuuuuuuuu")
   return (
     <>
     <div className="min-h-screen bg-gradient-to-r from-cyan-300 to-cyan-1000 text-white flex flex-col">

@@ -136,14 +136,23 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
 
   export const fetchDataUserDetails = async (user_id:string,coach_id:string):Promise<any>=>{
     try {
-      console.log(user_id,coach_id,"kkkkkkkkkkkkk")
       const {data} = await Axios.get(`${SERVER_URL_USER}/fetchUserDetails?userId=${user_id}&coachId=${coach_id}`)
       const {coach,user} = data.usercoachDeatails
-      console.log(coach[0],user,">>>>>>>>>>")
      if(data){
       return {coach,user}
      }
     } catch (error) {
+      console.log(error)
+    }
+  }
+
+  export const updateUserProfile = async (data:any):Promise<any>=>{
+    try {
+      const response = await Axios.put(`${SERVER_URL_USER}/updateUserData`,data)
+      console.log(response.data.res[0],"&&&&&&&&&&&&&&")
+      return response.data.res[0]
+    } catch (error) {
+      console.log("error at user api editng api")
       console.log(error)
     }
   }

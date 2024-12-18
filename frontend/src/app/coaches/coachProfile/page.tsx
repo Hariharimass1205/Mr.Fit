@@ -14,6 +14,7 @@ export default function CoachProfile() {
   const router = useRouter();
 
   const [coach, setCoach] = useState<Coach>({
+    _id:new Types.ObjectId(),
     userId: new Types.ObjectId(),
     name: "",
     age: 0,

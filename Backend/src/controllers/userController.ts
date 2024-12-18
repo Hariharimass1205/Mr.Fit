@@ -210,4 +210,18 @@ fetchUserDetails = async(req:Request,res:Response,next:NextFunction)=>{
    next(error);
   }
 }
+updateUserProfile  = async (req:CustomRequest,res:Response,next:NextFunction) =>{
+try {
+  console.log("jjjjjjjjjjjjjjj")
+  const {id} = req?.user
+  const data = req.body
+  const idd = new mongoose.Types.ObjectId(id)
+  const resData = await this.userService.updateUserProfile(idd,data)
+  console.log(res,"resss jjjjj")
+  res.status(HttpStatus.OK).send({success:true,res:resData})
+} catch (error) {
+  console.error("error at editng/updating user Details ");
+   next(error);
+}
+}
 }
