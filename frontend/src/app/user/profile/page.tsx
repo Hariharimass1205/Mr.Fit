@@ -115,7 +115,7 @@ export default function Dashboard() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-      />
+      />  
       <button
         className="mb-4 m-3 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
         onClick={() => router.back()}
@@ -125,11 +125,11 @@ export default function Dashboard() {
 
       {/* Package Status */}
       {packageExpired ? (
-        <div className="text-center bg-red-500 text-white p-4 rounded-lg font-bold">
+        <div className="text-center bg-red-500 text-white p-4 rounded-lg w-auto font-bold">
           Your package expired on {expirationDate}. Please renew to continue.
         </div>
       ) : (
-        <div className="text-center bg-green-500 text-white p-4 rounded-lg font-bold">
+        <div className="text-center bg-green-500 text-white p-4 rounded-lg w-fit items-end font-bold">
           Your package is active until {expirationDate}. Keep progressing!
         </div>
       )}
@@ -207,11 +207,12 @@ export default function Dashboard() {
 
           {/* Your Details Section */}
           <div className="mt-4 bg-white p-6 ml-8 rounded-lg shadow">
-  <div className="flex items-center gap-4">
-    <div>
-      <h3 className="text-xl font-bold">Your Details</h3>
+  <div className="flex flex-col lg:flex-row items-start lg:items-center gap-8">
+    {/* User Details Section */}
+    <div className="flex-1 bg-gray-400 p-5 rounded-lg flex flex-col">
+      <h3 className="text-xl font-bold mb-4">Your Details</h3>
       {isEditing ? (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           {/* Name */}
           <div>
             <label>Name:</label>
@@ -222,7 +223,7 @@ export default function Dashboard() {
               {...register("Name", { required: "Name is required" })}
               className="w-full border border-gray-300 rounded p-2 mb-2"
             />
-           {errors.Name && <p className="text-red-500">{(errors.Name as FieldError)?.message}</p>}
+            {errors.Name && <p className="text-red-500">{(errors.Name as FieldError)?.message}</p>}
           </div>
 
           {/* Email */}
@@ -240,14 +241,16 @@ export default function Dashboard() {
               })}
               className="w-full border border-gray-300 rounded p-2 mb-2"
             />
-            {errors.email && <p className="text-red-500">{(errors.email as FieldError)?.message}</p>}
+            {errors.email && (
+              <p className="text-red-500">{(errors.email as FieldError)?.message}</p>
+            )}
           </div>
 
           {/* Phone */}
           <div>
             <label>Phone:</label>
             <input
-             defaultValue={user?.phone}
+              defaultValue={user?.phone}
               type="text"
               {...register("phone", {
                 required: "Phone is required",
@@ -258,15 +261,17 @@ export default function Dashboard() {
               })}
               className="w-full border border-gray-300 rounded p-2 mb-2"
             />
-            {errors.phone && <p className="text-red-500">{(errors.phone as FieldError)?.message}</p>}
+            {errors.phone && (
+              <p className="text-red-500">{(errors.phone as FieldError)?.message}</p>
+            )}
           </div>
 
           {/* DOB */}
           <div>
             <label>Date of Birth:</label>
-            defaultValue={user?.DOB}
             <input
               type="date"
+              defaultValue={user?.DOB}
               {...register("dob", { required: "Date of Birth is required" })}
               className="w-full border border-gray-300 rounded p-2 mb-2"
             />
@@ -282,26 +287,30 @@ export default function Dashboard() {
               {...register("state", { required: "State is required" })}
               className="w-full border border-gray-300 rounded p-2 mb-2"
             />
-            {errors.state && <p className="text-red-500">{(errors.state as FieldError)?.message}</p>}
+            {errors.state && (
+              <p className="text-red-500">{(errors.state as FieldError)?.message}</p>
+            )}
           </div>
 
           {/* District */}
           <div>
             <label>District:</label>
             <input
-             defaultValue={user?.district}
+              defaultValue={user?.district}
               type="text"
               {...register("district", { required: "District is required" })}
               className="w-full border border-gray-300 rounded p-2 mb-2"
             />
-            {errors.district && <p className="text-red-500">{(errors.district as FieldError)?.message}</p>}
+            {errors.district && (
+              <p className="text-red-500">{(errors.district as FieldError)?.message}</p>
+            )}
           </div>
 
           {/* Pincode */}
           <div>
             <label>Pincode:</label>
             <input
-             defaultValue={user?.pincode}
+              defaultValue={user?.pincode}
               type="text"
               {...register("pincode", {
                 required: "Pincode is required",
@@ -312,7 +321,9 @@ export default function Dashboard() {
               })}
               className="w-full border border-gray-300 rounded p-2 mb-2"
             />
-            {errors.pincode && <p className="text-red-500">{(errors.pincode as FieldError)?.message}</p>}
+            {errors.pincode && (
+              <p className="text-red-500">{(errors.pincode as FieldError)?.message}</p>
+            )}
           </div>
 
           {/* Address */}
@@ -324,7 +335,9 @@ export default function Dashboard() {
               {...register("address", { required: "Address is required" })}
               className="w-full border border-gray-300 rounded p-2 mb-2"
             />
-            {errors.address && <p className="text-red-500">{(errors.address as FieldError)?.message}</p>}
+            {errors.address && (
+              <p className="text-red-500">{(errors.address as FieldError)?.message}</p>
+            )}
           </div>
 
           {/* Submit Button */}
@@ -336,8 +349,8 @@ export default function Dashboard() {
           </button>
         </form>
       ) : (
-        <div>
-          {/* Display user details when not editing */}
+        <div className="flex flex-col gap-2">
+          {/* Display user details */}
           <p>Name: {user?.userName}</p>
           <p>Email: {user?.email}</p>
           <p>Phone: {user?.phone}</p>
@@ -366,8 +379,20 @@ export default function Dashboard() {
         />
       </div>
     </div>
+
+    {/* Diet Content Section */}
+    <div className="flex-1 bg-gray-400 p-5 rounded-lg flex flex-col">
+      <h3 className="text-xl font-bold mb-4">Your Diet Plan</h3>
+      <ul className="list-disc pl-5 space-y-5 text-gray-900">
+        <li>Meal 1: {user?.Diet?.Meal1 || "No details available"}</li>
+        <li>Meal 2: {user?.Diet?.Meal2 || "No details available"}</li>
+        <li>Meal 3: {user?.Diet?.Meal3 || "No details available"}</li>
+      </ul>
+    </div>
   </div>
 </div>
+
+
 
 
           {/* Coaching Details */}
