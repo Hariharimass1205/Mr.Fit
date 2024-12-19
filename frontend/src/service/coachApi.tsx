@@ -1,5 +1,6 @@
 import axios from "axios";
 import { SERVER_URL_COACH } from '../../utils/serverURL';
+import { Types } from "mongoose";
 
 const Axios = axios.create({
   baseURL:`${SERVER_URL_COACH}`,
@@ -41,6 +42,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
   export const fetchCoachData = async ()=>{
     try {
       const {data} = await Axios.post(`${SERVER_URL_COACH}/fetchCoachdata`)
+      console.log(data,"-----------------------")
      if(data){
       return data.result
      }
@@ -100,4 +102,12 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
     } catch (error) {
       console.log(error)
     }
+}
+export const updateDiet = async (studentId:Types.ObjectId,dietEdit:Object):Promise<any>=>{
+  try {
+    const result = await Axios.put(`${SERVER_URL_COACH}/updateDiet`,{studentId,dietEdit})
+    return result.data.success
+  } catch (error) {
+    console.log(error,"error at updating diet")
+  }
 }

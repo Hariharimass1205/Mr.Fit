@@ -24,4 +24,9 @@ export interface User {
     isApproved:string;
     role:string;
     isRegisted:boolean;
+    Diet?: {
+      Meal1: string | null;
+      Meal2: string | null;
+      Meal3: string | null;
+    };
   } 

@@ -41,7 +41,7 @@ export class UserController implements IUserController{
         quizScore:0,
         isApproved:"",
         role:"user" ,
-        isRegisted:false
+        isRegisted:false,
       });
       console.log(otp,req.body.email)
       if(registerUserRes){
@@ -203,7 +203,6 @@ fetchUserDetails = async(req:Request,res:Response,next:NextFunction)=>{
      const coach_Id = new mongoose.Types.ObjectId(coachId as string);
      const user_Id = new mongoose.Types.ObjectId(userId as string);
      const result = await this.userService.fetchUserDetails(coach_Id,user_Id)
-     console.log(result,"<<<<<<<<<<<<<<<<<<<<<")
      res.status(HttpStatus.OK).json({success:true,usercoachDeatails:result})
   } catch (error) {
    console.error("error at fetching coach/user Details ");
@@ -212,12 +211,10 @@ fetchUserDetails = async(req:Request,res:Response,next:NextFunction)=>{
 }
 updateUserProfile  = async (req:CustomRequest,res:Response,next:NextFunction) =>{
 try {
-  console.log("jjjjjjjjjjjjjjj")
   const {id} = req?.user
   const data = req.body
   const idd = new mongoose.Types.ObjectId(id)
   const resData = await this.userService.updateUserProfile(idd,data)
-  console.log(res,"resss jjjjj")
   res.status(HttpStatus.OK).send({success:true,res:resData})
 } catch (error) {
   console.error("error at editng/updating user Details ");

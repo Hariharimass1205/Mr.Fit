@@ -61,7 +61,7 @@ updateCoachPackage= async (objData:any,userId:Types.ObjectId):Promise<any | null
     }
     }
 
-    updateCoachProfile= async (objData:any,userId:Types.ObjectId):Promise<any | null>=>{
+ updateCoachProfile= async (objData:any,userId:Types.ObjectId):Promise<any | null>=>{
         try {
             const coachPackData = await this.coachRepository.updateProfile(objData,userId)
             return coachPackData
@@ -70,13 +70,20 @@ updateCoachPackage= async (objData:any,userId:Types.ObjectId):Promise<any | null
         }
         }
 
-        updateCoachACHIEVEMENT = async (coachId:Types.ObjectId,achievements:string):Promise<any | null>=>{
+  updateCoachACHIEVEMENT = async (coachId:Types.ObjectId,achievements:string):Promise<any | null>=>{
             try {
                 return await this.coachRepository.updatecoachAchiRepo(coachId,achievements)
             } catch (error) {
                 throw new Error("error at updating achiii in coach side");
             }
             }
+  updateDiet= async (userId:Types.ObjectId,dietEdit:Object):Promise<any | null>=>{
+   try {
+    return await this.coachRepository.updateDietUser(userId,dietEdit)
+   } catch (error) {
+    throw new Error("error at updating diet in coach side");
+   }
+  }
         }
     
 

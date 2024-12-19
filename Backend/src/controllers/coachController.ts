@@ -128,6 +128,18 @@ updateCoachAchievement= async (req:CustomRequest,res:Response,next:NextFunction)
     next(error);
   }
 }
+updateUserDiet= async (req:Request,res:Response,next:NextFunction) : Promise<void>=>{
+ try {
+  console.log("kiiiiiiii")
+  const {studentId,dietEdit} = req.body
+  const userId = new mongoose.Types.ObjectId(studentId)
+  const ress = await this.coachService.updateDiet(userId,dietEdit)
+  res.status(HttpStatus.OK).json({success:true})
+ } catch (error) {
+  console.error("error at updating  user diet");
+  next(error);
+ }
+}
 
 }
 

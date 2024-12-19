@@ -10,4 +10,5 @@ export interface ICoachService{
     updateCoachPackage(objData:Object,userId:Types.ObjectId):Promise<any | null>;
     updateCoachProfile(objData:Object,userId:Types.ObjectId):Promise<any | null>;
     updateCoachACHIEVEMENT(coachId:Types.ObjectId,achievements:any,):Promise<any | null>;
+    updateDiet(userId:Types.ObjectId,dietEdit:Object):Promise<any | null>
 }

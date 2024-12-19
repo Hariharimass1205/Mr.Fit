@@ -26,7 +26,12 @@ const userSchema = new Schema<User>({
     quizScore:{type:Number},
     isApproved:{type:String},
     role:{type:String},
-    isRegisted:{type:Boolean}
+    isRegisted:{type:Boolean},
+    Diet: {
+        Meal1: { type: String, default: null },
+        Meal2: { type: String, default: null },
+        Meal3: { type: String, default: null },
+      },
 })
 
 const userModel = mongoose.model("users",userSchema)

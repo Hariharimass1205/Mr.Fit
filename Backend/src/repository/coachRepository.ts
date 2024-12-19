@@ -52,7 +52,10 @@ export class CoachRepository implements ICoachRepository{
 
 fetchCoachDataRepo = async (userId:Types.ObjectId):Promise<any|null>=>{
     try {
-      const coachDetails = await coachModel.findOne({ userId:userId }).exec();
+      const coachDetails = await coachModel
+      .findOne({ userId: userId })
+      .populate('Students', 'userName phone district enrolledDuration enrolledDate Diet') 
+      .exec();
       const userImage = await userModel.findOne({_id:userId})
       const data  = {coach:coachDetails,userImg : userImage.profileImage}
       return data
@@ -139,5 +142,17 @@ try {
   console.error('Error at updating achievemeent coach by id:', error);
       throw new Error('Database Error');
 }
+}
+updateDietUser = async (userId:Types.ObjectId,dietEdit:any):Promise<any|null>=>{
+  try {
+    const meal1 = dietEdit?.Meal1
+    const meal2 = dietEdit?.Meal2
+    const meal3 = dietEdit?.Meal3
+   const userDiet = await userModel.updateOne({_id:userId},{$set:{"Diet.Meal1":meal1,"Diet.Meal2":meal2,"Diet.Meal3":meal3}})
+   return userDiet
+  } catch (error) {
+    console.error('Error at updating package coach by id:', error);
+    throw new Error('Database Error');
+  }
 }
 }

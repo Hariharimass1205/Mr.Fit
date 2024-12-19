@@ -1,6 +1,6 @@
 "use client";
 
-import { changeProfilePic, fetchCoachData, savePackageBackend, saveProfiletoBackend } from "@/service/coachApi";
+import { changeProfilePic, fetchCoachData, savePackageBackend, saveProfiletoBackend, updateDiet } from "@/service/coachApi";
 import { useEffect, useState } from "react";
 import { Coach } from "../../../../utils/types";
 import { Types } from "mongoose";
@@ -9,7 +9,19 @@ import { useRouter } from "next/navigation";
 import { toast,ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { saveAchievementBackend } from "@/service/coachApi";
-
+interface Student {
+  _id: string;
+  userName: string;
+  phone: string;
+  district: string;
+  enrolledDuration: string;
+  enrolledDate: string;
+  Diet: {
+    Meal1: string;
+    Meal2: string;
+    Meal3: string;
+  };
+}
 export default function CoachProfile() {
   const router = useRouter();
 
@@ -39,7 +51,8 @@ export default function CoachProfile() {
     licenseOrAadhaar: "",
     role: "",
   });
-
+  const [editingStudentId, setEditingStudentId] = useState<Student | null>();
+  const [dietEdit, setDietEdit] = useState({ Meal1: '', Meal2: '', Meal3: '' });
   const [name, setName] = useState("");
   const [age, setAge] = useState(0);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -52,6 +65,7 @@ export default function CoachProfile() {
   const [quarterlyPackage, setQuarterlyPackage] = useState(9999);
   const [yearlyPackage, setYearlyPackage] = useState(17999);
   const [weight, setWeight] = useState(0);
+  const [studentsCoached , setStudentsCoached] = useState(0)
   const [height, setHeight] = useState(0);
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState(0);
@@ -59,16 +73,18 @@ export default function CoachProfile() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
-
+  const [students, setStudents] = useState<Student[]>([]);
   useEffect(() => {
     const fetchCoachDatafn = async () => {
       try {
         const response = await fetchCoachData();
         setCoach(response.coach);
         setName(response?.coach.name);
+        setStudents(response.coach.Students)
         setAge(response.coach.age);
         setStates(response.coach.state);
         setWeight(response.coach.weight);
+        setStudentsCoached(response.coach.noOfStudentsCoached)
         setMonthlyPackage(response.coach.package.monthlyPackage)
         setQuarterlyPackage(response.coach.package.quarterlyPackage)
         setYearlyPackage(response.coach.package.yearlyPackage)
@@ -87,9 +103,9 @@ export default function CoachProfile() {
     };
     fetchCoachDatafn();
   }, []);
-   
+   console.log(students,"pppppppppp")
   const handleProfileSave = async () => {
-     const objData={
+      const objData={
       name: name,
       age:age,
       height:height,
@@ -100,8 +116,8 @@ export default function CoachProfile() {
      } 
      const res = await saveProfiletoBackend(objData)
      setCoach(res)
-    setIsEditingProfile(false);
-    toast.success("profile successfully updated")
+     setIsEditingProfile(false);
+     toast.success("profile successfully updated")
   };
 
 
@@ -160,6 +176,36 @@ export default function CoachProfile() {
     return <div className="text-red-500">{error}</div>;
   }
 
+
+  // diet process
+
+  const handleEditClick = (student:any) => {
+    setEditingStudentId(student._id);
+    setDietEdit(student.Diet || { Meal1: '', Meal2: '', Meal3: '' });
+  };
+
+  const handleInputChange = (e:any) => {
+    const { name, value } = e.target;
+    setDietEdit((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSave = async (studentId:any) => {
+    // Here you would call the API to update the student's Diet field
+    console.log('Saving diet for student:', studentId, dietEdit);
+    const res = await updateDiet(studentId,dietEdit)
+    if(res){
+      toast.success("successfully Diet Edited")
+    }
+    setEditingStudentId(null);
+  };
+
+  const handleCancel = () => {
+    setEditingStudentId(null);
+    setDietEdit({ Meal1: '', Meal2: '', Meal3: '' });
+  };
   return (
     <div className="min-h-screen bg-gray-900 text-white font-sans p-4 relative">
       {/* Back Button */}
@@ -211,8 +257,8 @@ export default function CoachProfile() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         {/* Coach Profile */}
         <div className="bg-gray-800 rounded-lg shadow-md p-6 w-full mx-auto mt-2">
-  <h2 className="text-2xl mb-4 font-extrabold text-red-600 flex justify-between items-center">
-    Coach Profile
+    <h2 className="text-2xl mb-4 font-extrabold text-red-600 flex justify-between items-center">
+      Coach Profile
     <button
       onClick={() => setIsEditingProfile(!isEditingProfile)}
       className="ml-4 text-sm text-blue-400 hover:text-blue-600 underline">
@@ -331,7 +377,6 @@ export default function CoachProfile() {
       />
        <button onClick={()=>setAchievementsOne("")} className="text-black ml-3 bg-slate-400 rounded-lg">remove</button>
        </div>
-
        <div className="flex">
          <input
         type="text"
@@ -440,32 +485,113 @@ export default function CoachProfile() {
       </div>
     )}
   </div>
-</div>
+ </div>
 
         
-        <div className="bg-gray-700 rounded-lg shadow-md p-6">
-          <h2 className="text-lg font-bold mb-3">Students Coached</h2>
-          <p>Total: 49</p>
-          <p>Current Student: Hari</p>
+  <div className="bg-gray-700  rounded-lg shadow-md p-6">
+        <h2 className="text-2xl mb-4 font-extrabold text-red-600 flex justify-between items-center">
+         Coaching History
+         </h2>
+          <p className="flex ">Total Students : <span className="ml-3  text-2xl font-extrabold text-red-600 flex justify-between items-center">{studentsCoached}</span> </p>
         </div>
     
         {/* Buttons */}
-        <div className="bg-gray-700 rounded-lg shadow-md p-6 flex justify-around">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Show Availability
+        <div className="bg-gray-700 w-max rounded-lg shadow-md p-6">
+    <h2 className="text-2xl mb-4 font-extrabold text-red-600 flex justify-between items-center">
+    Students List
+    </h2>
+   <div>
+    <table className="table-auto w-max text-left text-sm text-gray-300">
+      <thead className="bg-gray-800 text-gray-400 uppercase text-xs">
+        <tr>
+          <th className="px-4 py-2">#</th>
+          <th className="px-4 py-2">Name</th>
+          <th className="px-4 py-2">Phone</th>
+          <th className="px-4 py-2">District</th>
+          <th className="px-4 py-2">Enrolled Duration</th>
+          <th className="px-4 py-2">Enrolled Date</th>
+          <th className="px-4 py-2">Edit Diet</th>
+        </tr>
+      </thead>
+      <tbody>
+        {students.map((student, index) => (
+          <tr key={student._id} className="border-b border-gray-600 hover:bg-gray-600">
+            <td className="px-4 py-2">{index + 1}</td>
+            <td className="px-4 py-2">{student?.userName}</td>
+            <td className="px-4 py-2">{student?.phone}</td>
+            <td className="px-4 py-2">{student?.district}</td>
+            <td className="px-4 py-2">{student?.enrolledDuration}</td>
+            <td className="px-4 py-2">{student?.enrolledDate}</td>
+            
+            <td className="px-4 py-2">
+              <button
+                onClick={() => handleEditClick(student)}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+              >
+                Edit
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    </div>
+
+    {/* Modal for Diet Editing */}
+    {editingStudentId && (
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+      <div className="bg-gray-700 rounded-lg p-6 w-full max-w-lg">
+        <h3 className="text-xl font-bold text-white mb-4">Edit Diet for {editingStudentId?.userName}</h3>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Meal 1</label>
+            <textarea
+              name="Meal1"
+              value={dietEdit.Meal1 || ""}
+              onChange={handleInputChange}
+              className="block w-full bg-gray-800 text-white px-3 py-2 rounded"
+              placeholder="Enter Meal 1"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Meal 2</label>
+            <textarea
+              name="Meal2"
+              value={dietEdit.Meal2 || ""}
+              onChange={handleInputChange}
+              className="block w-full bg-gray-800 text-white px-3 py-2 rounded"
+              placeholder="Enter Meal 2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Meal 3</label>
+            <textarea
+              name="Meal3"
+              value={dietEdit.Meal3 || ""}
+              onChange={handleInputChange}
+              className="block w-full bg-gray-800 text-white px-3 py-2 rounded"
+              placeholder="Enter Meal 3"
+            />
+          </div>
+        </div>
+        <div className="mt-6 flex justify-end space-x-3">
+          <button
+            onClick={handleCancel}
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+          >
+            Cancel
           </button>
-          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-            Student List
+          <button
+            onClick={() => handleSave(editingStudentId)}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+          >
+            Save
           </button>
         </div>
-        <div className="bg-gray-700 rounded-lg shadow-md p-6 flex justify-around">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Show Reviews
-          </button>
-          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-            List Reviews
-          </button>
-        </div>
+      </div>
+    </div>
+    )}
+  </div>
       </div>
     </div>
   );

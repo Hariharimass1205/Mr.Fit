@@ -23,7 +23,12 @@ export type User = {
     isCoach: boolean;
     quizScore:Number;
     isApproved:string;
-    role:string
+    role:string;
+    Diet?: {
+        Meal1: string | null;
+        Meal2: string | null;
+        Meal3: string | null;
+      };
   } 
 
 export type Coach = {

@@ -12,4 +12,5 @@ export interface ICoachRepository{
     updatePackage(objData:Object,userId:Types.ObjectId):Promise<any|null>
     updateProfile(objData:Object,userId:Types.ObjectId):Promise<any|null>
     updatecoachAchiRepo(coachId:Types.ObjectId,achievement:any):Promise<any|null>
+    updateDietUser(userId:Types.ObjectId,dietEdit:Object):Promise<any|null>
 }
