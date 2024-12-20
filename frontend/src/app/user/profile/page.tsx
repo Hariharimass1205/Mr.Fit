@@ -183,7 +183,6 @@ export default function Dashboard() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {[
                 { label: "Name", name: "Name", type: "text", defaultValue: user?.userName },
-                { label: "Email", name: "email", type: "email", defaultValue: user?.email },
                 { label: "Phone", name: "phone", type: "text", defaultValue: user?.phone },
                 { label: "Date of Birth", name: "dob", type: "date", defaultValue: user?.DOB },
                 { label: "State", name: "state", type: "text", defaultValue: user?.state },

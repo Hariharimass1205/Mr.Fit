@@ -206,6 +206,7 @@ export default function CoachProfile() {
     setEditingStudentId(null);
     setDietEdit({ Meal1: '', Meal2: '', Meal3: '' });
   };
+  console.log(students,"ppppppppp")
   return (
     <div className="min-h-screen bg-gray-900 text-white font-sans p-4 relative">
       {/* Back Button */}
@@ -492,7 +493,7 @@ export default function CoachProfile() {
         <h2 className="text-2xl mb-4 font-extrabold text-red-600 flex justify-between items-center">
          Coaching History
          </h2>
-          <p className="flex ">Total Students : <span className="ml-3  text-2xl font-extrabold text-red-600 flex justify-between items-center">{studentsCoached}</span> </p>
+          <p className="flex ">Total Students : {studentsCoached} </p>
         </div>
     
         {/* Buttons */}
@@ -522,7 +523,6 @@ export default function CoachProfile() {
             <td className="px-4 py-2">{student?.district}</td>
             <td className="px-4 py-2">{student?.enrolledDuration}</td>
             <td className="px-4 py-2">{student?.enrolledDate}</td>
-            
             <td className="px-4 py-2">
               <button
                 onClick={() => handleEditClick(student)}

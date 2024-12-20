@@ -3,6 +3,7 @@ import {UserController} from '../controllers/userController';
 import authMiddleware from "../middlesware/jwtVerification";
 import { userService } from "../services/userService";
 import { UserRepository } from "../repository/userRepository";
+import userModel from "../model/userModel";
 
 
 const userRouter = Router();
@@ -25,4 +26,5 @@ userRouter.get('/fetchCoachdata',controller.fetchCoachlist)
 userRouter.get('/fetchUserDetails',controller.fetchUserDetails) 
 userRouter.get('/fetchCoachDetails',controller.fetchCoachDetails) 
 userRouter.put('/updateUserData',authMiddleware,controller.updateUserProfile)
+userRouter.post('/addReview',controller.addReview)
 export default userRouter

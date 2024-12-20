@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { fetchCoachDetails } from "@/service/userApi";
+import { fetchCoachDetails, UpdateReview } from "@/service/userApi";
 import img from "../../../../public/assets/backGround/pexels-ronin-10754972.jpg";
 import Image from "next/image";
 import { Types } from "mongoose";
 import { Coach } from "../../../../utils/types";
+import { toast } from "react-toastify";
 
 
 interface coachState {
@@ -43,31 +44,58 @@ export default function GymProfile() {
   const serachParams = useSearchParams();
   const [coach, setCoach] = useState< any | null>({ });
   const [user, setUser] = useState< any | null>({ });
+  const [reviews,setReviews] = useState<any|null>([])
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [reviewText, setReviewText] = useState("");
+  const [starRating, setStarRating] = useState(0);
+  const coach_id = serachParams.get("coach");
 
   
   useEffect(() => {
     const fetchdatafn = async () => {
-      const coach_id = serachParams.get("coach");
       if (coach_id) {
         const user = JSON.parse(localStorage.getItem("user") as string)
         setUser(user)
         const data = await fetchCoachDetails(coach_id,user._id);
         setCoach(data.coach);
         setUser(data.user)
-        console.log(data,".......................")
+        setReviews(data.reviews)
       } else {
         console.log("coach_id missing in coach details");
       }
     };
     fetchdatafn();
-  }, []);
-
-console.log(user,coach,"^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-
+  }, [reviews]);
+  console.log(reviews,"reviewewewe")
   const redirectToPayment =(packageAmount: number | undefined,packageDuration: string)=>{
     localStorage.setItem("coach",JSON.stringify(coach))
     router.push(`/user/payment?coach_Id=${coach?._id}&user_Id=${user?._id}&packageAmount=${packageAmount}&packageDuration=${packageDuration}&userEmail=${user?.email}&userName=${user.userName}`)
   }
+
+  const handleReviewSubmit = async () => {
+    if (!reviewText.trim()) {
+      toast.error("Review cannot be empty");
+      return;
+    }
+    try {
+          const response = await UpdateReview(coach._id,user._id,reviewText,starRating,)
+          console.log(coach._id,user._id,reviewText)
+       if (response)  
+          {
+            setReviewText(""); // Clear the review text
+            toast.success("Review submitted successfully!");
+            setIsModalOpen(false); // Close the modal
+          }else{
+            toast.error("Review not submitted ");
+          }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error submitting review. Please try again.");
+    }
+  };
+
+
+
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div
@@ -212,22 +240,128 @@ console.log(user,coach,"^^^^^^^^^^^^^^^^^^^^^^^^^^^")
   </div>
 </section>
 
-
-      {/* Reviews Section */}
-      <section className="py-12 bg-gray-900">
-        <div className="container mx-auto px-6">
-          <h2 className="text-2xl font-bold text-center mb-8">Reviews</h2>
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
-            <p className="italic text-gray-300">
-              "The best fitness coach I've ever had. Harikaran pushed me to my limits and beyond!"
-              - Alex
-            </p>
-            <button className="mt-4 bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-600">
-              Add Your Review
-            </button>
-          </div>
+{/* Reviews Section */}
+<section className="py-12 bg-gray-900">
+  <div className="container mx-auto px-6">
+    <h2 className="text-2xl font-bold text-center mb-8 text-white">Reviews</h2>
+    <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+      {reviews && reviews.length > 0 ? (
+        <div className="space-y-6">
+          {reviews.map((review: any, index: number) => (
+            <div
+              key={review._id || index}
+              className="border-b border-gray-700 pb-4 mb-4"
+            >
+              <h3 className="text-lg font-bold text-cyan-500">
+                {review.userId?.userName || "Anonymous"}{" "}
+                <span className="text-sm text-gray-400">({review.userId?.state || "Unknown"})</span>
+              </h3>
+              <p className="italic text-gray-300 mt-1">{review.review}</p>
+              <div className="flex justify-center mt-2">
+                {[...Array(5)].map((_, starIndex) => (
+                  <svg
+                    key={starIndex}
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill={starIndex < review.starRating ? "gold" : "none"}
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    className={`w-5 h-5 ${
+                      starIndex < review.starRating
+                        ? "text-yellow-500"
+                        : "text-gray-500"
+                    }`}
+                    aria-label={`Star ${starIndex + 1}`}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.885 5.797a1 1 0 00.95.69h6.104c.969 0 1.371 1.24.588 1.81l-4.947 3.585a1 1 0 00-.364 1.118l1.885 5.797c.3.921-.755 1.688-1.54 1.118l-4.947-3.585a1 1 0 00-1.176 0l-4.947 3.585c-.785.57-1.84-.197-1.54-1.118l1.885-5.797a1 1 0 00-.364-1.118L2.463 11.224c-.783-.57-.38-1.81.588-1.81h6.104a1 1 0 00.95-.69l1.885-5.797z"
+                    />
+                  </svg>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
-      </section>
+      ) : (
+        <p className="text-gray-500 italic text-center">No reviews available yet.</p>
+      )}
+
+      <div className="mt-6">
+        {!coach?.Students?.includes(user?._id) ? (
+          <p className="text-cyan-500">Only enrolled people can add reviews</p>
+        ) : (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="mt-4 bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-cyan-600"
+          >
+            Add Your Review
+          </button>
+        )}
+      </div>
+    </div>
+  </div>
+
+  {/* Review Modal */}
+  {isModalOpen && (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white text-black rounded-lg p-6 w-full max-w-lg">
+        <h2 className="text-2xl font-bold mb-4">Write a Review</h2>
+        {/* Star Rating */}
+        <div className="mb-4 flex items-center">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <svg
+              key={star}
+              onClick={() => setStarRating(star)}
+              xmlns="http://www.w3.org/2000/svg"
+              fill={star <= starRating ? "gold" : "none"}
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              className={`w-8 h-8 cursor-pointer ${
+                star <= starRating ? "text-yellow-500" : "text-gray-400"
+              }`}
+              aria-label={`Rate ${star} stars`}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.885 5.797a1 1 0 00.95.69h6.104c.969 0 1.371 1.24.588 1.81l-4.947 3.585a1 1 0 00-.364 1.118l1.885 5.797c.3.921-.755 1.688-1.54 1.118l-4.947-3.585a1 1 0 00-1.176 0l-4.947 3.585c-.785.57-1.84-.197-1.54-1.118l1.885-5.797a1 1 0 00-.364-1.118L2.463 11.224c-.783-.57-.38-1.81.588-1.81h6.104a1 1 0 00.95-.69l1.885-5.797z"
+              />
+            </svg>
+          ))}
+        </div>
+
+        {/* Review Text */}
+        <textarea
+          value={reviewText}
+          onChange={(e) => setReviewText(e.target.value)}
+          className="w-full border border-gray-300 rounded p-3 mb-4"
+          rows={5}
+          placeholder="Share your experience with this coach..."
+        ></textarea>
+
+        <div className="flex justify-end space-x-4">
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleReviewSubmit}
+            className="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded"
+          >
+            Submit Review
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
+</section>
+
+
     </div>
   );
 }

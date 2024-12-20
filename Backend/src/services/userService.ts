@@ -176,4 +176,13 @@ updateUserProfile = async(idd:Types.ObjectId,data:any):Promise<any|null>=>{
         throw new Error("error at saving edited data in user ");
     }
 }
+addReview = async (coachId:Types.ObjectId,userId:Types.ObjectId,review:string,starRating:number):Promise<any | null>=>{
+    try {
+        const datas = await this.userRepository.addReview(coachId,userId,review,starRating)
+        return datas
+    } catch (error) {
+        console.log("error at addreview user service")
+        throw new Error("error at saving edited data in user ");
+    }
+}
 }

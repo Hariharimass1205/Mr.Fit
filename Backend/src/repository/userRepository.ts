@@ -2,7 +2,8 @@ import userModel from "../model/userModel";
 import { User } from "../interface/user";
 import { IUserRepository } from "../interface/repository/userRepository.interface";
 import coachModel from "../model/coachModel";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
+import reviewModel from "../model/reviewModel";
 
 export class UserRepository implements IUserRepository{
 
@@ -90,7 +91,8 @@ fetchCoachDetailsRep = async (coach_id:Types.ObjectId,user_Id:Types.ObjectId)=>{
   try {
     const coach = await coachModel.findOne({_id:coach_id}).populate("userId","profileImage quizScore email")
     const user = await userModel.findOne({_id:user_Id})
-    let data = {coach:coach,user:user}
+    const reviews = await reviewModel.find({coachId:coach_id}).populate("userId","userName state")
+    let data = {coach:coach,user:user,reviews:reviews}
     return data
   } catch (error) {
     console.error('Error fetching coach List:', error);
@@ -125,6 +127,22 @@ updateUserDatas= async (idd:Types.ObjectId,data:any):Promise<any|null>=>{
     return user
   } catch (error) {
     console.error('Error user data savinf after profile edit:', error);
+    throw new Error('Database Error');
+  }
+}
+addReview= async (coachId:Types.ObjectId,userId:Types.ObjectId,review:string,starRating:number):Promise<any|null>=>{
+  try {
+     const coach_Id = new mongoose.Types.ObjectId(coachId)
+     const user_Id = new mongoose.Types.ObjectId(userId)
+     await reviewModel.create({
+      userId:user_Id,
+      coachId:coach_Id,
+      review:review,
+      starRating:starRating
+     })
+     return {success:true}
+  } catch (error) {
+    console.error('Error user add review:', error);
     throw new Error('Database Error');
   }
 }

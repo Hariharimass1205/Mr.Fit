@@ -220,4 +220,19 @@ try {
    next(error);
 }
 }
+addReview = async (req:Request,res:Response,next:NextFunction) =>{
+  try {
+    const {coachId,userId,review,starRating} = req.body
+    console.log(coachId,userId,review,starRating,";;;;;;;;;;;")
+    const result = await this.userService.addReview(coachId,userId,review,starRating)
+    if(result){
+    res.status(HttpStatus.OK).json({success:true})
+    }else{
+      res.status(HttpStatus.NOT_FOUND).json({success:false})
+    }
+  } catch (error) {
+   console.error("error at review user  ");
+   next(error);
+  }
+}
 }

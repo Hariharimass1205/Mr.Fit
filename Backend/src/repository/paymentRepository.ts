@@ -9,7 +9,6 @@ import { calculateExpirationDate } from "../utils/calculateDateExpire";
 export class PaymentRepository implements IPaymentRepository{
   paymentDetails=async(bookingData:any): Promise<any|null>=> {
     try {
-      console.log("cdjdkvnjcjleskdckce payment 2")
       const{ txnid,amount,productinfo, username,email,udf1}=bookingData
       const paymentDetail= await paymentModel.create({
        userName:username,

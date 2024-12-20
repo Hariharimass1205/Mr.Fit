@@ -158,4 +158,13 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
       console.log(error)
     }
   }
+  export const UpdateReview = async (coachId:Types.ObjectId,userId:Types.ObjectId,review:string,starRating:number):Promise<any>=>{
+    try {
+      const response = await Axios.post(`${SERVER_URL_USER}/addReview`,{coachId,userId,review,starRating})
+      return response.data.success
+    } catch (error) {
+      console.log("error at user review api")
+      console.log(error)
+    }
+  }
 
