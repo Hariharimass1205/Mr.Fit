@@ -30,18 +30,17 @@ export default function Dashboard() {
     protein: "0 g",
     steps: "0 steps",
   });
-
+  
   const [isEditing, setIsEditing] = useState(false);
   const [newProfileImage, setNewProfileImage] = useState<File | null>(null);
-
   useEffect(() => {
     async function fetchUserData() {
       try {
         const userFromLocalStorage = JSON.parse(localStorage.getItem("user") as string);
         console.log(userFromLocalStorage,"userFromLocalStorage")
-        const data = await fetchDataUserDetails(userFromLocalStorage._id, userFromLocalStorage.coachId);
-        setUser(data.user);
-        setCoach(data.coach[0]);
+        const {user,coach} = await fetchDataUserDetails(userFromLocalStorage._id, userFromLocalStorage.coachId);
+        setUser(user);
+        setCoach(coach[0]);
       if(user?.enrolledDate && user?.enrolledDuration) {
           const calculatedExpiration = calculateExpirationDate(user.enrolledDate, user.enrolledDuration);
           setExpirationDate(calculatedExpiration);

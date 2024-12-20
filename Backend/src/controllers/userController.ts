@@ -91,7 +91,8 @@ login = async(req:Request,res:Response,next:NextFunction) : Promise<void> =>{
 
 logout = async (req:Request,res:Response,next:NextFunction): Promise<void> =>{
   try {
-    res.clearCookie("refreshToken")
+    res.clearCookie("refreshToken") 
+    res.clearCookie('accessToken')
     res.status(HttpStatus.OK).json({success:true})
   } catch (error) {
     console.error("Error at logout user");

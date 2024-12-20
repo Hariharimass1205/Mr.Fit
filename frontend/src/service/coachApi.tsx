@@ -42,7 +42,6 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
   export const fetchCoachData = async ()=>{
     try {
       const {data} = await Axios.post(`${SERVER_URL_COACH}/fetchCoachdata`)
-      console.log(data,"-----------------------")
      if(data){
       return data.result
      }
@@ -111,3 +110,4 @@ export const updateDiet = async (studentId:Types.ObjectId,dietEdit:Object):Promi
     console.log(error,"error at updating diet")
   }
 }
+  

@@ -23,7 +23,9 @@ const Navbar: React.FC = () => {
     (async function fetchuserData(){
     try {
       const data = await fetchData()
-      console.log(data,"navv")
+      if(data){
+      localStorage.setItem("user",JSON.stringify(data?.result?.data))
+      }
       setUserStatus(data?.result?.data?.isApproved)
       setScore(data?.result?.data?.quizScore)
       setIsRegistered(data?.result?.data?.isRegisted)
@@ -31,7 +33,6 @@ const Navbar: React.FC = () => {
       setQuizScore(quizScore)
       setIsCoach(data?.result?.data?.isCoach);
       setIsApprovedBtn(data?.result?.data?.isApproved)
-      localStorage.setItem("user",JSON.stringify(data?.result?.data))
     } catch (error) {
       console.log(error)
     }
@@ -56,10 +57,10 @@ const Navbar: React.FC = () => {
  
   const handleLogout = async () => {
     try {
-      console.log("jiiiiiii")
       const result = await logoutApi()
       if(result){
       localStorage.removeItem("user");
+      localStorage.removeItem("coach");
       }
       setIsAth(false);  
       router.replace("/user/home");
@@ -165,7 +166,7 @@ const Navbar: React.FC = () => {
     </a>
   </>
 ) : (
-  // Conditional rendering for guest user
+
   <a
     onClick={handleLogin}
     className="text-lg hover:underline hover:text-cyan-400"
