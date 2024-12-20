@@ -95,7 +95,6 @@ updateCoachPackage = async (req:CustomRequest,res:Response,next:NextFunction): P
     const userId = new mongoose.Types.ObjectId(id)
     const objData = req.body
     const result = await this.coachService.updateCoachPackage(objData,userId)
-    console.log(result,"from pack con")
     res.status(HttpStatus.OK).json(result)
   }catch(error){
     console.error("Error at updating coach package  in con");
@@ -121,7 +120,6 @@ updateCoachAchievement= async (req:CustomRequest,res:Response,next:NextFunction)
     const coachId = dataset.coachId
     const achievements = dataset.achievement
     const result = await this.coachService.updateCoachACHIEVEMENT(coachId,achievements)
-    console.log(result,"-------------------------")
     res.status(HttpStatus.OK).json({success:true,result})
   } catch (error) {
     console.error("error at updating  coach achievement ");
@@ -130,7 +128,6 @@ updateCoachAchievement= async (req:CustomRequest,res:Response,next:NextFunction)
 }
 updateUserDiet= async (req:Request,res:Response,next:NextFunction) : Promise<void>=>{
  try {
-  console.log("kiiiiiiii")
   const {studentId,dietEdit} = req.body
   const userId = new mongoose.Types.ObjectId(studentId)
   const ress = await this.coachService.updateDiet(userId,dietEdit)

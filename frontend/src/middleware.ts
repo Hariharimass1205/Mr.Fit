@@ -29,10 +29,7 @@ export async function middleware(req: NextRequest) {
         return NextResponse.next();
       }
       const tokenData = await verifyToken("accessToken", req);
-      console.log(tokenData,"--------------------")
       const role = tokenData?.role;
-      console.log(role,"-----------------------------------------------")
-      
       if (!role) {
         console.log(`Redirecting unauthenticated user from ${pathname} to /login`);
         return NextResponse.redirect(new URL("/login", req.url));

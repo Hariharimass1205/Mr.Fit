@@ -6,6 +6,9 @@ import { User, Coach } from "../../../../utils/types";
 import { FieldError, useForm } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { calculateExpirationDate } from "../../../../utils/expirationFinder";
+import banner from '../../../../public/assets/backGround/pexels-alesiakozik-7289250.jpg'
+import Image from 'next/image';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -21,25 +24,6 @@ export default function Dashboard() {
 
   const [packageExpired, setPackageExpired] = useState(false);
   const [expirationDate, setExpirationDate] = useState("");
-
-  const calculateExpirationDate = (enrolledDate: string, duration: string): string => {
-    const startDate = new Date(enrolledDate);
-    switch (duration) {
-      case "monthlyPackage":
-        startDate.setMonth(startDate.getMonth() + 1);
-        break;
-      case "quarterlyPackage":
-        startDate.setMonth(startDate.getMonth() + 3);
-        break;
-      case "yearlyPackage":
-        startDate.setFullYear(startDate.getFullYear() + 1);
-        break;
-      default:
-        break;
-    }
-    return startDate.toLocaleDateString("en-US"); // Formats date as MM/DD/YYYY
-  };
-
   const [dailyData, setDailyData] = useState({
     water: "0 L",
     calories: "0 kcal",
@@ -88,287 +72,142 @@ export default function Dashboard() {
     setDailyData(inputs);
   };
 
-
   const onSubmit = async (data: any) => {
-     try {
-      console.log(data,"------")
-      const savedData = await updateUserProfile(data)
-      if(savedData){
-      setUser(savedData)
-       setIsEditing(false);
-       toast.success("successfully updated your profile")
+    try {
+      console.log(data, "------");
+      const savedData = await updateUserProfile(data);
+      if (savedData) {
+        setUser(savedData);
+        setIsEditing(false);
+        toast.success("Successfully updated your profile");
       }
-     } catch (error) {
-      console.log(error,"error at editng user profile")
-     }
+    } catch (error) {
+      console.log(error, "Error editing user profile");
+    }
   };
 
   return (
-    <div className="bg-cover text-black bg-center min-h-screen">
-         <ToastContainer 
+
+    <div className="min-h-screen bg-black-50 py-10 px-5">
+      <ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar
         newestOnTop
         closeOnClick
-        rtl={true}
+        rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover
-      />  
-      <button
-        className="mb-4 m-3 bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
-        onClick={() => router.back()}
-      >
-        Back
-      </button>
+      />
 
-      {/* Package Status */}
-      {packageExpired ? (
-        <div className="text-center bg-red-500 text-white p-4 rounded-lg w-auto font-bold">
-          Your package expired on {expirationDate}. Please renew to continue.
-        </div>
-      ) : (
-        <div className="text-center bg-green-500 text-white p-4 rounded-lg w-fit items-end font-bold">
-          Your package is active until {expirationDate}. Keep progressing!
-        </div>
-      )}
-
-      <div className="p-10">
-        <div
-          className="bg-cover text-black bg-center min-h-screen"
-          style={{ backgroundImage: "url(/Weightgain/pexels-ivan-samkov-4162494.jpg)" }}
+      {/* Header Section */}
+      <header className="flex justify-between items-center bg-cyan-400 text-white p-5 rounded-md mb-3">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <button
+          className="bg-white-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => router.back()}
         >
-          <div className="p-6">
-            <div className="p-4 bg-white rounded-lg shadow-md text-center">
-              <h1 className="text-2xl font-semibold mb-4">Monitor Your Progress</h1>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 border rounded">
-                  <h2 className="text-lg font-medium mb-2">Daily Summary</h2>
-                  <p>Water: {dailyData.water}</p>
-                  <p>Calories: {dailyData.calories}</p>
-                  <p>Protein: {dailyData.protein}</p>
-                  <p>Steps: {dailyData.steps}</p>
-                </div>
-                <div className="p-4 border rounded">
-                  <h2 className="text-lg font-medium mb-2">Fill your Tracking details</h2>
-                  <div className="space-y-2">
-                    <div>
-                      <label className="block text-sm font-medium">Water (L):</label>
-                      <input
-                        type="number"
-                        name="water"
-                        value={inputs.water}
-                        onChange={handleInputChange}
-                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium">Calories (kcal):</label>
-                      <input
-                        type="number"
-                        name="calories"
-                        value={inputs.calories}
-                        onChange={handleInputChange}
-                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium">Protein (g):</label>
-                      <input
-                        type="number"
-                        name="protein"
-                        value={inputs.protein}
-                        onChange={handleInputChange}
-                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium">Steps:</label>
-                      <input
-                        type="number"
-                        name="steps"
-                        value={inputs.steps}
-                        onChange={handleInputChange}
-                        className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
-                      />
-                    </div>
-                    <button
-                      onClick={handleSave}
-                      className="mt-2 w-full bg-green-500 text-white py-1 rounded text-sm"
-                    >
-                      Save
-                    </button>
+          Back
+        </button>
+       
+      </header>
+      <Image 
+    src={banner}
+    alt="Dashboard Banner" 
+    className="w-full h-80 object-cover rounded-md mb-4"
+  />
+      {/* Package Status */}
+      <section className="mb-8 ">
+        <div
+          className={`text-center p-4 rounded-md font-bold text-white ${
+            packageExpired ? "bg-red-500" : "bg-green-500"
+          }`}
+        >
+          {packageExpired
+            ? `Your package expired on ${expirationDate}. Please renew to continue.`
+            : `Your package is active until ${expirationDate}. Keep progressing!`}
+        </div>
+      </section>
+
+      {/* Main Content Section */}
+      <div className="grid grid-cols-1 text-black lg:grid-cols-2 gap-8">
+        {/* Progress Tracker */}
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-4 underline">Submit Your Progress</h2>
+          <div className="grid  grid-cols-1 gap-4">
+            <div className="border bg-cyan-200 rounded-lg p-4 ">
+              <h3 className="font-medium mb-2 ">Daily Summary</h3>
+              <p>Water: {dailyData.water}</p>
+              <p>Calories: {dailyData.calories}</p>
+              <p>Protein: {dailyData.protein}</p>
+              <p>Steps: {dailyData.steps}</p>
+            </div>
+            <div className="border bg-cyan-200 p-4 rounded-md">
+              <h3 className="font-medium mb-2">Update Daily Details</h3>
+              <form className="space-y-5 mb-10">
+                {[
+                  { label: "Water (L):", name: "water", value: inputs.water },
+                  { label: "Calories (kcal):", name: "calories", value: inputs.calories },
+                  { label: "Protein (g):", name: "protein", value: inputs.protein },
+                  { label: "Steps:", name: "steps", value: inputs.steps },
+                ].map((field) => (
+                  <div key={field.name}>
+                    <label className="block font-medium mb-1">{field.label}</label>
+                    <input
+                      type="number"
+                      name={field.name}
+                      value={field.value}
+                      onChange={handleInputChange}
+                      className="w-full border border-gray-300 rounded px-3 py-2"
+                    />
                   </div>
-                </div>
-              </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded w-auto"
+                >
+                  Save
+                </button>
+              </form>
+              <label>Notes:</label>
+              <small className="text-black">Lorem ipsum dolor sit amet consectetur adipisicing elit. Et ut voluptatibus eaque blanditiis ex ea dolore laboriosam incidunt? Consequuntur, re laboriosam incidunt? re laboriosam incidunt? exercitationem!</small>
             </div>
           </div>
-
-          {/* Your Details Section */}
-          <div className="mt-4 bg-white p-6 ml-8 rounded-lg shadow">
-  <div className="flex flex-col lg:flex-row items-start lg:items-center gap-8">
-    {/* User Details Section */}
-    <div className="flex-1 bg-gray-400 p-5 rounded-lg flex flex-col">
-      <h3 className="text-xl font-bold mb-4">Your Details</h3>
-      {isEditing ? (
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          {/* Name */}
-          <div>
-            <label>Name:</label>
-            <input
-              id="Name"
-              defaultValue={user?.userName}
-              type="text"
-              {...register("Name", { required: "Name is required" })}
-              className="w-full border border-gray-300 rounded p-2 mb-2"
-            />
-            {errors.Name && <p className="text-red-500">{(errors.Name as FieldError)?.message}</p>}
-          </div>
-
-          {/* Email */}
-          <div>
-            <label>Email:</label>
-            <input
-              type="email"
-              defaultValue={user?.email}
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: "Enter a valid email address",
-                },
-              })}
-              className="w-full border border-gray-300 rounded p-2 mb-2"
-            />
-            {errors.email && (
-              <p className="text-red-500">{(errors.email as FieldError)?.message}</p>
-            )}
-          </div>
-
-          {/* Phone */}
-          <div>
-            <label>Phone:</label>
-            <input
-              defaultValue={user?.phone}
-              type="text"
-              {...register("phone", {
-                required: "Phone is required",
-                pattern: {
-                  value: /^[0-9]{10}$/,
-                  message: "Phone number must be 10 digits",
-                },
-              })}
-              className="w-full border border-gray-300 rounded p-2 mb-2"
-            />
-            {errors.phone && (
-              <p className="text-red-500">{(errors.phone as FieldError)?.message}</p>
-            )}
-          </div>
-
-          {/* DOB */}
-          <div>
-            <label>Date of Birth:</label>
-            <input
-              type="date"
-              defaultValue={user?.DOB}
-              {...register("dob", { required: "Date of Birth is required" })}
-              className="w-full border border-gray-300 rounded p-2 mb-2"
-            />
-            {errors.dob && <p className="text-red-500">{(errors.dob as FieldError)?.message}</p>}
-          </div>
-
-          {/* State */}
-          <div>
-            <label>State:</label>
-            <input
-              type="text"
-              defaultValue={user?.state}
-              {...register("state", { required: "State is required" })}
-              className="w-full border border-gray-300 rounded p-2 mb-2"
-            />
-            {errors.state && (
-              <p className="text-red-500">{(errors.state as FieldError)?.message}</p>
-            )}
-          </div>
-
-          {/* District */}
-          <div>
-            <label>District:</label>
-            <input
-              defaultValue={user?.district}
-              type="text"
-              {...register("district", { required: "District is required" })}
-              className="w-full border border-gray-300 rounded p-2 mb-2"
-            />
-            {errors.district && (
-              <p className="text-red-500">{(errors.district as FieldError)?.message}</p>
-            )}
-          </div>
-
-          {/* Pincode */}
-          <div>
-            <label>Pincode:</label>
-            <input
-              defaultValue={user?.pincode}
-              type="text"
-              {...register("pincode", {
-                required: "Pincode is required",
-                pattern: {
-                  value: /^[0-9]{6}$/,
-                  message: "Pincode must be 6 digits",
-                },
-              })}
-              className="w-full border border-gray-300 rounded p-2 mb-2"
-            />
-            {errors.pincode && (
-              <p className="text-red-500">{(errors.pincode as FieldError)?.message}</p>
-            )}
-          </div>
-
-          {/* Address */}
-          <div>
-            <label>Address:</label>
-            <input
-              type="text"
-              defaultValue={user?.address}
-              {...register("address", { required: "Address is required" })}
-              className="w-full border border-gray-300 rounded p-2 mb-2"
-            />
-            {errors.address && (
-              <p className="text-red-500">{(errors.address as FieldError)?.message}</p>
-            )}
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded mt-2"
-          >
-            Save
-          </button>
-        </form>
-      ) : (
-        <div className="flex flex-col gap-2">
-          {/* Display user details */}
-          <p>Name: {user?.userName}</p>
-          <p>Email: {user?.email}</p>
-          <p>Phone: {user?.phone}</p>
-          <p>DOB: {user?.DOB}</p>
-          <p>State: {user?.state}</p>
-          <p>District: {user?.district}</p>
-          <p>Pincode: {user?.pincode}</p>
-          <p>Address: {user?.address}</p>
-          <button
-            onClick={() => setIsEditing(true)}
-            className="bg-blue-500 text-white py-2 px-4 rounded mt-2"
-          >
-            Edit Details
-          </button>
         </div>
-      )}
 
-      {/* Profile Picture Change */}
+        {/* User Details */}
+        <div className="bg-white  shadow-md rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-4 underline">Your Details</h2>
+          {isEditing ? (
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {[
+                { label: "Name", name: "Name", type: "text", defaultValue: user?.userName },
+                { label: "Email", name: "email", type: "email", defaultValue: user?.email },
+                { label: "Phone", name: "phone", type: "text", defaultValue: user?.phone },
+                { label: "Date of Birth", name: "dob", type: "date", defaultValue: user?.DOB },
+                { label: "State", name: "state", type: "text", defaultValue: user?.state },
+                { label: "District", name: "district", type: "text", defaultValue: user?.district },
+                { label: "Pincode", name: "pincode", type: "text", defaultValue: user?.pincode },
+                { label: "Address", name: "address", type: "text", defaultValue: user?.address },
+              ].map((field) => (
+                <div key={field.name}>
+                  <label className="block font-medium mb-1">{field.label}:</label>
+                  <input
+                    type={field.type}
+                    defaultValue={field.defaultValue}
+                    {...register(field.name, { required: `${field.label} is required` })}
+                    className="w-full border border-gray-300 rounded px-3 py-2"
+                  />
+                  {errors[field.name] && (
+                    <p className="text-red-500 text-sm">
+                      {(errors[field.name] as FieldError)?.message}
+                    </p>
+                  )}
+                </div>
+              ))}
+               {/* Profile Picture Change */}
       <div className="mt-4">
         <label className="block">Change Profile Picture:</label>
         <input
@@ -378,40 +217,57 @@ export default function Dashboard() {
           className="w-full mt-2 border border-gray-300 p-2 rounded"
         />
       </div>
-    </div>
-
-    {/* Diet Content Section */}
-    <div className="flex-1 bg-gray-400 p-5 rounded-lg flex flex-col">
-      <h3 className="text-xl font-bold mb-4">Your Diet Plan</h3>
-      <ul className="list-disc pl-5 space-y-5 text-gray-900">
-        <li>Meal 1: {user?.Diet?.Meal1 || "No details available"}</li>
-        <li>Meal 2: {user?.Diet?.Meal2 || "No details available"}</li>
-        <li>Meal 3: {user?.Diet?.Meal3 || "No details available"}</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-
-
-
-          {/* Coaching Details */}
-          <div className="m-8 bg-white p-10 rounded-lg shadow">
-            <div className="flex items-center gap-4">
-              <div>
-                <h3 className="text-xl font-bold">Your Coaching Details</h3>
-                <p>Package: {user?.enrolledDuration}</p>
-                <p>Package Price: ${user?.enrolledPackage}</p>
-                <a href={`/user/coachDetails?coach=${coach?._id}`}>
-                  Coach: <span className="text-blue-500">{coach?.name}</span>
-                </a>
-                <p>Date of Enroll: {user?.enrolledDate}</p>
-                <p>Expiration Date: {expirationDate}</p>
-              </div>
+              <button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded w-full"
+              >
+                Save Details
+              </button>
+            </form>
+          ) : (
+            <div className="space-y-2">
+              <p>Name: {user?.userName}</p>
+              <p>Email: {user?.email}</p>
+              <p>Phone: {user?.phone}</p>
+              <p>Date of Birth: {user?.DOB}</p>
+              <p>State: {user?.state}</p>
+              <p>District: {user?.district}</p>
+              <p>Pincode: {user?.pincode}</p>
+              <p>Address: {user?.address}</p>
+              <button
+                onClick={() => setIsEditing(true)}
+                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+              >
+                Edit Details
+              </button>
             </div>
-          </div>
+          )}
+            <div className="grid text-black  grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+        <div className="bg-cyan-200 shadow-md rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-4">Your Coaching Details</h2>
+          <p>Package: {user?.enrolledDuration}</p>
+          <p>Package Price: ${user?.enrolledPackage}</p>
+          <a href={`/user/coachDetails?coach=${coach?._id}`} >
+            <span className="text-blue-500 underline">Coach: {coach?.name}</span>
+          </a>
+          <p>Date of Enroll: {user?.enrolledDate}</p>
+          <p>Expiration Date: {expirationDate}</p>
+        </div>
+        <div className="bg-cyan-200 shadow-md rounded-lg p-6">
+          <h2 className="text-xl font-semibold mb-4">Your Diet Plan</h2>
+          <ul className="list-disc pl-5 space-y-2">
+            <li>Meal 1: {user?.Diet?.Meal1 || "No details available"}</li>
+            <li>Meal 2: {user?.Diet?.Meal2 || "No details available"}</li>
+            <li>Meal 3: {user?.Diet?.Meal3 || "No details available"}</li>
+          </ul>
         </div>
       </div>
+        </div>
+      </div>
+
+      {/* Coaching and Diet Section */}
+    
     </div>
+   
   );
 }
