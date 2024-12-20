@@ -31,6 +31,7 @@ const Navbar: React.FC = () => {
       setQuizScore(quizScore)
       setIsCoach(data?.result?.data?.isCoach);
       setIsApprovedBtn(data?.result?.data?.isApproved)
+      localStorage.setItem("user",JSON.stringify(data?.result?.data))
     } catch (error) {
       console.log(error)
     }
@@ -55,6 +56,7 @@ const Navbar: React.FC = () => {
  
   const handleLogout = async () => {
     try {
+      console.log("jiiiiiii")
       const result = await logoutApi()
       if(result){
       localStorage.removeItem("user");

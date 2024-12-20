@@ -11,6 +11,7 @@ export interface User {
     otpVerified?: boolean;  
     enrolledPackage:number;
     enrolledDuration:string
+    enrolledDurationExpire:string
     enrolledDate:string;
     address?: string;   
     state?: string;   

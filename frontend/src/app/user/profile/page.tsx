@@ -38,14 +38,13 @@ export default function Dashboard() {
     async function fetchUserData() {
       try {
         const userFromLocalStorage = JSON.parse(localStorage.getItem("user") as string);
-        const { coach, user } = await fetchDataUserDetails(userFromLocalStorage._id, userFromLocalStorage.coachId);
-        setUser(user);
-        setCoach(coach[0]);
-
-        if (user?.enrolledDate && user?.enrolledDuration) {
+        console.log(userFromLocalStorage,"userFromLocalStorage")
+        const data = await fetchDataUserDetails(userFromLocalStorage._id, userFromLocalStorage.coachId);
+        setUser(data.user);
+        setCoach(data.coach[0]);
+      if(user?.enrolledDate && user?.enrolledDuration) {
           const calculatedExpiration = calculateExpirationDate(user.enrolledDate, user.enrolledDuration);
           setExpirationDate(calculatedExpiration);
-
           const today = new Date();
           setPackageExpired(new Date(calculatedExpiration) < today);
         }

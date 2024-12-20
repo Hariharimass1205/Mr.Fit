@@ -29,6 +29,7 @@ export class UserController implements IUserController{
         enrolledPackage:0,
         enrolledDuration:"",
         enrolledDate:"",
+        enrolledDurationExpire:"",
         password: req.body.password,
         gender: req.body.gender,
         address: "",
@@ -185,7 +186,6 @@ fetchCoachlist = async (req:CustomRequest,res:Response,next:NextFunction) : Prom
 fetchCoachDetails = async(req:Request,res:Response,next:NextFunction)=>{
    try {
       const {coach,user} = req.query
-      console.log(user,coach,"nnnnnnnnnnnnnnn")
       const coach_Id = new mongoose.Types.ObjectId(coach as string)
       const user_Id = new mongoose.Types.ObjectId(user as string)
       const result = await this.userService.fetchCoachDetails(coach_Id,user_Id)
@@ -199,7 +199,6 @@ fetchCoachDetails = async(req:Request,res:Response,next:NextFunction)=>{
 fetchUserDetails = async(req:Request,res:Response,next:NextFunction)=>{
   try {
      const {userId,coachId} = req.query
-     console.log(userId,coachId,"came back")
      const coach_Id = new mongoose.Types.ObjectId(coachId as string);
      const user_Id = new mongoose.Types.ObjectId(userId as string);
      const result = await this.userService.fetchUserDetails(coach_Id,user_Id)

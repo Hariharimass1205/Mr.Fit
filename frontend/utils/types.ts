@@ -12,7 +12,8 @@ export type User = {
     DOB?:string
     otpVerified?: boolean;  
     enrolledPackage:number;
-    enrolledDuration:string
+    enrolledDuration:string;
+    enrolledDurationExpire:string;
     enrolledDate:string;
     address?: string;   
     state?: string;   

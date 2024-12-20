@@ -3,6 +3,7 @@ import { IPaymentRepository } from "../interface/repository/paymentRepository.in
 import coachModel from "../model/coachModel";
 import paymentModel from "../model/paymentModel";
 import userModel from "../model/userModel";
+import { calculateExpirationDate } from "../utils/calculateDateExpire";
 
 
 export class PaymentRepository implements IPaymentRepository{
@@ -43,6 +44,7 @@ updateBookingStatus=async(bookingData:any): Promise<any|null>=> {
 
         const payment = await paymentModel.findOne({userEmail:email,userId:userId})
         const paymentDate = new Intl.DateTimeFormat("en-US").format(new Date(payment.transactionDate));
+        const expireDate = calculateExpirationDate(paymentDate,enrolledPackage)
         const userCoachIdUpdate = await userModel.updateOne(
           { _id: userId },
           {
@@ -51,6 +53,7 @@ updateBookingStatus=async(bookingData:any): Promise<any|null>=> {
               enrolledDuration:enrolledPackage, 
               coachId: coachId,
               enrolledDate: paymentDate,
+              enrolledDurationExpire:expireDate
             },
           }
         );

@@ -99,9 +99,8 @@ fetchCoachDetailsRep = async (coach_id:Types.ObjectId,user_Id:Types.ObjectId)=>{
 }
 fetchUserDetailsRep = async (coach_Id:Types.ObjectId,user_Id:Types.ObjectId)=>{
   try {
-    const coach = await coachModel.find({_id:coach_Id}).populate("userId","profileImage quizScore")
     const user = await userModel.findOne({_id:user_Id})
-    console.log(user,coach,"in repo")
+    const coach = await coachModel.find({_id:user.coachId}).populate("userId","profileImage quizScore")
     const data = {user:user,coach:coach}
     return data
   } catch (error) {

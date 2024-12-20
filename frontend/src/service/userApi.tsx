@@ -136,13 +136,15 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
 
   export const fetchDataUserDetails = async (user_id:string,coach_id:string):Promise<any>=>{
     try {
+      console.log(user_id,coach_id,"ccccccccccc")
       const {data} = await Axios.get(`${SERVER_URL_USER}/fetchUserDetails?userId=${user_id}&coachId=${coach_id}`)
+      console.log(data,"ggggggggggggggg")
       const {coach,user} = data.usercoachDeatails
      if(data){
       return {coach,user}
      }
     } catch (error) {
-      console.log(error)
+      console.log(error,"erroe at fetching user details page ")
     }
   }
 

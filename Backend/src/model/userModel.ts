@@ -18,6 +18,7 @@ const userSchema = new Schema<User>({
     pincode: { type: Number },
     reviews: { type: [String] },
     enrolledPackage:{type:Number},
+    enrolledDurationExpire:{type:String},
     enrolledDuration:{type:String},
     enrolledDate:{type:String},
     coachId:{type:Schema.Types.ObjectId,default:null,ref:"coaches"},

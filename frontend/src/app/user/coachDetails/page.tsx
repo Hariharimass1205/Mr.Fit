@@ -65,7 +65,7 @@ export default function GymProfile() {
 console.log(user,coach,"^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
   const redirectToPayment =(packageAmount: number | undefined,packageDuration: string)=>{
-    // localStorage.setItem("coach",JSON.stringify(coach))
+    localStorage.setItem("coach",JSON.stringify(coach))
     router.push(`/user/payment?coach_Id=${coach?._id}&user_Id=${user?._id}&packageAmount=${packageAmount}&packageDuration=${packageDuration}&userEmail=${user?.email}&userName=${user.userName}`)
   }
   return (
