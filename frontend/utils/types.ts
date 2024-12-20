@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 
-export type User = {   
+export type User = { 
+    _id:Types.ObjectId;  
     userName: string;   
     phone?: number;   
     email: string;   
@@ -9,10 +10,10 @@ export type User = {
     gender?: string;   
     otp?: string;   
     DOB?:string
-    otpVerified?: boolean;
-    enrolledPackage?:number; 
+    otpVerified?: boolean;  
+    enrolledPackage:number;
     enrolledDuration:string
-    enrolledDate:string
+    enrolledDate:string;
     address?: string;   
     state?: string;   
     district?: string;   
@@ -24,11 +25,12 @@ export type User = {
     quizScore:Number;
     isApproved:string;
     role:string;
+    isRegisted:boolean;
     Diet?: {
-        Meal1: string | null;
-        Meal2: string | null;
-        Meal3: string | null;
-      };
+      Meal1: string | null;
+      Meal2: string | null;
+      Meal3: string | null;
+    };
   } 
 
 export type Coach = {

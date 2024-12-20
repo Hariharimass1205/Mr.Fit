@@ -43,7 +43,7 @@ export default function GymProfile() {
   const serachParams = useSearchParams();
   const [coach, setCoach] = useState< any | null>({ });
   const [user, setUser] = useState< any | null>({ });
-  const [btnVisiblity,setBtnVisiblity] = useState(0)
+
   
   useEffect(() => {
     const fetchdatafn = async () => {
@@ -61,15 +61,13 @@ export default function GymProfile() {
     };
     fetchdatafn();
   }, []);
+
 console.log(user,coach,"^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+
   const redirectToPayment =(packageAmount: number | undefined,packageDuration: string)=>{
     // localStorage.setItem("coach",JSON.stringify(coach))
     router.push(`/user/payment?coach_Id=${coach?._id}&user_Id=${user?._id}&packageAmount=${packageAmount}&packageDuration=${packageDuration}&userEmail=${user?.email}&userName=${user.userName}`)
   }
-
-
-
-  console.log(user.enrolledPackage>0,"ooooooooooooooooo",user.enrolledPackage)
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div
@@ -95,12 +93,19 @@ console.log(user,coach,"^^^^^^^^^^^^^^^^^^^^^^^^^^^")
           </p>
           {user.enrolledPackage>=0?
           <div className="flex space-x-4 mt-6">
-            <button className="bg-cyan-500 px-6 py-2 rounded-lg font-semibold hover:bg-red-600">
-              Book a Slot
-            </button>
-            <button className="bg-gray-800 px-6 py-2 rounded-lg font-semibold hover:bg-gray-700">
-              Chat with Coach
-            </button>
+{!coach?.Students?.includes(user?._id) ? (
+ ""
+) : (
+  <div>
+  <button className="bg-cyan-500 px-6 py-2 rounded-lg font-semibold hover:bg-red-600">
+    Book a Slot
+  </button>
+    <button className="bg-gray-800 px-6 py-2 rounded-lg font-semibold ml-4 hover:bg-gray-700">
+    Chat with Coach
+  </button>
+  </div>
+)}
+          
           </div>:""}
             <button
           onClick={()=>router.push("/user/coachList")}
