@@ -66,6 +66,7 @@ fetchCoachDataRepo = async (userId:Types.ObjectId):Promise<any|null>=>{
   }
   updateProfilePicture = async (url:string,userId:Types.ObjectId):Promise<any|null>=>{
     try {
+      console.log("saving......")
       const updateMessage = await userModel.updateOne({_id:userId},{profileImage:url})
       const userInfo = await userModel.findOne({_id:userId})
       return userInfo

@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { calculateExpirationDate } from "../../../../utils/expirationFinder";
 import banner from '../../../../public/assets/backGround/pexels-alesiakozik-7289250.jpg'
 import Image from 'next/image';
+import { changeProfilePic } from "@/service/coachApi";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -32,7 +33,7 @@ export default function Dashboard() {
   });
   
   const [isEditing, setIsEditing] = useState(false);
-  const [newProfileImage, setNewProfileImage] = useState<File | null>(null);
+  const [newProfileImage, setNewProfileImage] = useState<string>("");
   useEffect(() => {
     async function fetchUserData() {
       try {
@@ -54,10 +55,12 @@ export default function Dashboard() {
     fetchUserData();
   }, []);
 
-  const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setNewProfileImage(file);
+      setNewProfileImage(URL.createObjectURL(file)); 
+              const res = await changeProfilePic(file)
+              toast.success("profile pictured changed successfuly")
     }
   };
 
@@ -100,21 +103,36 @@ export default function Dashboard() {
       />
 
       {/* Header Section */}
-      <header className="flex justify-between items-center bg-cyan-400 text-white p-5 rounded-md mb-3">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <button
-          className="bg-white-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => router.back()}
-        >
-          Back
-        </button>
-       
-      </header>
-      <Image 
-    src={banner}
-    alt="Dashboard Banner" 
-    className="w-full h-80 object-cover rounded-md mb-4"
-  />
+      <div
+  className="h-96 w-full flex relative rounded-xl bg-cover bg-center pt-40"
+  style={{ backgroundImage: `url(${banner.src})` }}
+>
+  {/* Profile Image */}
+  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-700 rounded-full overflow-hidden h-48 w-48 ">
+    {newProfileImage ? (
+      <img
+        src={user?.profileImage}
+        alt="Profile"
+        className="w-full h-full object-cover "
+      />
+    ) : (
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleProfileImageChange}
+        className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+      />
+    )}
+  </div>
+  
+  {/* Name and State */}
+  <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center mt-6">
+    <h1 className="text-7xl mb-4 text-white font-bold">{user?.userName}</h1>
+    <p className="text-sm text-white">{user?.state}</p>
+  </div>
+</div>
+
+
       {/* Package Status */}
       <section className="mb-8 ">
         <div
@@ -135,7 +153,7 @@ export default function Dashboard() {
           <h2 className="text-xl font-semibold mb-4 underline">Submit Your Progress</h2>
           <div className="grid  grid-cols-1 gap-4">
             <div className="border bg-cyan-200 rounded-lg p-4 ">
-              <h3 className="font-medium mb-2 ">Daily Summary</h3>
+              <h3 className="font-medium mb-2  ">Daily Summary</h3>
               <p>Water: {dailyData.water}</p>
               <p>Calories: {dailyData.calories}</p>
               <p>Protein: {dailyData.protein}</p>

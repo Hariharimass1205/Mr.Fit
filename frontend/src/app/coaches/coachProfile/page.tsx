@@ -224,7 +224,7 @@ export default function CoachProfile() {
       <div
         className="h-80 w-full flex justify-start rounded-xl items-start bg-cover bg-center pt-40"
         style={{ backgroundImage: `url(${bg.src})` }}
-      >
+         >
         <div className="ml-10 flex items-start gap-4">
           {/* Profile Image */}
           <div className="relative bg-gray-700 rounded-full overflow-hidden h-28 w-28">
