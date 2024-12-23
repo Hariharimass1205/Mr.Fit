@@ -10,4 +10,5 @@ export interface IUserController {
     fetchCoachDetails(req: Request, res: Response, next: NextFunction): Promise<void>
     fetchUserDetails(req: Request, res: Response, next: NextFunction): Promise<any>
     updateUserProfile(req:CustomRequest,res:Response,next:NextFunction):Promise<any>
+    addDietGoal(req:CustomRequest,res:Response,next:NextFunction):Promise<any>
 }

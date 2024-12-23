@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { fetchDataUserDetails, updateUserProfile } from "@/service/userApi";
+import { fetchDataUserDetails, submitDietGoal, updateUserProfile } from "@/service/userApi";
 import { useRouter } from "next/navigation";
 import { User, Coach } from "../../../../utils/types";
 import { FieldError, useForm } from "react-hook-form";
@@ -8,7 +8,6 @@ import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { calculateExpirationDate } from "../../../../utils/expirationFinder";
 import banner from '../../../../public/assets/backGround/pexels-alesiakozik-7289250.jpg'
-import Image from 'next/image';
 import { changeProfilePic } from "@/service/coachApi";
 
 export default function Dashboard() {
@@ -17,19 +16,27 @@ export default function Dashboard() {
   const { register, handleSubmit, formState: { errors }, setValue } = useForm();
   const [coach, setCoach] = useState<Coach | null>(null);
   const [inputs, setInputs] = useState({
-    water: "",
-    calories: "",
-    protein: "",
-    steps: "",
+    water: 0,
+    calories: 0,
+    protein: 0,
+    steps: 0,
+    Carbohydrates:0,
+    Fats:0,
+    Fiber:0,
+    SleepTime:0
   });
 
   const [packageExpired, setPackageExpired] = useState(false);
   const [expirationDate, setExpirationDate] = useState("");
   const [dailyData, setDailyData] = useState({
-    water: "0 L",
-    calories: "0 kcal",
-    protein: "0 g",
-    steps: "0 steps",
+    water: 0,
+    calories: 0,
+    protein: 0,
+    steps: 0,
+    Carbohydrates:0,
+    Fats:0,
+    Fiber:0,
+    SleepTime:0
   });
   
   const [isEditing, setIsEditing] = useState(false);
@@ -69,13 +76,20 @@ export default function Dashboard() {
     setInputs((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = async () => {
+  const handleDietSave = async () => {
+    console.log(inputs, "---------diet-");
     setDailyData(inputs);
+    if(user?._id){
+    const res = await submitDietGoal(user._id,inputs)
+    if(res){
+      toast.success("successfully submitted the diet goal")
+    }
+    }
   };
 
   const onSubmit = async (data: any) => {
     try {
-      console.log(data, "------");
+     
       const savedData = await updateUserProfile(data);
       if (savedData) {
         setUser(savedData);
@@ -88,7 +102,6 @@ export default function Dashboard() {
   };
 
   return (
-
     <div className="min-h-screen bg-black-50 py-10 px-5">
       <ToastContainer
         position="top-right"
@@ -102,35 +115,45 @@ export default function Dashboard() {
         pauseOnHover
       />
 
-      {/* Header Section */}
+      {/* Back Button */}
+
+      <div className="mb-4 justify-items-end ">
+        <button
+          onClick={() => router.back()}
+          className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center"
+        >
+          &larr; Back
+        </button>
+      </div>
+      {/* Rest of the component */}
       <div
-  className="h-96 w-full flex relative rounded-xl bg-cover bg-center pt-40"
-  style={{ backgroundImage: `url(${banner.src})` }}
->
-  {/* Profile Image */}
-  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-700 rounded-full overflow-hidden h-48 w-48 ">
-    {newProfileImage ? (
-      <img
-        src={user?.profileImage}
-        alt="Profile"
-        className="w-full h-full object-cover "
-      />
-    ) : (
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleProfileImageChange}
-        className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-      />
-    )}
-  </div>
-  
-  {/* Name and State */}
-  <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center mt-6">
-    <h1 className="text-7xl mb-4 text-white font-bold">{user?.userName}</h1>
-    <p className="text-sm text-white">{user?.state}</p>
-  </div>
-</div>
+        className="h-96 w-full flex relative rounded-xl bg-cover bg-center pt-40"
+        style={{ backgroundImage: `url(${banner.src})` }}
+      >
+        {/* Profile Image */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-700 rounded-full overflow-hidden h-48 w-48">
+          {user?.profileImage || newProfileImage ? (
+            <img
+              src={user?.profileImage}
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleProfileImageChange}
+              className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+            />
+          )}
+        </div>
+
+        {/* Name and State */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center mt-6">
+          <h1 className="text-7xl mb-4 text-white font-bold">{user?.userName}</h1>
+          <p className="text-sm text-white">{user?.state}</p>
+        </div>
+      </div>
 
 
       {/* Package Status */}
@@ -154,42 +177,58 @@ export default function Dashboard() {
           <div className="grid  grid-cols-1 gap-4">
             <div className="border bg-cyan-200 rounded-lg p-4 ">
               <h3 className="font-medium mb-2  ">Daily Summary</h3>
-              <p>Water: {dailyData.water}</p>
-              <p>Calories: {dailyData.calories}</p>
-              <p>Protein: {dailyData.protein}</p>
-              <p>Steps: {dailyData.steps}</p>
+              <p>Water: {`${user?.Diet?.Goal?.Water || "N/A"}`}</p>
+      <p>Calories: {`${user?.Diet?.Goal?.Calories|| "N/A"}`}</p>
+      <p>Protein: {`${user?.Diet?.Goal?.Protein || "N/A"}`}</p>
+      <p>Steps:{`${user?.Diet?.Goal?.Steps || "N/A"}`}</p>
+      <p>Carbohydrates: {`${user?.Diet?.Goal?.Carbohydrates || "N/A"}`}</p>
+      <p>Fats:{`${user?.Diet?.Goal?.Fats || "N/A"}`}</p>
+      <p>Fiber:{`${user?.Diet?.Goal?.Fiber || "N/A"}`}</p>
+      <p>SleepTime: {`${user?.Diet?.Goal?.SleepTime || "N/A"}`}</p>
             </div>
             <div className="border bg-cyan-200 p-4 rounded-md">
-              <h3 className="font-medium mb-2">Update Daily Details</h3>
-              <form className="space-y-5 mb-10">
-                {[
-                  { label: "Water (L):", name: "water", value: inputs.water },
-                  { label: "Calories (kcal):", name: "calories", value: inputs.calories },
-                  { label: "Protein (g):", name: "protein", value: inputs.protein },
-                  { label: "Steps:", name: "steps", value: inputs.steps },
-                ].map((field) => (
-                  <div key={field.name}>
-                    <label className="block font-medium mb-1">{field.label}</label>
-                    <input
-                      type="number"
-                      name={field.name}
-                      value={field.value}
-                      onChange={handleInputChange}
-                      className="w-full border border-gray-300 rounded px-3 py-2"
-                    />
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={handleSave}
-                  className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded w-auto"
-                >
-                  Save
-                </button>
-              </form>
-              <label>Notes:</label>
-              <small className="text-black">Lorem ipsum dolor sit amet consectetur adipisicing elit. Et ut voluptatibus eaque blanditiis ex ea dolore laboriosam incidunt? Consequuntur, re laboriosam incidunt? re laboriosam incidunt? exercitationem!</small>
-            </div>
+  <h3 className="font-medium mb-4 text-lg">Update Daily Details</h3>
+  <form className="grid grid-cols-2 gap-4 mb-6">
+    {[
+      { label: "Water (L):", name: "water", value: inputs.water },
+      { label: "Calories (kcal):", name: "calories", value: inputs.calories },
+      { label: "Protein (g):", name: "protein", value: inputs.protein },
+      { label: "Steps:", name: "steps", value: inputs.steps },
+      { label: "Carbohydrates:", name: "Carbohydrates", value: inputs.Carbohydrates },
+      { label: "Fats:", name: "Fats", value: inputs.Fats },
+      { label: "Fiber:", name: "Fiber", value: inputs.Fiber },
+      { label: "SleepTime:", name: "SleepTime", value: inputs.SleepTime },
+    ].map((field) => (
+      <div key={field.name} className="flex flex-col">
+        <label className="font-medium text-sm mb-1">{field.label}</label>
+        <input
+          type="number"
+          name={field.name}
+          value={field.value}
+          onChange={handleInputChange}
+          className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
+        />
+      </div>
+    ))}
+    <div className="col-span-2 flex justify-center">
+      <button
+        type="button"
+        onClick={handleDietSave}
+        className="bg-green-500 hover:bg-green-700 text-white py-1.5 px-3 rounded w-auto text-sm"
+      >
+        Save
+      </button>
+    </div>
+  </form>
+  <div>
+    <label className="text-sm">Notes:</label>
+    <small className="text-black text-xs block">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Et ut voluptatibus eaque blanditiis ex ea dolore laboriosam incidunt? Consequuntur, re laboriosam incidunt? re laboriosam incidunt? exercitationem!
+    </small>
+  </div>
+</div>
+
+
           </div>
         </div>
 

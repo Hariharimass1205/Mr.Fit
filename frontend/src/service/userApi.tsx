@@ -168,3 +168,13 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
     }
   }
 
+  export const submitDietGoal = async (userId:Types.ObjectId,data:Object):Promise<any>=>{
+    try {
+      const response = await Axios.post(`${SERVER_URL_USER}/addDietGoal`,{userId,data})
+      return response.data.success
+    } catch (error) {
+      console.log("error at user review api")
+      console.log(error)
+    }
+  }
+

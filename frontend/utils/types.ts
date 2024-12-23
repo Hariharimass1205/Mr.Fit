@@ -31,6 +31,16 @@ export type User = {
       Meal1: string | null;
       Meal2: string | null;
       Meal3: string | null;
+      Goal:{
+        Water:Number|  null,
+        Calories:Number|  null,
+        Steps:Number|  null,
+        Protein:Number|  null,
+        Carbohydrates:Number|  null,
+        Fats:Number|  null,
+        Fiber:Number|  null,
+        SleepTime:Number|  null,
+      }
     };
   } 
 

@@ -1,4 +1,5 @@
 import userModel from "../model/userModel";
+import cron from "node-cron";
 import { User } from "../interface/user";
 import { IUserRepository } from "../interface/repository/userRepository.interface";
 import coachModel from "../model/coachModel";
@@ -145,5 +146,69 @@ addReview= async (coachId:Types.ObjectId,userId:Types.ObjectId,review:string,sta
     console.error('Error user add review:', error);
     throw new Error('Database Error');
   }
+}
+addDietGoalRepo= async (userId:Types.ObjectId,data: {
+  water?: number;
+  calories?: number;
+  protein?: number;
+  steps?: number;
+  Carbohydrates?: number;
+  Fats?: number;
+  Fiber?: number;
+  SleepTime?: number;
+}):Promise<any|null>=>{
+  try {
+    console.log(data,"++++++++++===")
+    const user_Id = new mongoose.Types.ObjectId(userId)
+    const savedData = await userModel.updateOne(
+      { _id: user_Id },
+      {
+        $set: {
+          "Diet.Goal": {
+            Water: data.water || null,
+            Calories: data.calories || null,
+            Protein: data.protein || null,
+            Steps: data.steps || null,
+            Carbohydrates: data.Carbohydrates || null,
+            Fats: data.Fats || null,
+            Fiber: data.Fiber || null,
+            SleepTime: data.SleepTime || null,
+          },
+        },
+      }
+    );
+    return savedData;
+  } catch (error) {
+    console.error('Error at diet goal:', error);
+    throw new Error('Database Error');
+  }
+}
+private resetDietGoals = async (): Promise<void> => {
+  try {
+    const result = await userModel.updateMany(
+      { "Diet.Goal": { $exists: true } },
+      { $set: { "Diet.Goal": {
+        Water: null,
+        Calories: null,
+        Protein: null,
+        Steps: null,
+        Carbohydrates: null,
+        Fats: null,
+        Fiber: null,
+        SleepTime: null,
+      } } }
+    );
+    console.log(`Diet goals reset successfully for ${result.modifiedCount} users.`);
+  } catch (error) {
+    console.error("Error resetting diet goals:", error);
+  }
+};
+
+// Schedule the cron job to reset diet goals every 2 minutes
+constructor() {
+  cron.schedule("0 0 * * *", async () => {
+    console.log("Running cron job to reset diet goals every 2 minutes.");
+    await this.resetDietGoals();
+  });
 }
 }

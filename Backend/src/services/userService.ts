@@ -185,4 +185,14 @@ addReview = async (coachId:Types.ObjectId,userId:Types.ObjectId,review:string,st
         throw new Error("error at saving edited data in user ");
     }
 }
+
+addDietGoal = async (userId:Types.ObjectId,data:Object):Promise<any | null>=>{
+    try {
+        const datas = await this.userRepository.addDietGoalRepo(userId,data)
+        return datas
+    } catch (error) {
+        console.log("error at addreview user service")
+        throw new Error("error at saving edited data in user ");
+    }
+}
 }

@@ -37,7 +37,7 @@ interface UserPayload extends JwtPayload {
                 const newAccessToken = jwt.sign(
                     { id: user.id, role: user.role }, 
                     process.env.JWT_SECRET,
-                    { expiresIn: '1h' }
+                    { expiresIn: '2h' }
                   );
                   res.cookie('accessToken', newAccessToken, {
                     httpOnly: true,

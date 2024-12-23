@@ -20,6 +20,16 @@ interface Student {
     Meal1: string;
     Meal2: string;
     Meal3: string;
+    Goal:{
+      Water:Number|  null;
+      Calories:Number|  null;
+      Steps:Number|  null;
+      Protein:Number|  null;
+      Carbohydrates:Number|  null;
+      Fats:Number|  null;
+      Fiber:Number|  null;
+      SleepTime:Number|  null;
+    }
   };
 }
 export default function CoachProfile() {
@@ -53,6 +63,7 @@ export default function CoachProfile() {
   });
   const [editingStudentId, setEditingStudentId] = useState<Student | null>();
   const [dietEdit, setDietEdit] = useState({ Meal1: '', Meal2: '', Meal3: '' });
+  const [viewingStudent, setViewingStudent] = useState<Student | null>(null);
   const [name, setName] = useState("");
   const [age, setAge] = useState(0);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -121,6 +132,9 @@ export default function CoachProfile() {
   };
 
 
+  const handleViewClick = (student:any) => {
+    setViewingStudent(student);
+  };
   
   const handleAchievementSave = async () => {
     try {
@@ -512,6 +526,7 @@ export default function CoachProfile() {
           <th className="px-4 py-2">Enrolled Duration</th>
           <th className="px-4 py-2">Enrolled Date</th>
           <th className="px-4 py-2">Edit Diet</th>
+          <th className="px-4 py-2">View Goal</th>
         </tr>
       </thead>
       <tbody>
@@ -531,10 +546,71 @@ export default function CoachProfile() {
                 Edit
               </button>
             </td>
+            <td className="px-4 py-2 "><button
+                onClick={() => handleViewClick(student)}
+                className=  "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+              >
+                   View
+                </button>
+              </td>
           </tr>
         ))}
       </tbody>
     </table>
+    {viewingStudent && (
+  <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
+    <div className="bg-gray-700 rounded-lg p-6 w-full max-w-lg">
+      <h3 className="text-xl font-bold text-white mb-4">
+        View todays diet for {viewingStudent?.userName}
+      </h3>
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Water Goal</label>
+          <p className="text-white">{viewingStudent?.Diet?.Goal?.Water != null ? String(viewingStudent?.Diet?.Goal?.Water) : "Not added"}</p>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Calories Goal</label>
+          <p className="text-white">{viewingStudent?.Diet?.Goal?.Calories != null ? String(viewingStudent?.Diet?.Goal?.Calories) : "Not added"}</p>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Protein Goal</label>
+          <p className="text-white">{viewingStudent?.Diet?.Goal?.Protein != null ? String(viewingStudent?.Diet?.Goal?.Protein) : "Not added"}</p>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Steps Goal</label>
+          <p className="text-white">{viewingStudent?.Diet?.Goal?.Steps != null ? String(viewingStudent?.Diet?.Goal?.Steps) : "Not added"}</p>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Carbohydrates Goal</label>
+          <p className="text-white">{viewingStudent?.Diet?.Goal?.Carbohydrates != null ? String(viewingStudent?.Diet?.Goal?.Carbohydrates) : "Not added"}</p>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Fats Goal</label>
+          <p className="text-white">{viewingStudent?.Diet?.Goal?.Fats != null ? String(viewingStudent?.Diet?.Goal?.Fats) : "Not added"}</p>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Fiber Goal</label>
+          <p className="text-white">{viewingStudent?.Diet?.Goal?.Fiber != null ? String(viewingStudent?.Diet?.Goal?.Fiber) : "Not added"}</p>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Sleep Time Goal (hours)</label>
+          <p className="text-white">{viewingStudent?.Diet?.Goal?.SleepTime != null ? String(viewingStudent?.Diet?.Goal?.SleepTime) : "Not added"}</p>
+        </div>
+      </div>
+      <div className="mt-6 flex justify-end space-x-3">
+        <button
+          onClick={() => setViewingStudent(null)}
+          className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
+
     </div>
 
     {/* Modal for Diet Editing */}

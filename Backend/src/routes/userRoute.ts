@@ -27,4 +27,6 @@ userRouter.get('/fetchUserDetails',controller.fetchUserDetails)
 userRouter.get('/fetchCoachDetails',controller.fetchCoachDetails) 
 userRouter.put('/updateUserData',authMiddleware,controller.updateUserProfile)
 userRouter.post('/addReview',controller.addReview)
+userRouter.post('/addDietGoal',controller.addDietGoal)
+
 export default userRouter

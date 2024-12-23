@@ -32,6 +32,16 @@ const userSchema = new Schema<User>({
         Meal1: { type: String, default: null },
         Meal2: { type: String, default: null },
         Meal3: { type: String, default: null },
+        Goal:{
+            Water:{type:Number,default: null},
+            Calories:{type:Number,default: null},
+            Steps:{type:Number,default: null},
+            Protein:{type:Number,default: null},
+            Carbohydrates:{type:Number,default: null},
+            Fats:{type:Number,default: null},
+            Fiber:{type:Number,default: null},
+            SleepTime:{type:Number,default: null},
+          }
       },
 })
 
