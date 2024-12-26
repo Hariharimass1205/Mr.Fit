@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import { SERVER_URL_USER } from '../../utils/serverURL';
+import { SERVER_URL_CHAT, SERVER_URL_USER } from '../../utils/serverURL';
 import { log } from 'console';
 import { Types } from 'mongoose';
 
@@ -168,7 +168,8 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
     }
   }
 
-  export const submitDietGoal = async (userId:Types.ObjectId,data:Object):Promise<any>=>{
+
+export const submitDietGoal = async (userId:Types.ObjectId,data:Object):Promise<any>=>{
     try {
       const response = await Axios.post(`${SERVER_URL_USER}/addDietGoal`,{userId,data})
       return response.data.success
@@ -177,4 +178,5 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
       console.log(error)
     }
   }
+
 

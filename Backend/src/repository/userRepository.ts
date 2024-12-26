@@ -158,7 +158,6 @@ addDietGoalRepo= async (userId:Types.ObjectId,data: {
   SleepTime?: number;
 }):Promise<any|null>=>{
   try {
-    console.log(data,"++++++++++===")
     const user_Id = new mongoose.Types.ObjectId(userId)
     const savedData = await userModel.updateOne(
       { _id: user_Id },
@@ -186,7 +185,7 @@ addDietGoalRepo= async (userId:Types.ObjectId,data: {
 private resetDietGoals = async (): Promise<void> => {
   try {
     const result = await userModel.updateMany(
-      { "Diet.Goal": { $exists: true } },
+      {},
       { $set: { "Diet.Goal": {
         Water: null,
         Calories: null,
@@ -204,7 +203,7 @@ private resetDietGoals = async (): Promise<void> => {
   }
 };
 
-// Schedule the cron job to reset diet goals every 2 minutes
+
 constructor() {
   cron.schedule("0 0 * * *", async () => {
     console.log("Running cron job to reset diet goals every 2 minutes.");

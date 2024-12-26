@@ -9,6 +9,7 @@ import adminRouter from "./routes/adminRoute";
 import { errorHandles } from "./middlesware/errrorHandlers";
 import paymentRouter from "./routes/paymentRoute";
 import morgan from 'morgan';
+import chatRouter from "./routes/chatRouter";
 
 
 
@@ -31,6 +32,7 @@ app.use("/user",userRouter)
 app.use("/payment",paymentRouter)
 app.use("/coach",coachRouter)
 app.use("/admin",adminRouter)
+app.use("/chat",chatRouter)
 
 app.use(errorHandles)
 

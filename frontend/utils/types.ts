@@ -46,27 +46,35 @@ export type User = {
 
 export type Coach = {
     _id:Types.ObjectId;
+    name:string,
+    phone:number,
     userId:Types.ObjectId;
-    name:String;
     age:number;
     height:number;
     weight:number;
     noOfStudentsCoached:number;
-    Students: [{ 
-        type: Types.ObjectId, 
-    }],
-    availability:String;
-    achievementBadges:{
-        AchievementsOne:string,
-        AchievementsTwo:string,
-        AchievementsThree:string
+    Students: [
+      {
+        type: Types.ObjectId,
+      },
+    ],
+    availability:string;
+    achievementBadges: {
+      achievementsOne:string,
+      achievementsTwo:string,
+      achievementsThree:string 
     }
-    package: number[];  
-    state:String;
-    city:String;
-    locality:String;
-    licenseOrAadhaar:String;
-    role:String
+    package: {
+        monthlyPackage: number;
+        quarterlyPackage: number;
+        yearlyPackage: number;
+      };
+    address:string;  
+    state:string;
+    city:string;
+    locality:string;
+    licenseOrAadhaar:string;
+    role:string;
 }
 
 export type AuthData = {

@@ -38,14 +38,15 @@ export default function Dashboard() {
     Fiber:0,
     SleepTime:0
   });
-  
+
+  const currentHour = new Date().getHours();
   const [isEditing, setIsEditing] = useState(false);
   const [newProfileImage, setNewProfileImage] = useState<string>("");
+
   useEffect(() => {
     async function fetchUserData() {
       try {
         const userFromLocalStorage = JSON.parse(localStorage.getItem("user") as string);
-        console.log(userFromLocalStorage,"userFromLocalStorage")
         const {user,coach} = await fetchDataUserDetails(userFromLocalStorage._id, userFromLocalStorage.coachId);
         setUser(user);
         setCoach(coach[0]);
@@ -60,7 +61,7 @@ export default function Dashboard() {
       }
     }
     fetchUserData();
-  }, []);
+  }, [dailyData,inputs]);
 
    const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -77,7 +78,6 @@ export default function Dashboard() {
   };
 
   const handleDietSave = async () => {
-    console.log(inputs, "---------diet-");
     setDailyData(inputs);
     if(user?._id){
     const res = await submitDietGoal(user._id,inputs)
@@ -177,14 +177,14 @@ export default function Dashboard() {
           <div className="grid  grid-cols-1 gap-4">
             <div className="border bg-cyan-200 rounded-lg p-4 ">
               <h3 className="font-medium mb-2  ">Daily Summary</h3>
-              <p>Water: {`${user?.Diet?.Goal?.Water || "N/A"}`}</p>
-      <p>Calories: {`${user?.Diet?.Goal?.Calories|| "N/A"}`}</p>
-      <p>Protein: {`${user?.Diet?.Goal?.Protein || "N/A"}`}</p>
-      <p>Steps:{`${user?.Diet?.Goal?.Steps || "N/A"}`}</p>
-      <p>Carbohydrates: {`${user?.Diet?.Goal?.Carbohydrates || "N/A"}`}</p>
-      <p>Fats:{`${user?.Diet?.Goal?.Fats || "N/A"}`}</p>
-      <p>Fiber:{`${user?.Diet?.Goal?.Fiber || "N/A"}`}</p>
-      <p>SleepTime: {`${user?.Diet?.Goal?.SleepTime || "N/A"}`}</p>
+              <p>Water: {`${user?.Diet?.Goal?.Water || "0"}`}</p>
+      <p>Calories: {`${user?.Diet?.Goal?.Calories|| "0"}`}</p>
+      <p>Protein: {`${user?.Diet?.Goal?.Protein || "0"}`}</p>
+      <p>Steps:{`${user?.Diet?.Goal?.Steps || "0"}`}</p>
+      <p>Carbohydrates: {`${user?.Diet?.Goal?.Carbohydrates || "0"}`}</p>
+      <p>Fats:{`${user?.Diet?.Goal?.Fats || "0"}`}</p>
+      <p>Fiber:{`${user?.Diet?.Goal?.Fiber || "0"}`}</p>
+      <p>SleepTime: {`${user?.Diet?.Goal?.SleepTime || "0"}`}</p>
             </div>
             <div className="border bg-cyan-200 p-4 rounded-md">
   <h3 className="font-medium mb-4 text-lg">Update Daily Details</h3>
@@ -211,13 +211,16 @@ export default function Dashboard() {
       </div>
     ))}
     <div className="col-span-2 flex justify-center">
-      <button
+      {currentHour >= 21?<button
         type="button"
         onClick={handleDietSave}
         className="bg-green-500 hover:bg-green-700 text-white py-1.5 px-3 rounded w-auto text-sm"
       >
         Save
-      </button>
+      </button>:
+      <h2>Submit your todays diet goal after "9:00 pm"</h2>
+      }
+      
     </div>
   </form>
   <div>

@@ -54,7 +54,7 @@ fetchCoachDataRepo = async (userId:Types.ObjectId):Promise<any|null>=>{
     try {
       const coachDetails = await coachModel
       .findOne({ userId: userId })
-      .populate('Students', 'userName phone district enrolledDuration enrolledDate Diet') 
+      .populate('Students', 'userName phone district enrolledDuration enrolledDate  enrolledDurationExpire Diet') 
       .exec();
       const userImage = await userModel.findOne({_id:userId})
       const data  = {coach:coachDetails,userImg : userImage.profileImage}

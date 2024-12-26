@@ -10,7 +10,6 @@ const repository = new CoachRepository()
 const service = new CoachService(repository)
 const controller = new CoachController(service)
 
-
 coachRouter.post("/saveQuizScore",controller.saveScore)
 coachRouter.post("/registerCoach",authMiddleware,controller.registerCoachController)
 coachRouter.post("/fetchCoachdata",authMiddleware,controller.fetchCoachDataController)

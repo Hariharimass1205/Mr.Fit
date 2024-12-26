@@ -240,7 +240,6 @@ addReview = async (req:Request,res:Response,next:NextFunction) =>{
 addDietGoal  = async (req:CustomRequest,res:Response,next:NextFunction) =>{
   try {
     const {data,userId} = req.body
-    console.log(data,"------------")
     const resData = await this.userService.addDietGoal(userId,data)
     res.status(HttpStatus.OK).send({success:true})
   } catch (error) {

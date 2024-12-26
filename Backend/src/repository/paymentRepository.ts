@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 import { IPaymentRepository } from "../interface/repository/paymentRepository.interface";
+import chatRoomModel from "../model/chatRoomModel";
 import coachModel from "../model/coachModel";
 import paymentModel from "../model/paymentModel";
 import userModel from "../model/userModel";
@@ -34,13 +35,11 @@ export class PaymentRepository implements IPaymentRepository{
 
 updateBookingStatus=async(bookingData:any): Promise<any|null>=> {
   try {
-    const{ 
-      txnid,email,coachId,status,amount,userId,packageType
-    }=bookingData
+    const{ txnid,email,coachId,status,amount,userId,packageType } = bookingData
     console.log( txnid,email,coachId,status,amount,userId,"details  deatils //////////")
     const enrolledPackage = `${packageType}`;
         const updatedPayment = await paymentModel.updateOne({userEmail:email},{$set:{paymentStatus:"completed"}})
-
+        const createRoom = await chatRoomModel.create({user:userId,coach:coachId})
         const payment = await paymentModel.findOne({userEmail:email,userId:userId})
         const paymentDate = new Intl.DateTimeFormat("en-US").format(new Date(payment.transactionDate));
         const expireDate = calculateExpirationDate(paymentDate,enrolledPackage)

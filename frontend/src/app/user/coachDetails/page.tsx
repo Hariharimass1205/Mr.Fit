@@ -94,8 +94,6 @@ export default function GymProfile() {
     }
   };
 
-
-
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div
@@ -128,7 +126,7 @@ export default function GymProfile() {
   <button className="bg-cyan-500 px-6 py-2 rounded-lg font-semibold hover:bg-red-600">
     Book a Slot
   </button>
-    <button className="bg-gray-800 px-6 py-2 rounded-lg font-semibold ml-4 hover:bg-gray-700">
+    <button onClick={()=>router.push(`/user/chatPage?coach=${coach_id}`)} className="bg-gray-800 px-6 py-2 rounded-lg font-semibold ml-4 hover:bg-gray-700">
     Chat with Coach
   </button>
   </div>

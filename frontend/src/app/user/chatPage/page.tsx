@@ -1,71 +1,141 @@
-"use client"
-import { useState } from 'react';
+"use client";
+import { getMessages, SaveChat } from '@/service/chatApi';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { formatDate } from '../../../../utils/dateFormat';
 
 const ChatPage = () => {
-  const [messages, setMessages] = useState([]);
+  const searchParams = useSearchParams();
+  const [messages, setMessages] = useState<any[]>([]);
+  const coachId = searchParams.get("coach") || "";
   const [newMessage, setNewMessage] = useState('');
+  const [userId, setUserId] = useState<string | null>(null);
+  const [coachName, setCoachName] = useState("");
 
-//   const handleSendMessage = () => {
-//     if (newMessage.trim()) {
-//       // Simulating client message; you can enhance this to include sender details
-//       setMessages([...messages, { sender: 'Client', text: newMessage }]);
-//       setNewMessage('');
+  // Fetch userId from localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const user = localStorage.getItem("user");
+      if (user) {
+        const parsedUser = JSON.parse(user);
+        setUserId(parsedUser?._id || null);
+      }
+    }
+  }, []);
 
-//       // Simulating coach's reply for demo purposes
-//       setTimeout(() => {
-//         setMessages((prev) => [
-//           ...prev,
-//           { sender: 'Coach', text: 'Thanks for your message!' },
-//         ]);
-//       }, 1000);
-//     }
-//   };
+  // Fetch chat details
+  useEffect(() => {
+    const fetchChatDetails = async () => {
+      if (userId && coachId) {
+        try {
+          const response = await getMessages(userId, coachId);
+          const messagesData = response?.data || [];
+          setMessages(messagesData);
+
+          // Extract coach name from the first message
+          const name = messagesData[0]?.receiverId?.name || "Coach";
+          setCoachName(name);
+        } catch (error) {
+          console.error("Failed to fetch chat details:", error);
+          setMessages([]);
+          setCoachName("Coach");
+        }
+      }
+    };
+
+    fetchChatDetails();
+  }, [userId, coachId]);
+
+  // Handle sending a message
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!userId) {
+      console.error("User ID is not defined");
+      return;
+    }
+
+    if (!newMessage.trim()) {
+      console.log("Message cannot be empty");
+      return;
+    }
+
+    try {
+      const response = await SaveChat({
+        content: newMessage,
+        senderId: userId,
+        coachId: coachId,
+      });
+
+      if (response) {
+        setMessages([
+          ...messages,
+          {
+            content: newMessage,
+            senderId: userId,
+            receiverId: { name: coachName },
+            timestamp: new Date().toISOString(),
+          },
+        ]);
+        setNewMessage('');
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
+  };
 
   return (
-    <div className="h-screen flex justify-center items-center bg-gray-200">
-      <div className="w-full max-w-xl bg-white rounded-lg shadow-lg flex flex-col h-4/5">
-        {/* Header */}
-        <div className="bg-blue-500 text-white text-center py-4 font-bold text-lg rounded-t-lg">
-          Chat with Your Coach
+    <div className="flex h-[95vh] bg-gray-100">
+      <div className="flex-1 flex flex-col h-full p-6 bg-white w-[10%]">
+        <div className="h-16 bg-gray-200 flex items-center px-4 border-b border-gray-300">
+          <h2 className="text-xl font-semibold text-gray-800">{coachName}</h2>
         </div>
-
-        {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${
-                message === 'Client' ? 'justify-end' : 'justify-start'
-              }`}
-            >
+        <div className="flex-1 overflow-y-auto bg-gray-200 p-6 space-y-4">
+          {messages.length > 0 ? (
+            messages.map((msg: any, index: number) => (
               <div
-                className={`max-w-xs p-3 rounded-lg ${
-                  message  === 'Client'
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-300 text-gray-900'
+                key={index}
+                className={`flex ${
+                  msg.senderId === userId ? "justify-end" : "justify-start"
                 }`}
               >
-                {message}
+                <div
+                  className={`${
+                    msg.senderId === userId
+                      ? "bg-cyan-400 text-white"
+                      : "bg-gray-600 text-white"
+                  } rounded-lg p-3 max-w-xs break-words`}
+                >
+                  <p>{msg.content}</p>
+                  <span className="text-xs text-gray-300 block mt-1">
+                    {msg.senderId === userId ? "You" : coachName || "Unknown"}
+                  </span>
+                  <span className="text-xs text-white-300 block mt-1">
+                    {formatDate(msg.timestamp)}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-center text-gray-500 mt-6">No messages available.</p>
+          )}
         </div>
-
-        {/* Input Box */}
-        <div className="flex p-4 border-t border-gray-300">
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            className="flex-1 p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring focus:ring-blue-300"
-            placeholder="Type a message"
-          />
-          <button
-            
-            className="px-4 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600"
-          >
-            Send
-          </button>
+        <div className="bg-gray-100 text-black flex items-center p-4 border-t border-gray-300 mt-4">
+          <form onSubmit={handleSendMessage} className="flex w-full">
+            <input
+              type="text"
+              placeholder="Type a message..."
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-l-lg focus:outline-none focus:border-cyan-500"
+            />
+            <button
+              type="submit"
+              className="bg-cyan-500 text-white px-6 py-3 rounded-r-lg hover:bg-pink-600 focus:outline-none"
+            >
+              Send
+            </button>
+          </form>
         </div>
       </div>
     </div>

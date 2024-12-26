@@ -15,6 +15,7 @@ interface Student {
   phone: string;
   district: string;
   enrolledDuration: string;
+   enrolledDurationExpire:""
   enrolledDate: string;
   Diet: {
     Meal1: string;
@@ -40,6 +41,7 @@ export default function CoachProfile() {
     userId: new Types.ObjectId(),
     name: "",
     age: 0,
+    phone:0,
     height: 0,
     weight: 0,
     noOfStudentsCoached: 0,
@@ -49,12 +51,17 @@ export default function CoachProfile() {
       },
     ],
     availability: "",
-    achievementBadges:{
-      AchievementsOne:"",
-      AchievementsTwo:"",
-      AchievementsThree:""
+    achievementBadges: {
+      achievementsOne: "",
+      achievementsTwo: "",
+      achievementsThree: ""
     },
-    package: [0, 0, 0],
+    package: {
+      monthlyPackage: 0,
+      quarterlyPackage: 0,
+      yearlyPackage: 0
+    },
+    address:"",
     state: "",
     city: "",
     locality: "",
@@ -524,6 +531,7 @@ export default function CoachProfile() {
           <th className="px-4 py-2">Phone</th>
           <th className="px-4 py-2">District</th>
           <th className="px-4 py-2">Enrolled Duration</th>
+          <th className="px-4 py-2">Expire Date</th>
           <th className="px-4 py-2">Enrolled Date</th>
           <th className="px-4 py-2">Edit Diet</th>
           <th className="px-4 py-2">View Goal</th>
@@ -537,6 +545,7 @@ export default function CoachProfile() {
             <td className="px-4 py-2">{student?.phone}</td>
             <td className="px-4 py-2">{student?.district}</td>
             <td className="px-4 py-2">{student?.enrolledDuration}</td>
+            <td className="px-4 py-2">{student?.enrolledDurationExpire}</td>
             <td className="px-4 py-2">{student?.enrolledDate}</td>
             <td className="px-4 py-2">
               <button
