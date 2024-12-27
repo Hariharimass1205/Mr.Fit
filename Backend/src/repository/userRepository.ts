@@ -6,7 +6,21 @@ import coachModel from "../model/coachModel";
 import mongoose, { Types } from "mongoose";
 import reviewModel from "../model/reviewModel";
 
+
 export class UserRepository implements IUserRepository{
+    constructor() {
+      cron.schedule("0 0 * * *", async () => {
+        console.log("Running cron job to reset diet goals daily.");
+        await this.resetDietGoals();
+      });
+  
+
+      cron.schedule("0 0 * * *", async () => {
+        console.log("Running cron job to handle expired enrollments.");
+        await this.handleExpiredEnrollments();
+      });
+    }
+
 
  findUserByEmail = async (email:String)=>{
     try {
@@ -182,6 +196,41 @@ addDietGoalRepo= async (userId:Types.ObjectId,data: {
     throw new Error('Database Error');
   }
 }
+
+
+//jobs 
+private async handleExpiredEnrollments() {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const result = await userModel.updateMany(
+      { enrolledDurationExpire: today },
+      {
+        $set: {
+          'Diet.Meal1': null,
+          'Diet.Meal2': null,
+          'Diet.Meal3': null,
+          'Diet.Goal.Water': null,
+          'Diet.Goal.Calories': null,
+          'Diet.Goal.Steps': null,
+          'Diet.Goal.Protein': null,
+          'Diet.Goal.Carbohydrates': null,
+          'Diet.Goal.Fats': null,
+          'Diet.Goal.Fiber': null,
+          'Diet.Goal.SleepTime': null,
+          enrolledPackage: 0,
+          enrolledDurationExpire: "",
+          enrolledDuration: "",
+          enrolledDate: "",
+          coachId: null,
+        },
+      }
+    );
+    console.log(`${result.modifiedCount} user(s) updated.`);
+  } catch (error) {
+    console.error('Error updating expired enrollments:', error);
+  }
+}
+
 private resetDietGoals = async (): Promise<void> => {
   try {
     const result = await userModel.updateMany(
@@ -203,11 +252,4 @@ private resetDietGoals = async (): Promise<void> => {
   }
 };
 
-
-constructor() {
-  cron.schedule("0 0 * * *", async () => {
-    console.log("Running cron job to reset diet goals every 2 minutes.");
-    await this.resetDietGoals();
-  });
-}
 }

@@ -32,8 +32,6 @@ const ChatPage = () => {
     };
 
     fetchRoomId();
-
-    // Initialize the socket connection
     const socketConnection = io('http://localhost:5000', { withCredentials: true });
 
     socketConnection.on('connect', () => {
@@ -53,7 +51,7 @@ const ChatPage = () => {
         socketConnection.disconnect();
       }
     };
-  }, [coachId, userIdfromback]); // Add userIdfromback and coachId as dependencies
+  }, [coachId, userIdfromback]); 
 
   useEffect(() => {
     if (socket && roomId) {
@@ -90,7 +88,6 @@ const ChatPage = () => {
         }
       }
     };
-
     fetchChatDetails();
   }, [userId, coachId]);
 
@@ -101,7 +98,6 @@ const ChatPage = () => {
       console.error("User ID is not defined or message is empty");
       return;
     }
-
     try {
       const response = await SaveChat({
         content: newMessage,
@@ -116,12 +112,7 @@ const ChatPage = () => {
           receiverId: { name: coachName },
           timestamp: new Date().toISOString(),
         };
-
-        // Emit the message to the other client(s)
         socket?.emit('message', newMsg);
-
-        // Update the local state with the new message
-       // setMessages(prevMessages => [...prevMessages, newMsg]);
         setNewMessage('');
       }
     } catch (error) {

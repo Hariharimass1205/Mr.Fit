@@ -252,7 +252,7 @@ export default function GymProfile() {
             >
               <h3 className="text-lg font-bold text-cyan-500">
                 {review.userId?.userName || "Anonymous"}{" "}
-                <span className="text-sm text-gray-400">({review.userId?.state || "Unknown"})({review.transactionDate
+                <span className="text-sm text-gray-400">({review.userId?.state || "Unknown"})-({review.transactionDate
                 })</span>
               </h3>
               <p className="italic text-gray-300 mt-1">{review.review}</p>
