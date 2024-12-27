@@ -56,6 +56,7 @@ export async function middleware(req: NextRequest) {
 async function verifyToken(tokenName: string, req: NextRequest): Promise<{ role:string | null }> {
     const token = req.cookies.get(tokenName);
     console.log(token,"from verify fn middle")
+    
     if (!token?.value) {
       console.error("Token not found in cookies");
       return { role: null };

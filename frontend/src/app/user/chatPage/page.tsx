@@ -1,19 +1,67 @@
 "use client";
-import { getMessages, SaveChat } from '@/service/chatApi';
+import { getMessages, getRoomId, SaveChat } from '@/service/chatApi';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { formatDate } from '../../../../utils/dateFormat';
+import { io, Socket } from 'socket.io-client';
 
 const ChatPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [messages, setMessages] = useState<any[]>([]);
   const coachId = searchParams.get("coach") || "";
+  const userIdfromback = searchParams.get("userId") || "";
   const [newMessage, setNewMessage] = useState('');
   const [userId, setUserId] = useState<string | null>(null);
+  const [roomId, setRoomId] = useState<string | null>(null);
   const [coachName, setCoachName] = useState("Coach");
+  const [socket, setSocket] = useState<Socket | null>(null);
 
-  // Fetch userId from localStorage
+  useEffect(() => {
+    const fetchRoomId = async () => {
+      try {
+        const response = await getRoomId(userIdfromback, coachId);
+        if (response) {
+          setRoomId(response.data as string); // Ensure this is string
+        } else {
+          console.error("Room ID is undefined");
+        }
+      } catch (error) {
+        console.error("Error fetching roomId:", error);
+      }
+    };
+
+    fetchRoomId();
+
+    // Initialize the socket connection
+    const socketConnection = io('http://localhost:5000', { withCredentials: true });
+
+    socketConnection.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
+
+    socketConnection.on('message', (message: any) => {
+      console.log('Received message:', message);
+      setMessages(prevState => [...prevState, message]);
+    });
+
+    setSocket(socketConnection);
+
+    return () => {
+      if (socketConnection) {
+        console.log('Disconnecting socket');
+        socketConnection.disconnect();
+      }
+    };
+  }, [coachId, userIdfromback]); // Add userIdfromback and coachId as dependencies
+
+  useEffect(() => {
+    if (socket && roomId) {
+      console.log(`Joining chat room: ${roomId}`);
+      socket.emit("joinRoom", roomId);
+    }
+  }, [roomId, socket]);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const user = localStorage.getItem("user");
@@ -24,7 +72,6 @@ const ChatPage = () => {
     }
   }, []);
 
-  // Fetch chat details
   useEffect(() => {
     const fetchChatDetails = async () => {
       if (userId && coachId) {
@@ -47,17 +94,11 @@ const ChatPage = () => {
     fetchChatDetails();
   }, [userId, coachId]);
 
-  // Handle sending a message
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!userId) {
-      console.error("User ID is not defined");
-      return;
-    }
-
-    if (!newMessage.trim()) {
-      console.log("Message cannot be empty");
+    if (!userId || !newMessage.trim()) {
+      console.error("User ID is not defined or message is empty");
       return;
     }
 
@@ -65,20 +106,22 @@ const ChatPage = () => {
       const response = await SaveChat({
         content: newMessage,
         senderId: userId,
-        coachId: coachId,
-         role:"user"
+        coachId: coachId
       });
 
       if (response) {
-        setMessages([
-          ...messages,
-          {
-            content: newMessage,
-            senderId: userId,
-            receiverId: { name: coachName },
-            timestamp: new Date().toISOString(),
-          },
-        ]);
+        const newMsg = {
+          content: newMessage,
+          senderId: userId,
+          receiverId: { name: coachName },
+          timestamp: new Date().toISOString(),
+        };
+
+        // Emit the message to the other client(s)
+        socket?.emit('message', newMsg);
+
+        // Update the local state with the new message
+       // setMessages(prevMessages => [...prevMessages, newMsg]);
         setNewMessage('');
       }
     } catch (error) {
@@ -100,31 +143,14 @@ const ChatPage = () => {
         <div className="h-16 bg-gray-700 flex items-center px-4 border-b border-gray-600">
           <h2 className="text-xl justify-end font-semibold text-cyan-400">{coachName}</h2>
         </div>
-        <div
-          className="flex-1 overflow-y-auto bg-gray-800 p-6 space-y-4 scrollbar-hide"
-        >
+        <div className="flex-1 overflow-y-auto bg-gray-800 p-6 space-y-4 scrollbar-hide">
           {messages.length > 0 ? (
             messages.map((msg: any, index: number) => (
-              <div
-                key={index}
-                className={`flex ${
-                  msg.senderId === userId ? "justify-end" : "justify-start"
-                }`}
-              >
-                <div
-                  className={`${
-                    msg.senderId === userId
-                      ? "bg-cyan-500 text-white"
-                      : "bg-gray-700 text-white"
-                  } rounded-lg p-3 max-w-xs break-words`}
-                >
+              <div key={index} className={`flex ${msg.senderId === userId ? "justify-end" : "justify-start"}`}>
+                <div className={`${msg.senderId === userId ? "bg-cyan-500 text-white" : "bg-gray-700 text-white"} rounded-lg p-3 max-w-xs break-words`}>
                   <p>{msg.content}</p>
-                  <span className="text-xs text-gray-300 block mt-1">
-                    {msg.senderId === userId ? "You" : coachName || "Unknown"}
-                  </span>
-                  <span className="text-xs text-gray-400 block mt-1">
-                    {formatDate(msg.timestamp)}
-                  </span>
+                  <span className="text-xs text-gray-300 block mt-1">{msg.senderId === userId ? "You" : coachName || "Unknown"}</span>
+                  <span className="text-xs text-gray-400 block mt-1">{formatDate(msg.timestamp)}</span>
                 </div>
               </div>
             ))
@@ -138,13 +164,10 @@ const ChatPage = () => {
               type="text"
               placeholder="Type a message..."
               value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+             onChange={(e) => setNewMessage(e.target.value)}
               className="w-full p-3 border border-gray-600 rounded-l-lg focus:outline-none focus:border-cyan-500 bg-gray-800 text-white"
             />
-            <button
-              type="submit"
-              className="bg-cyan-600 text-white px-6 py-3 rounded-r-lg hover:bg-cyan-800 focus:outline-none"
-            >
+            <button type="submit" className="bg-cyan-600 text-white px-6 py-3 rounded-r-lg hover:bg-cyan-800 focus:outline-none">
               Send
             </button>
           </form>
@@ -155,5 +178,3 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
-
-

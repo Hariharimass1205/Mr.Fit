@@ -1,8 +1,9 @@
 "use client";
-import { getMessages, SaveChat } from '@/service/chatApi';
+import { getMessages, getRoomId, SaveChat, SaveChatCoach } from '@/service/chatApi';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { formatDate } from '../../../../utils/dateFormat';
+import { io, Socket } from 'socket.io-client';
 
 const ChatPage = () => {
   const searchParams = useSearchParams();
@@ -14,6 +15,59 @@ const ChatPage = () => {
   const [newMessage, setNewMessage] = useState('');
   const [userId, setUserId] = useState<string | null>(null);
   const [coachName, setCoachName] = useState("Coach");
+  const [socket, setSocket] = useState<Socket | null>(null);
+   const [roomId, setRoomId] = useState<string | null>(null)
+
+
+  
+  useEffect(() => {
+    const fetchRoomId = async () => {
+      try {
+        const response = await getRoomId(userIDS, coachId);
+        console.log(response,"-------")
+        if (response) {
+          setRoomId(response.data as string); // Ensure this is string
+        } else {
+          console.error("Room ID is undefined");
+        }
+      } catch (error) {
+        console.error("Error fetching roomId:", error);
+      }
+    };
+
+    fetchRoomId();
+
+    // Initialize the socket connection
+    const socketConnection = io('http://localhost:5000', { withCredentials: true });
+
+    socketConnection.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
+
+    socketConnection.on('message', (message: any) => {
+      console.log('Received message:', message);
+      setMessages(prevState => [...prevState, message]);
+    });
+
+    setSocket(socketConnection);
+
+    return () => {
+      if (socketConnection) {
+        console.log('Disconnecting socket');
+        socketConnection.disconnect();
+      }
+    };
+  }, [coachId, userIDS]); // Add userIdfromback and coachId as dependencies
+  console.log(roomId,"roooooomu")
+
+  useEffect(() => {
+    if (socket && roomId) {
+      console.log(`Joining chat room: ${roomId}`);
+      socket.emit("joinRoom", roomId);
+    }
+  }, [roomId, socket]);
+
+
 
   // Fetch userId from localStorage
   useEffect(() => {
@@ -65,11 +119,10 @@ const ChatPage = () => {
 
     try {
         console.log("senderId",coachId, "coachId", userIDS)
-      const response = await SaveChat({
+      const response = await SaveChatCoach({
         content: newMessage,
         senderId: coachId,
-        coachId: userIDS,
-        role:"coach"
+        coachId: userIDS
       });
 
       if (response) {

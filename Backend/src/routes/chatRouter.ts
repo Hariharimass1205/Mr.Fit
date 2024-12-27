@@ -10,5 +10,7 @@ const controller = new chatController(service)
 
 
 chatRouter.post("/saveMsg",controller.saveMessage)
+chatRouter.post("/saveMsgCoach",controller.saveMessageCoach)
 chatRouter.get("/getMsg",controller.getMessages)
+chatRouter.get("/getRoomId",controller.getRoomId)
 export default chatRouter
