@@ -227,6 +227,7 @@ export default function CoachProfile() {
     setEditingStudentId(null);
     setDietEdit({ Meal1: '', Meal2: '', Meal3: '' });
   };
+
   console.log(students,"ppppppppp")
   return (
     <div className="min-h-screen bg-gray-900 text-white font-sans p-4 relative">
@@ -500,183 +501,28 @@ export default function CoachProfile() {
         </button>
       </div>
     ) : (
+      <div>
       <div className="text-white">
         <p className="mb-2"><span className="font-semibold">Monthly:</span> ₹ {monthlyPackage}</p>
         <p className="mb-2"><span className="font-semibold">Quarterly:</span> ₹ {quarterlyPackage}</p>
         <p className="mb-2"><span className="font-semibold">Yearly:</span> ₹ {yearlyPackage}</p>
+      </div>
+      <div className="bg-gray-700 mt-10  rounded-lg shadow-md p-6">
+        <h2 className="text-2xl mb-4 font-extrabold text-red-600 flex justify-between items-center">
+         Coaching History
+         </h2>
+          <p className="flex ">Total Students : {studentsCoached} </p>
+        </div>
       </div>
     )}
   </div>
  </div>
 
         
-  <div className="bg-gray-700  rounded-lg shadow-md p-6">
-        <h2 className="text-2xl mb-4 font-extrabold text-red-600 flex justify-between items-center">
-         Coaching History
-         </h2>
-          <p className="flex ">Total Students : {studentsCoached} </p>
-        </div>
+  
     
         {/* Buttons */}
-        <div className="bg-gray-700 w-max rounded-lg shadow-md p-6">
-    <h2 className="text-2xl mb-4 font-extrabold text-red-600 flex justify-between items-center">
-    Students List
-    </h2>
-   <div>
-    <table className="table-auto w-max text-left text-sm text-gray-300">
-      <thead className="bg-gray-800 text-gray-400 uppercase text-xs">
-        <tr>
-          <th className="px-4 py-2">#</th>
-          <th className="px-4 py-2">Name</th>
-          <th className="px-4 py-2">Phone</th>
-          <th className="px-4 py-2">District</th>
-          <th className="px-4 py-2">Enrolled Duration</th>
-          <th className="px-4 py-2">Expire Date</th>
-          <th className="px-4 py-2">Enrolled Date</th>
-          <th className="px-4 py-2">Edit Diet</th>
-          <th className="px-4 py-2">View Goal</th>
-        </tr>
-      </thead>
-      <tbody>
-        {students.map((student, index) => (
-          <tr key={student._id} className="border-b border-gray-600 hover:bg-gray-600">
-            <td className="px-4 py-2">{index + 1}</td>
-            <td className="px-4 py-2">{student?.userName}</td>
-            <td className="px-4 py-2">{student?.phone}</td>
-            <td className="px-4 py-2">{student?.district}</td>
-            <td className="px-4 py-2">{student?.enrolledDuration}</td>
-            <td className="px-4 py-2">{student?.enrolledDurationExpire}</td>
-            <td className="px-4 py-2">{student?.enrolledDate}</td>
-            <td className="px-4 py-2">
-              <button
-                onClick={() => handleEditClick(student)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
-              >
-                Edit
-              </button>
-            </td>
-            <td className="px-4 py-2 "><button
-                onClick={() => handleViewClick(student)}
-                className=  "bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
-              >
-                   View
-                </button>
-              </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-    {viewingStudent && (
-  <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
-    <div className="bg-gray-700 rounded-lg p-6 w-full max-w-lg">
-      <h3 className="text-xl font-bold text-white mb-4">
-        View todays diet for {viewingStudent?.userName}
-      </h3>
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">Water Goal</label>
-          <p className="text-white">{viewingStudent?.Diet?.Goal?.Water != null ? String(viewingStudent?.Diet?.Goal?.Water) : "Not added"}</p>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">Calories Goal</label>
-          <p className="text-white">{viewingStudent?.Diet?.Goal?.Calories != null ? String(viewingStudent?.Diet?.Goal?.Calories) : "Not added"}</p>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">Protein Goal</label>
-          <p className="text-white">{viewingStudent?.Diet?.Goal?.Protein != null ? String(viewingStudent?.Diet?.Goal?.Protein) : "Not added"}</p>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">Steps Goal</label>
-          <p className="text-white">{viewingStudent?.Diet?.Goal?.Steps != null ? String(viewingStudent?.Diet?.Goal?.Steps) : "Not added"}</p>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">Carbohydrates Goal</label>
-          <p className="text-white">{viewingStudent?.Diet?.Goal?.Carbohydrates != null ? String(viewingStudent?.Diet?.Goal?.Carbohydrates) : "Not added"}</p>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">Fats Goal</label>
-          <p className="text-white">{viewingStudent?.Diet?.Goal?.Fats != null ? String(viewingStudent?.Diet?.Goal?.Fats) : "Not added"}</p>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">Fiber Goal</label>
-          <p className="text-white">{viewingStudent?.Diet?.Goal?.Fiber != null ? String(viewingStudent?.Diet?.Goal?.Fiber) : "Not added"}</p>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">Sleep Time Goal (hours)</label>
-          <p className="text-white">{viewingStudent?.Diet?.Goal?.SleepTime != null ? String(viewingStudent?.Diet?.Goal?.SleepTime) : "Not added"}</p>
-        </div>
-      </div>
-      <div className="mt-6 flex justify-end space-x-3">
-        <button
-          onClick={() => setViewingStudent(null)}
-          className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
-)}
 
-
-
-    </div>
-
-    {/* Modal for Diet Editing */}
-    {editingStudentId && (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
-      <div className="bg-gray-700 rounded-lg p-6 w-full max-w-lg">
-        <h3 className="text-xl font-bold text-white mb-4">Edit Diet for {editingStudentId?.userName}</h3>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Meal 1</label>
-            <textarea
-              name="Meal1"
-              value={dietEdit.Meal1 || ""}
-              onChange={handleInputChange}
-              className="block w-full bg-gray-800 text-white px-3 py-2 rounded"
-              placeholder="Enter Meal 1"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Meal 2</label>
-            <textarea
-              name="Meal2"
-              value={dietEdit.Meal2 || ""}
-              onChange={handleInputChange}
-              className="block w-full bg-gray-800 text-white px-3 py-2 rounded"
-              placeholder="Enter Meal 2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Meal 3</label>
-            <textarea
-              name="Meal3"
-              value={dietEdit.Meal3 || ""}
-              onChange={handleInputChange}
-              className="block w-full bg-gray-800 text-white px-3 py-2 rounded"
-              placeholder="Enter Meal 3"
-            />
-          </div>
-        </div>
-        <div className="mt-6 flex justify-end space-x-3">
-          <button
-            onClick={handleCancel}
-            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={() => handleSave(editingStudentId)}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-          >
-            Save
-          </button>
-        </div>
-      </div>
-    </div>
-    )}
-  </div>
       </div>
     </div>
   );

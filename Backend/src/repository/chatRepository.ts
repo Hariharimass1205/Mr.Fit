@@ -10,14 +10,16 @@ export class chatRepository implements IChatRepository{
 
 async saveMessageRepo(reqBody:any): Promise<any | null> {
     try {
+        console.log("came to repo",reqBody)
         const roomId = await chatRoomModel.findOne({user:reqBody?.senderId,coach:reqBody?.coachId})
+        console.log(reqBody?.senderId,reqBody?.coachId,reqBody?.content,roomId._id,"roomId",)
         return await messageModel.create({
             senderId:reqBody?.senderId,
             receiverId:reqBody?.coachId,
-            content:reqBody?.text,
+            content:reqBody?.content,
             roomId:roomId._id
         })  
-    } catch (error) {
+    } catch (error) { 
         throw new Error("error at msg saving");
     }
     }
