@@ -107,7 +107,8 @@ const Navbar: React.FC = () => {
     </div>
     <div className="flex gap-7">
       
-      {userStatus =="Accept"? "":
+      {userStatus =="Accept"? 
+      <a onClick={()=>router.push(`/coaches/studentsList`)} className="text-lg hover:underline hover:text-cyan-400">Students</a>:
             <a
               href="/user/coachList"
               className="text-lg hover:underline hover:text-cyan-400"

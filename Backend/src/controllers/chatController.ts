@@ -12,7 +12,6 @@ export class chatController implements IChatController{
 saveMessage = async (req:Request,res:Response,next:NextFunction)=>{
 try {
     const {reqBody} = req.body
-    console.log(reqBody,"data")
     const result = await this.chatService.saveMessage(reqBody)
     res.status(HttpStatus.OK).json({success:true})
 } catch (error) {

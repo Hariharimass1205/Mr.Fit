@@ -10,7 +10,6 @@ export class chatService implements IChatService{
 }
     async saveMessage(reqBody:any): Promise<any | null> {
         try {
-            console.log("came to service",reqBody)
             const msgData = await this.chatRepository.saveMessageRepo(reqBody)
         return msgData 
         } catch (error) {

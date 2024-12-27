@@ -141,7 +141,7 @@ const StudentList = () => {
                   </button>
                 </td>
                 <td className="px-6 py-4">
-                    <button onClick={() => router.push(`/coaches/chatPage?user=${student._id}&coachId=${coachId}`)}
+                    <button onClick={() => router.push(`/coaches/chatPage?user=${student._id}&coachId=${coachId}&userName=${student.userName}`)}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">chat</button>
                 </td>
               </tr>
