@@ -28,6 +28,7 @@ export async function middleware(req: NextRequest) {
         console.log(`Allowing access to public page: ${pathname}`);
         return NextResponse.next();
       }
+      
       const tokenData = await verifyToken("accessToken", req);
       const role = tokenData?.role;
       if (!role) {
