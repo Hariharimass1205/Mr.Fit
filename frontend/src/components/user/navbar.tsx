@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { fetchData, logoutApi } from '@/service/userApi';
+import { log } from 'console';
 
 const Navbar: React.FC = () => {
   const [user, setUser] = useState();
@@ -38,6 +39,7 @@ const Navbar: React.FC = () => {
     }
   })()
     const storedData = localStorage.getItem("user");
+    console.log(storedData,"jjjjjjjjjj")
     if (storedData) {
       try {
         const user = JSON.parse(storedData);
@@ -53,6 +55,9 @@ const Navbar: React.FC = () => {
       }
     }
   }, [user,isRegistered]);
+
+
+  
 
  
   const handleLogout = async () => {

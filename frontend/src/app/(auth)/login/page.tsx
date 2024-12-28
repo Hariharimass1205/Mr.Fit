@@ -76,6 +76,7 @@ const Login: React.FC = () => {
           theme: "colored",
         });
         setTimeout(() => {
+          
           router.replace("/user/home");
         }, 3000);
       }
