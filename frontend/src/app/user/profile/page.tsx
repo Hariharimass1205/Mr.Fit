@@ -10,11 +10,19 @@ import { calculateExpirationDate } from "../../../../utils/expirationFinder";
 import banner from '../../../../public/assets/backGround/pexels-alesiakozik-7289250.jpg'
 import { changeProfilePic } from "@/service/coachApi";
 
+interface IPayment {
+  amount: number;
+  transactionDate: string;
+  paymentStatus: 'pending' | 'completed' | 'failed';
+  transactionId?: string; // Optional
+}
+
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const { register, handleSubmit, formState: { errors }, setValue } = useForm();
   const [coach, setCoach] = useState<Coach | null>(null);
+  const [payment,setPayment] = useState<any | null>(null)
   const [inputs, setInputs] = useState({
     water: 0,
     calories: 0,
@@ -47,9 +55,10 @@ export default function Dashboard() {
     async function fetchUserData() {
       try {
         const userFromLocalStorage = JSON.parse(localStorage.getItem("user") as string);
-        const {user,coach} = await fetchDataUserDetails(userFromLocalStorage._id, userFromLocalStorage.coachId);
+        const {user,coach,payment} = await fetchDataUserDetails(userFromLocalStorage._id, userFromLocalStorage.coachId);
         setUser(user);
         setCoach(coach[0]);
+        setPayment(payment)
       if(user?.enrolledDate && user?.enrolledDuration) {
           const calculatedExpiration = calculateExpirationDate(user.enrolledDate, user.enrolledDuration);
           setExpirationDate(calculatedExpiration);
@@ -62,7 +71,7 @@ export default function Dashboard() {
     }
     fetchUserData();
   }, [dailyData,inputs]);
-
+console.log(payment)
    const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -300,16 +309,34 @@ export default function Dashboard() {
             </div>
           )}
             <div className="grid text-black  grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-        <div className="bg-cyan-200 shadow-md rounded-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Your Coaching Details</h2>
-          <p>Package: {user?.enrolledDuration}</p>
-          <p>Package Price: ${user?.enrolledPackage}</p>
-          <a href={`/user/coachDetails?coach=${coach?._id}`} >
-            <span className="text-blue-500 underline">Coach: {coach?.name}</span>
-          </a>
-          <p>Date of Enroll: {user?.enrolledDate}</p>
-          <p>Expiration Date: {expirationDate}</p>
-        </div>
+            <div className="bg-cyan-200 shadow-md rounded-lg p-6">
+  <h2 className="text-xl font-semibold mb-4">Your Coaching Details</h2>
+  <p>Package: {user?.enrolledDuration}</p>
+  <p>Package Price: ${user?.enrolledPackage}</p>
+  <a href={`/user/coachDetails?coach=${coach?._id}`}>
+    <span className="text-blue-500 underline">Coach: {coach?.name}</span>
+  </a>
+  <p>Date of Enroll: {user?.enrolledDate}</p>
+  <p>Expiration Date: {expirationDate}</p>
+
+  
+      <label className="block mt-4 font-medium"><strong>Your Payments:</strong></label>
+      <div className="mt-2">
+      {(payment ?? []).map((pay:any, index:number) => (
+      <div key={index} className="border-b border-gray-300 pb-2 mb-2">
+    <p>Amount: ${pay.amount}</p>
+    <p>Transaction Date: {new Date(pay.transactionDate).toLocaleDateString()}</p>
+    <p>Status: {pay.paymentStatus}</p>
+    {pay.transactionId && (
+      <p>Transaction ID: {pay.transactionId}</p>
+    )}
+  </div>
+))}
+
+      </div>
+    
+</div>
+
         <div className="bg-cyan-200 shadow-md rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">Your Diet Plan</h2>
           <ul className="list-disc pl-5 space-y-2">

@@ -157,12 +157,11 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
 
   export const fetchDataUserDetails = async (user_id:string,coach_id:string):Promise<any>=>{
     try {
-      console.log(user_id,coach_id,"ccccccccccc")
       const {data} = await Axios.get(`${SERVER_URL_USER}/fetchUserDetails?userId=${user_id}&coachId=${coach_id}`)
-      console.log(data,"ggggggggggggggg")
-      const {coach,user} = data.usercoachDeatails
+      const {coach,user,payment} = data.usercoachDeatails
+      console.log(data.usercoachDeatails,"from apiii")
      if(data){
-      return {coach,user}
+      return {coach,user,payment}
      }
     } catch (error) {
       console.log(error,"erroe at fetching user details page ")
@@ -172,7 +171,6 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
   export const updateUserProfile = async (data:any):Promise<any>=>{
     try {
       const response = await Axios.put(`${SERVER_URL_USER}/updateUserData`,data)
-      console.log(response.data.res[0],"&&&&&&&&&&&&&&")
       return response.data.res[0]
     } catch (error) {
       console.log("error at user api editng api")

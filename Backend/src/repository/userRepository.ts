@@ -5,6 +5,7 @@ import { IUserRepository } from "../interface/repository/userRepository.interfac
 import coachModel from "../model/coachModel";
 import mongoose, { Types } from "mongoose";
 import reviewModel from "../model/reviewModel";
+import paymentModel from "../model/paymentModel";
 
 
 export class UserRepository implements IUserRepository{
@@ -34,6 +35,7 @@ export class UserRepository implements IUserRepository{
     fetchuserDataRepo = async (userId:string)=>{
     try {
       const user = await userModel.findOne({ _id:userId, isBlocked: false }).exec();
+
       return {data:user}
     } catch (error) {
       console.error('Error fetching user by email:', error);
@@ -118,7 +120,8 @@ fetchUserDetailsRep = async (coach_Id:Types.ObjectId,user_Id:Types.ObjectId)=>{
   try {
     const user = await userModel.findOne({_id:user_Id})
     const coach = await coachModel.find({_id:user.coachId}).populate("userId","profileImage quizScore")
-    const data = {user:user,coach:coach}
+    const userPayment = await paymentModel.find({userId:user_Id})
+    const data = {user:user,coach:coach,payment:userPayment}
     return data
   } catch (error) {
     console.error('Error fetching coach List:', error);
