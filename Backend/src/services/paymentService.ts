@@ -53,12 +53,20 @@ export class PaymentService implements IPaymentService{
       }
     }
 
-    async updateBookingStatus(bookingData: any) {
+ async updateBookingStatus(bookingData: any) {
       try {
         const updatedBooking = await this.paymentRepository.updateBookingStatus(bookingData);
      return updatedBooking
       } catch (error:any) {
               throw new Error(error);
+      }
+    }
+    async getCoachEmail(coachId:string){
+      try {
+        const coachIds = await this.paymentRepository.getCoachEmail(coachId);
+        return coachIds
+      } catch (error) {
+        throw new Error(error);
       }
     }
 }

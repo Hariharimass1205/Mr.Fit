@@ -70,4 +70,13 @@ updateBookingStatus=async(bookingData:any): Promise<any|null>=> {
      throw new Error(error.message);
   }
 }
+getCoachEmail = async (coachId:string): Promise<any|null>=>{
+  try {
+    const coach_Id = new mongoose.Types.ObjectId(coachId as string)
+    const coach = (await coachModel.findOne({_id:coach_Id})).populate("userId","email")
+    return coach
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
 }

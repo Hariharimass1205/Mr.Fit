@@ -15,8 +15,9 @@ export const sendEmail =  async(to:string,otp?:string)=>{
             text:`${otp}`
         };
         await transporter.sendMail(mailOptions);
+        return "otp sent success"
     } catch (error) {
-        next(error)
+        return "otp not sent"
     }
 }
 

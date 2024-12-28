@@ -3,6 +3,7 @@ import { IPaymentController } from "../interface/controllers/paymentController.i
 import { IPaymentService } from "../interface/services/paymentService.interface";
 import { HttpStatus } from "../utils/httpStatusCode";
 import { CustomRequest } from '../middlesware/jwtVerification';
+import { sendEmail } from '../utils/sendEmail';
 export class PaymentController implements IPaymentController {
   private paymentService: IPaymentService;
   constructor(paymentService: IPaymentService) {
@@ -32,9 +33,13 @@ export class PaymentController implements IPaymentController {
 
  saveData= async (req: Request, res: Response, next: NextFunction):Promise<void>=> {
     try {
+
       const { txnid, email, productinfo, status, amount, udf1, package: packageType } = req.body;
       const userId = udf1;
       const coachId = productinfo;
+      await this.paymentService.getCoachEmail(coachId)
+      const  text = `you got a new client for ${packageType}`
+      await sendEmail(req.body.email,text);
       const updatedBooking = await this.paymentService.updateBookingStatus({
         txnid,
         email,

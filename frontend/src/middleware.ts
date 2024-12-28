@@ -19,7 +19,13 @@ const PUBLIC_ROUTES = new Set([
 const UNPROTECTED_ROUTES = new Set(["/_next/", "/favicon.ico", "/api/"]);
 export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
+    const userAvailable = null
+    const tokenData = await verifyToken("accessToken", req );
+    const role = tokenData?.role;
 
+    if(!tokenData){
+      localStorage.removeItem('user');
+    }
     if ([...UNPROTECTED_ROUTES].some(route => pathname.startsWith(route)) || pathname === "/user/home") {
       console.log(`Allowing access to public route: ${pathname}`);
       return NextResponse.next();
@@ -28,13 +34,7 @@ export async function middleware(req: NextRequest) {
         console.log(`Allowing access to public page: ${pathname}`);
         return NextResponse.next();
       }
-      const userAvailable = null
-      const tokenData = await verifyToken("accessToken", req );
-      const role = tokenData?.role;
 
-      if(!tokenData){
-        localStorage.removeItem('user');
-      }
 
       if (!role ) {
         console.log(`Redirecting unauthenticated user from ${pathname} to /login`);
