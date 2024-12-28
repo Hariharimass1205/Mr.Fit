@@ -39,7 +39,6 @@ const Navbar: React.FC = () => {
     }
   })()
     const storedData = localStorage.getItem("user");
-    console.log(storedData,"jjjjjjjjjj")
     if (storedData) {
       try {
         const user = JSON.parse(storedData);

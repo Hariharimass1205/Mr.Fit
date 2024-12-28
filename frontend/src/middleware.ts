@@ -28,14 +28,18 @@ export async function middleware(req: NextRequest) {
         console.log(`Allowing access to public page: ${pathname}`);
         return NextResponse.next();
       }
-      
-      const tokenData = await verifyToken("accessToken", req);
+      const userAvailable = null
+      const tokenData = await verifyToken("accessToken", req );
       const role = tokenData?.role;
-      if (!role) {
+
+      if(!tokenData){
+        localStorage.removeItem('user');
+      }
+
+      if (!role ) {
         console.log(`Redirecting unauthenticated user from ${pathname} to /login`);
         return NextResponse.redirect(new URL("/login", req.url));
       }
-
       if (role == "admin" && !ADMIN_ROUTES.has(pathname)) {
     console.log(`Unauthorized access attempt by admin to ${pathname}. Redirecting to /admin`);
     return NextResponse.redirect(new URL("/admin/dashboard", req.url));
@@ -52,7 +56,7 @@ export async function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////      /      //////////////////////////////////////////////
 
 async function verifyToken(tokenName: string, req: NextRequest): Promise<{ role:string | null }> {
     const token = req.cookies.get(tokenName);

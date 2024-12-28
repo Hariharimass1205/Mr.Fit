@@ -65,12 +65,12 @@ const Login: React.FC = () => {
       if (response.data) {
         localStorage.setItem("user",JSON.stringify(response))
         dispatch(setUser(response.data))
-        toast.success(`Welcome back, Dr. ${response.data.username}!`, {
+        toast.success(`Welcome back, Dr. ${response.data.userName}!`, {
           position: "top-center",
           autoClose: 2000,
           theme: "colored",
         });
-        toast.info("Redirecting to your dashboard...", {
+        toast.info("Redirecting to your Home...", {
           position: "top-center",
           autoClose: 2000,
           theme: "colored",
