@@ -14,6 +14,7 @@ const controller = new UserController(service)
 
 userRouter.post("/signup", controller.register);
 userRouter.post("/login",controller.login);
+userRouter.post("/google-login",controller.googleLogin);
 userRouter.post("/signup", controller.register);
 userRouter.post("/sentOTP",controller.otpVerify)
 userRouter.post("/fetchdata",authMiddleware,controller.fetchUserData)

@@ -5,7 +5,7 @@ import { User } from '../interface/user'
 const userSchema = new Schema<User>({
     userName:{type:String,required:true},
     email:{type:String,required:true,unique:true},
-    phone:{type:Number},
+    phone:{type:String},
     password:{type: String, required: false },
     profileImage: { type: String },
     DOB:{type: String },
@@ -26,7 +26,7 @@ const userSchema = new Schema<User>({
     isCoach:{type:Boolean,default:false},
     quizScore:{type:Number},
     isApproved:{type:String},
-    role:{type:String},
+    role:{type:String, default:"user"},
     isRegisted:{type:Boolean},
     Diet: {
         Meal1: { type: String, default: null },

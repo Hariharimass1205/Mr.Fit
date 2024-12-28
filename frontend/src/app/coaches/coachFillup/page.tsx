@@ -231,13 +231,12 @@ export default function CoachFillup() {
           <div>
             <label className="block text-white font-semibold mb-2">Available Time:</label>
             <div className="flex flex-wrap gap-20">
-              {["24 Hours", "8AM to 6PM", "8AM to 8PM"].map((time) => (
+              {["24 Hours", "4AM to 10PM", "5PM to 10PM"].map((time) => (
                 <div className="flex items-center" key={time}>
                   <input
                     type="radio"
                     name="availability"
                     value={time}
-                    
                     checked={formData.availability === time}
                     onChange={handleChange}
                     className="mr-2"

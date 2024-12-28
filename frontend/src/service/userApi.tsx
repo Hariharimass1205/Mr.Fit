@@ -3,6 +3,8 @@ import { SERVER_URL_CHAT, SERVER_URL_USER } from '../../utils/serverURL';
 import { log } from 'console';
 import { Types } from 'mongoose';
 
+
+
 const Axios = axios.create({
   baseURL:`${SERVER_URL_USER}`,
   headers:{
@@ -28,6 +30,25 @@ export const signupApi = async (reqBody: Record<string, any>) => {
     throw handleAxiosError(error) 
   }
 };
+
+
+
+export const googleLogin = async (userData:Object)=>{
+  try {
+    const response = await Axios.post(
+      `${SERVER_URL_USER}/google-login`, 
+      userData, 
+      { withCredentials: true }
+    );
+    console.log(response,"from api")
+    return response
+  } catch (error) {
+    console.log(error,"from user api")
+    throw handleAxiosError(error) 
+  }
+}
+
+
 
 export const otpVerify = async (otp:string, email:any ): Promise<any> => {
   console.log("OTP:", otp,email);

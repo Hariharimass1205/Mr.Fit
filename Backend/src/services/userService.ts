@@ -3,9 +3,10 @@ import bcrypt from 'bcrypt'
 import { IUserService } from '../interface/services/userService.interface'
 import { checkUserAndOtpSentInput, fetchuserdataServiceOutput, forgotPassverifyOTPServiceInput, loginUserInput, loginUserOutput, registerUserOutput, saveNewPasswordInput, saveOTPtoModelInput, verifyOTPServiceInput } from '../interface/services/userService.type'
 import { Types } from 'mongoose'
+import { IUserRepository } from '../interface/repository/userRepository.interface'
 
 export class userService implements IUserService{
-  private userRepository
+  private userRepository:IUserRepository
   constructor(userRepository:any){
     this.userRepository=userRepository
   }
@@ -82,6 +83,20 @@ verifyOTPService = async (otpData:verifyOTPServiceInput): Promise<string | null>
     throw new Error(error.message); 
  }
 }
+
+
+ googleUser= async (email:any,displayName:any): Promise<any|null>=> {
+    try {
+        const user = await this.userRepository.googleUser(email,displayName);
+          const accessToken = generateAccessToken(user._id, "user");
+          const refreshToken = generateRefreshToken(user._id, "user");
+          console.log(accessToken,refreshToken,"kkkkkkkkkkkkkkkkkkkkkk")
+          return { user, accessToken, refreshToken };
+    } catch (error) {
+        throw error;
+    }
+}
+
 
 checkUserAndOtpSent = async (data:checkUserAndOtpSentInput): Promise<any|null>=>{
     try {

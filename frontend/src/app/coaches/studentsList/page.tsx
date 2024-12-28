@@ -86,7 +86,7 @@ const StudentList = () => {
   const handleBack = () => {
     router.back(); // Navigate to the previous page
   };
-
+console.log(students,"studentsstudentsstudents")
   return (
     <div className="p-8 relative">
          <ToastContainer></ToastContainer>

@@ -1,7 +1,7 @@
 export interface User {  
     save(): unknown;    
     userName: string;   
-    phone?: number;   
+    phone?: string;   
     email: string;   
     password?: string;   
     profileImage?: string;

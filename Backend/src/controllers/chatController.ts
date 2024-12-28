@@ -47,9 +47,9 @@ getRoomId= async (req: Request, res: Response, next: NextFunction)=>{
       const result = await this.chatService.getRoomId(userId,coachID)
       res.status(HttpStatus.OK).json(result)
   } catch (error) {
-      console.error("Error at getMessage chat");
+      console.error("Error at getting roomId chat");
     next(error);
   }
-}
+} 
 
 }

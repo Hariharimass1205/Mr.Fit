@@ -54,7 +54,6 @@ export class chatRepository implements IChatRepository{
       async saveMessageCoachRepo(reqBody: any): Promise<any | null> {
         try {
           const { senderId, coachId, content } = reqBody;
-          console.log(reqBody,"------------")
           if (!senderId || !coachId || !content) {
             console.error("Missing required fields in request body:", reqBody);
             throw new Error("Missing required fields (senderId, coachId, content)");

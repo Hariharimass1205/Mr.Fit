@@ -19,6 +19,7 @@ export interface IUserService {
   verifyOTPService(otpData:verifyOTPServiceInput): Promise<string | null>;
   fetchuserdataService(userId: string): Promise<fetchuserdataServiceOutput | null>;
   loginUser(loginData:loginUserInput): Promise<loginUserOutput>;
+  googleUser(email: any,displayName:any): Promise<any|null>;
   checkUserAndOtpSent(data:checkUserAndOtpSentInput): Promise<any | null>;
   forgotPassverifyOTPService(data:forgotPassverifyOTPServiceInput): Promise<string>;
   saveNewPassword(data:saveNewPasswordInput): Promise<any | null>;

@@ -89,6 +89,26 @@ login = async(req:Request,res:Response,next:NextFunction) : Promise<void> =>{
   }
 }
 
+googleLogin = async (req:Request,res:Response,next:NextFunction):Promise<void>=> {
+  try {
+      const { email, displayName } = req.body
+      console.log(email,displayName)
+      const {user, accessToken, refreshToken} =  await this.userService.googleUser(email,displayName)
+      console.log(user,"useruseruser")
+      res.cookie("accessToken",accessToken,{
+        sameSite:"strict",
+        httpOnly:false
+      });
+      res.cookie("refreshToken",refreshToken,{
+        sameSite:"strict",
+        httpOnly:true
+      });
+      res.status(HttpStatus.OK).send(user)
+  }catch (error){
+      next(error)
+  }
+}
+
 logout = async (req:Request,res:Response,next:NextFunction): Promise<void> =>{
   try {
     res.clearCookie("refreshToken") 

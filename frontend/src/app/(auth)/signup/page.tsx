@@ -30,7 +30,7 @@ const Signup: React.FC = () => {
     const reqBody = {
       userName,
       email,
-      phone: Number(phone),
+      phone: phone.toString(),
       password,
       gender, 
     };

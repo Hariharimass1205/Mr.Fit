@@ -145,6 +145,77 @@ updateUserDatas= async (idd:Types.ObjectId,data:any):Promise<any|null>=>{
     throw new Error('Database Error');
   }
 }
+
+
+googleUser= async (email: string, name: string)=> {
+  try {
+    const users = await userModel.updateOne(
+      { email: email }, 
+      {
+        $set: {
+          userName:name,
+          phone:'Not Provider',
+          DOB: "",
+          profileImage:"",
+          otp:null,
+          enrolledPackage:0,
+          enrolledDuration:"",
+          enrolledDate:"",
+          enrolledDurationExpire:"",
+          password:"not provided",
+          gender: "",
+          address: "",
+          state: "",
+          district: "",  
+          pincode: 0,
+          coachId:null,
+          isBlocked:false,
+          isCoach:false,
+          quizScore:0,
+          isApproved:"",
+          role:"user" ,
+          isRegisted:false,
+        },
+      },
+      { upsert: true } 
+    )
+    const user=await userModel.findOne({email:email}) 
+         if (!user) {
+      throw new Error("User not found after upsert.");
+    }
+    return {
+      _id: user._id.toString(),
+      userName: user.userName,
+      email: user.email,
+      phone: "0",
+      DOB: "",
+      profileImage:"",
+      otp:null,
+      enrolledPackage:0,
+      enrolledDuration:"",
+      enrolledDate:"",
+      enrolledDurationExpire:"",
+      password:"not provided",
+      gender: "",
+      address: "",
+      state: "",
+      district: "",  
+      pincode: 0,
+      coachId:null,
+      isBlocked:false,
+      isCoach:false,
+      quizScore:0,
+      isApproved:"",
+      role:"user" ,
+      isRegisted:false,
+    };
+  } catch (error) {
+      console.error('Error handling Google user:', error);
+      throw error;
+  }
+}
+
+
 addReview= async (coachId:Types.ObjectId,userId:Types.ObjectId,review:string,starRating:number):Promise<any|null>=>{
   try {
      const coach_Id = new mongoose.Types.ObjectId(coachId)
