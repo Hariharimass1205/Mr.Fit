@@ -103,6 +103,7 @@ export default function GymProfile() {
         const user = JSON.parse(localStorage.getItem("user") as string)
         setUser(user)
         const data = await fetchCoachDetails(coach_id,user._id);
+        console.log((coach?.userId?.slotTaken,"-------========="))
         setCoach(data.coach);
         setRegisterUserSlot(data.studentsList.Students)
         setUser(data.user)
@@ -139,10 +140,6 @@ console.log(registerUserSlot,"00000000000000")
   };
 
 
-  const redirectToPayment =(packageAmount: number | undefined,packageDuration: string)=>{
-    localStorage.setItem("coach",JSON.stringify(coach))
-    router.push(`/user/payment?coach_Id=${coach?._id}&user_Id=${user?._id}&packageAmount=${packageAmount}&packageDuration=${packageDuration}&userEmail=${user?.email}&userName=${user.userName}`)
-  }
 
 
   const handlePackageSelect = (packageAmount: number, packageDuration: string) => {

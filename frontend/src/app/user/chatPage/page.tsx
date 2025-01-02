@@ -4,6 +4,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { formatDate } from '../../../../utils/dateFormat';
 import { io, Socket } from 'socket.io-client';
+import 'react-toastify/dist/ReactToastify.css';
+import { toast,ToastContainer} from 'react-toastify';
 
 const ChatPage = () => {
   const searchParams = useSearchParams();
@@ -17,48 +19,48 @@ const ChatPage = () => {
   const [coachName, setCoachName] = useState("Coach");
   const [socket, setSocket] = useState<Socket | null>(null);
 
-  // useEffect(() => {
-  //   const fetchRoomId = async () => {
-  //     try {
-  //       const response = await getRoomId(userIdfromback, coachId);
-  //       if (response) {
-  //         setRoomId(response.data as string); // Ensure this is string
-  //       } else {
-  //         console.error("Room ID is undefined");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching roomId:", error);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchRoomId = async () => {
+      try {
+        const response = await getRoomId(userIdfromback, coachId);
+        if (response) {
+          setRoomId(response.data as string); // Ensure this is string
+        } else {
+          console.error("Room ID is undefined");
+        }
+      } catch (error) {
+        console.error("Error fetching roomId:", error);
+      }
+    };
 
-  //   fetchRoomId();
-  //   const socketConnection = io('http://localhost:5000', { withCredentials: true });
+    fetchRoomId();
+    const socketConnection = io('http://localhost:5000', { withCredentials: true });
 
-  //   socketConnection.on('connect', () => {
-  //     console.log('Connected to WebSocket server');
-  //   });
+    socketConnection.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
 
-  //   socketConnection.on('message', (message: any) => {
-  //     console.log('Received message:', message);
-  //     setMessages(prevState => [...prevState, message]);
-  //   });
+    socketConnection.on('message', (message: any) => {
+      console.log('Received message:', message);
+      setMessages(prevState => [...prevState, message]);
+    });
 
-  //   setSocket(socketConnection);
+    setSocket(socketConnection);
 
-  //   return () => {
-  //     if (socketConnection) {
-  //       console.log('Disconnecting socket');
-  //       socketConnection.disconnect();
-  //     }
-  //   };
-  // }, [coachId, userIdfromback]); 
+    return () => {
+      if (socketConnection) {
+        console.log('Disconnecting socket');
+        socketConnection.disconnect();
+      }
+    };
+  }, [coachId, userIdfromback]); 
 
-  // useEffect(() => {
-  //   if (socket && roomId) {
-  //     console.log(`Joining chat room: ${roomId}`);
-  //     socket.emit("joinRoom", roomId);
-  //   }
-  // }, [roomId, socket]);
+  useEffect(() => {
+    if (socket && roomId) {
+      console.log(`Joining chat room: ${roomId}`);
+      socket.emit("joinRoom", roomId);
+    }
+  }, [roomId, socket]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -95,7 +97,7 @@ const ChatPage = () => {
     e.preventDefault();
 
     if (!userId || !newMessage.trim()) {
-      console.error("User ID is not defined or message is empty");
+      toast.error("type something...")
       return;
     }
     try {
@@ -122,6 +124,10 @@ const ChatPage = () => {
 
   return (
     <div className="flex h-[95vh] bg-gray-900">
+       <ToastContainer 
+            autoClose={2000}
+           position="top-center"
+      />
       {/* Back Button */}
       <button
         onClick={() => router.back()}
@@ -163,8 +169,8 @@ const ChatPage = () => {
             <button type="submit" className="bg-cyan-600 text-white px-6 py-3 rounded-r-lg hover:bg-cyan-800 focus:outline-none">
               Send
             </button>
+    
           </form>
-          {/* <button className="bg-cyan-600 text-white px-6 py-3 rounded-r-lg hover:bg-cyan-800 focus:outline-none"  onClick={() => window.open(`/user/videoCall?roomId=${userIdfromback}`)}>Video Call</button> */}
         </div>
       </div>
     </div>
