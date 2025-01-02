@@ -106,10 +106,11 @@ fetchCoachListRep = async ()=>{
 }
 fetchCoachDetailsRep = async (coach_id:Types.ObjectId,user_Id:Types.ObjectId)=>{
   try {
-    const coach = await coachModel.findOne({_id:coach_id}).populate("userId","profileImage quizScore email")
+    const coach = await coachModel.findOne({_id:coach_id}).populate("userId","profileImage quizScore email ")
+    const studentsList = await coachModel.findOne({_id:coach_id}).populate("Students", "userName slotTaken");
     const user = await userModel.findOne({_id:user_Id})
     const reviews = await reviewModel.find({coachId:coach_id}).populate("userId","userName state")
-    let data = {coach:coach,user:user,reviews:reviews}
+    let data = {coach:coach,user:user,reviews:reviews,studentsList:studentsList}
     return data
   } catch (error) {
     console.error('Error fetching coach List:', error);

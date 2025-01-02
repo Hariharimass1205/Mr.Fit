@@ -21,6 +21,7 @@ const Navbar: React.FC = () => {
 
 
    useEffect(() => {
+    
     (async function fetchuserData(){
     try {
       const data = await fetchData()
@@ -54,8 +55,6 @@ const Navbar: React.FC = () => {
       }
     }
   }, [user,isRegistered]);
-
-
   
 
  

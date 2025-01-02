@@ -28,6 +28,7 @@ const userSchema = new Schema<User>({
     isApproved:{type:String, default: ""},
     role:{type:String, default:"user"},
     isRegisted:{type:Boolean, default: false},
+    slotTaken:{type:String, default: ""},
     Diet: {
         Meal1: { type: String, default: null },
         Meal2: { type: String, default: null },

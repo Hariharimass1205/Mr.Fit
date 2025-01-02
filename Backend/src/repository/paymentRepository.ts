@@ -35,7 +35,7 @@ export class PaymentRepository implements IPaymentRepository{
 
 updateBookingStatus=async(bookingData:any): Promise<any|null>=> {
   try {
-    const{ txnid,email,coachId,status,amount,userId,packageType } = bookingData
+    const{ txnid,email,coachId,status,amount,userId,packageType,slotTime } = bookingData
     console.log( txnid,email,coachId,status,amount,userId,"details  deatils //////////")
     const enrolledPackage = `${packageType}`;
         const updatedPayment = await paymentModel.updateOne({userEmail:email},{$set:{paymentStatus:"completed"}})
@@ -43,6 +43,14 @@ updateBookingStatus=async(bookingData:any): Promise<any|null>=> {
         const payment = await paymentModel.findOne({userEmail:email,userId:userId})
         const paymentDate = new Intl.DateTimeFormat("en-US").format(new Date(payment.transactionDate));
         const expireDate = calculateExpirationDate(paymentDate,enrolledPackage)
+        let arr = slotTime.split("")
+        for(let i=0;i<arr.length;i++){
+          if(arr[i]==`"`){
+            arr.splice(i,1)
+            }
+        }
+        let slotT = arr.join("")
+        console.log(slotT,"-------------------0000000-------------------")
         const userCoachIdUpdate = await userModel.updateOne(
           { _id: userId },
           {
@@ -51,7 +59,8 @@ updateBookingStatus=async(bookingData:any): Promise<any|null>=> {
               enrolledDuration:enrolledPackage, 
               coachId: coachId,
               enrolledDate: paymentDate,
-              enrolledDurationExpire:expireDate
+              enrolledDurationExpire:expireDate,
+              slotTaken:slotT
             },
           }
         );

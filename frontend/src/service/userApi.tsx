@@ -135,6 +135,7 @@ export const fetchData = async ()=>{
 export const fetchcoachList = async ()=>{
   try {
     const {data} = await Axios.get(`${SERVER_URL_USER}/fetchCoachdata`)
+    console.log(data,"coach list")
    if(data){
     return data.result.data
    }

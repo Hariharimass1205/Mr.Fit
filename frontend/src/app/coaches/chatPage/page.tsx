@@ -18,8 +18,53 @@ const ChatPage = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
    const [roomId, setRoomId] = useState<string | null>(null)
 
+   useEffect(() => {
+    const fetchRoomId = async () => {
+      try {
+        const response = await getRoomId(userIDS, coachId);
+        if (response) {
+          setRoomId(response.data as string); // Ensure this is string
+        } else {
+          console.error("Room ID is undefined");
+        }
+      } catch (error) {
+        console.error("Error fetching roomId:", error);
+      }
+    };
+
+    fetchRoomId();
+    const socketConnection = io('http://localhost:5000', { withCredentials: true });
+
+    socketConnection.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
+
+    socketConnection.on('message', (message: any) => {
+      console.log('Received message:', message);
+      setMessages(prevState => [...prevState, message]);
+    });
+
+    setSocket(socketConnection);
+
+    return () => {
+      if (socketConnection) {
+        console.log('Disconnecting socket');
+        socketConnection.disconnect();
+      }
+    };
+  }, [coachId, userIDS]); 
+
+  useEffect(() => {
+    if (socket && roomId) {
+      console.log(`Joining chat room: ${roomId}`);
+      socket.emit("joinRoom", roomId);
+    }
+  }, [roomId, socket]);
 
   
+
+
+
   useEffect(() => {
     const fetchRoomId = async () => {
       try {
@@ -34,12 +79,9 @@ const ChatPage = () => {
         console.error("Error fetching roomId:", error);
       }
     };
-
     fetchRoomId();
-
     // Initialize the socket connection
     const socketConnection = io('http://localhost:5000', { withCredentials: true });
-
     socketConnection.on('connect', () => {
       console.log('Connected to WebSocket server');
     });
@@ -204,6 +246,7 @@ const ChatPage = () => {
             >
               Send
             </button>
+            <button className="bg-cyan-600 ml-3 text-white px-6 py-1 rounded-md hover:bg-cyan-800 focus:outline-none"  onClick={() => window.open(`/user/videoCall?roomId=${userId}&coachName=${coachName}`)}>Video Call</button>
           </form>
         </div>
       </div>

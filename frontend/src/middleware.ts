@@ -12,6 +12,7 @@ const PUBLIC_ROUTES = new Set([
   "/forgotPassword/forgotPasswordOTP",
   "/forgotPassword/forgotPassword3",
   "/admin/login",
+  "/user/videoCall",
   "/user/coachList",
   "/user/payment",
   "/user/successPage"

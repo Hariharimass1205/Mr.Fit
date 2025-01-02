@@ -214,7 +214,7 @@ export default function CoachList() {
                 >
                   <img
                     onClick={() => router.push(`/user/coachDetails?coach=${coach._id}`)}
-                    src={coach.userId.profileImage}
+                    src={coach.userId.profileImage || '/default-placeholder.png'}
                     alt={coach.name}
                     className="w-full h-48 object-cover"
                   />

@@ -17,48 +17,48 @@ const ChatPage = () => {
   const [coachName, setCoachName] = useState("Coach");
   const [socket, setSocket] = useState<Socket | null>(null);
 
-  useEffect(() => {
-    const fetchRoomId = async () => {
-      try {
-        const response = await getRoomId(userIdfromback, coachId);
-        if (response) {
-          setRoomId(response.data as string); // Ensure this is string
-        } else {
-          console.error("Room ID is undefined");
-        }
-      } catch (error) {
-        console.error("Error fetching roomId:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchRoomId = async () => {
+  //     try {
+  //       const response = await getRoomId(userIdfromback, coachId);
+  //       if (response) {
+  //         setRoomId(response.data as string); // Ensure this is string
+  //       } else {
+  //         console.error("Room ID is undefined");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching roomId:", error);
+  //     }
+  //   };
 
-    fetchRoomId();
-    const socketConnection = io('http://localhost:5000', { withCredentials: true });
+  //   fetchRoomId();
+  //   const socketConnection = io('http://localhost:5000', { withCredentials: true });
 
-    socketConnection.on('connect', () => {
-      console.log('Connected to WebSocket server');
-    });
+  //   socketConnection.on('connect', () => {
+  //     console.log('Connected to WebSocket server');
+  //   });
 
-    socketConnection.on('message', (message: any) => {
-      console.log('Received message:', message);
-      setMessages(prevState => [...prevState, message]);
-    });
+  //   socketConnection.on('message', (message: any) => {
+  //     console.log('Received message:', message);
+  //     setMessages(prevState => [...prevState, message]);
+  //   });
 
-    setSocket(socketConnection);
+  //   setSocket(socketConnection);
 
-    return () => {
-      if (socketConnection) {
-        console.log('Disconnecting socket');
-        socketConnection.disconnect();
-      }
-    };
-  }, [coachId, userIdfromback]); 
+  //   return () => {
+  //     if (socketConnection) {
+  //       console.log('Disconnecting socket');
+  //       socketConnection.disconnect();
+  //     }
+  //   };
+  // }, [coachId, userIdfromback]); 
 
-  useEffect(() => {
-    if (socket && roomId) {
-      console.log(`Joining chat room: ${roomId}`);
-      socket.emit("joinRoom", roomId);
-    }
-  }, [roomId, socket]);
+  // useEffect(() => {
+  //   if (socket && roomId) {
+  //     console.log(`Joining chat room: ${roomId}`);
+  //     socket.emit("joinRoom", roomId);
+  //   }
+  // }, [roomId, socket]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -129,6 +129,7 @@ const ChatPage = () => {
       >
         Back
       </button>
+     
 
       <div className="flex-1 flex flex-col h-full p-6 bg-gray-800 w-[10%]">
         <div className="h-16 bg-gray-700 flex items-center px-4 border-b border-gray-600">
@@ -158,10 +159,12 @@ const ChatPage = () => {
              onChange={(e) => setNewMessage(e.target.value)}
               className="w-full p-3 border border-gray-600 rounded-l-lg focus:outline-none focus:border-cyan-500 bg-gray-800 text-white"
             />
+           
             <button type="submit" className="bg-cyan-600 text-white px-6 py-3 rounded-r-lg hover:bg-cyan-800 focus:outline-none">
               Send
             </button>
           </form>
+          {/* <button className="bg-cyan-600 text-white px-6 py-3 rounded-r-lg hover:bg-cyan-800 focus:outline-none"  onClick={() => window.open(`/user/videoCall?roomId=${userIdfromback}`)}>Video Call</button> */}
         </div>
       </div>
     </div>

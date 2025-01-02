@@ -34,7 +34,8 @@ export class PaymentController implements IPaymentController {
  saveData= async (req: Request, res: Response, next: NextFunction):Promise<void>=> {
     try {
 
-      const { txnid, email, productinfo, status, amount, udf1, package: packageType } = req.body;
+      const { txnid, email, productinfo, status, amount, udf1, package: packageType,slotTime } = req.body;
+      console.log(slotTime,txnid, email, productinfo, status,"==================")
       const userId = udf1;
       const coachId = productinfo;
       await this.paymentService.getCoachEmail(coachId)
@@ -47,7 +48,8 @@ export class PaymentController implements IPaymentController {
         status,
         amount,
         userId,
-        packageType
+        packageType,
+        slotTime
       });
       if (updatedBooking) {
         res.status(HttpStatus.OK).json({ success: true, updatedBookingId: updatedBooking });

@@ -14,6 +14,7 @@ export interface User {
     enrolledDurationExpire:string
     enrolledDate:string;
     address?: string;   
+    slotTaken: string;
     state?: string;   
     district?: string;   
     pincode?: number;   

@@ -5,7 +5,10 @@ export async function POST(req: any) {
   const contentType = req.headers.get("content-type") || "";
   const {searchParams} = req.nextUrl;
   const recieveddata = searchParams.get("packageDuration")
+  const slotTime = searchParams.get("slotTime")
   let packageDure = null
+
+
   if(recieveddata){
     try {
       packageDure = JSON.parse(decodeURIComponent(recieveddata))
@@ -19,10 +22,11 @@ export async function POST(req: any) {
   formData.forEach((value: any, key: string) => {
     data[key] = value;
   });
-
+data.slotTime = slotTime
 let PayUOrderId
   try {
     data.package = packageDure
+    console.log(data,"data")
      PayUOrderId = await PayUApiCalls.saveData(data);
   } catch (error: any) {
     console.log(error);

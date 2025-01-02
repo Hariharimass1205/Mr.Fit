@@ -23,6 +23,7 @@ const PayUPage = () => {
   const user_Id = searchParams.get('user_Id');
   const coach_Id = searchParams.get('coach_Id');
   const packageData = searchParams.get('packageAmount');
+  const slotTime = searchParams.get('slotTime');
   const packageDuration = searchParams.get('packageDuration');
   const userEmail = searchParams.get('userEmail');
   const userName = searchParams.get('userName');
@@ -38,13 +39,14 @@ const PayUPage = () => {
     user_Id: user_Id,
     username: userName,
     userEmail: userEmail,
+    slotTime:slotTime
   };
 
   const amount = BookedData.advanceAmount || 0;
   const productinfo = BookedData.vendorId || "";
   const username = BookedData.username;
   const email = BookedData.userEmail;
-  const surl = `${CLIENT_URL}/api/paymentSuccess?packageDuration=${encodeURIComponent(JSON.stringify(packageDuration))}`;
+  const surl = `${CLIENT_URL}/api/paymentSuccess?packageDuration=${encodeURIComponent(JSON.stringify(packageDuration))}&slotTime=${encodeURIComponent(JSON.stringify(slotTime))}`;
   const furl = `${CLIENT_URL}/api/paymentFailure`;
   const udf1 = BookedData.user_Id || "";
 

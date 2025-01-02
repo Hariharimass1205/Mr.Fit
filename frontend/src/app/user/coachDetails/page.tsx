@@ -3,10 +3,51 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { fetchCoachDetails, UpdateReview } from "@/service/userApi";
 import img from "../../../../public/assets/backGround/pexels-ronin-10754972.jpg";
-import Image from "next/image";
 import { Types } from "mongoose";
-import { Coach } from "../../../../utils/types";
 import { toast } from "react-toastify";
+
+
+
+const generateSlots = (availability: string) => {
+  const slots: string[] = [];
+  let startTime: number;
+  let endTime: number;
+
+  if (availability === "24 Hours") {
+    startTime = 0; // 12 AM
+    endTime = 23;  // 11 PM
+  } else {
+    const match = availability.match(/(\d{1,2})(AM|PM)\s*to\s*(\d{1,2})(AM|PM)/);
+    if (match) {
+      startTime = convertTo24Hour(match[1], match[2]);
+      endTime = convertTo24Hour(match[3], match[4]);
+    } else {
+      return slots; // In case no valid availability is given
+    }
+  }
+
+  for (let i = startTime; i < endTime; i++) {
+    const startHour = i % 24;
+    const endHour = (i + 1) % 24;
+    
+    const startPeriod = startHour < 12 ? "AM" : "PM";
+    const endPeriod = endHour < 12 ? "AM" : "PM";
+
+    const startHour12 = startHour % 12 === 0 ? 12 : startHour % 12;
+    const endHour12 = endHour % 12 === 0 ? 12 : endHour % 12;
+
+    slots.push(`${startHour12} ${startPeriod} - ${endHour12} ${endPeriod}`);
+  }
+
+  return slots;
+};
+
+const convertTo24Hour = (hour: string, period: string): number => {
+  let hour24 = parseInt(hour, 10);
+  if (period === "PM" && hour24 !== 12) hour24 += 12;
+  if (period === "AM" && hour24 === 12) hour24 = 0;
+  return hour24;
+};
 
 
 interface coachState {
@@ -42,15 +83,20 @@ interface coachState {
 export default function GymProfile() {
     const router = useRouter() 
   const serachParams = useSearchParams();
+  const coach_id = serachParams.get("coach");
   const [coach, setCoach] = useState< any | null>({ });
   const [user, setUser] = useState< any | null>({ });
   const [reviews,setReviews] = useState<any|null>([])
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reviewText, setReviewText] = useState("");
   const [starRating, setStarRating] = useState(0);
-  const coach_id = serachParams.get("coach");
+  const [selectedSlot,setSelectedSlot] = useState("");
+  const [registerUserSlot,setRegisterUserSlot] = useState<string[]>([])
+  const [slots, setSlots] = useState<string[]>([]);
+  const [packageAmount,setPackageAmount] = useState(0)
+  const [packageDuration,setPackageDuration] = useState("")
 
-  
+
   useEffect(() => {
     const fetchdatafn = async () => {
       if (coach_id) {
@@ -58,6 +104,7 @@ export default function GymProfile() {
         setUser(user)
         const data = await fetchCoachDetails(coach_id,user._id);
         setCoach(data.coach);
+        setRegisterUserSlot(data.studentsList.Students)
         setUser(data.user)
         setReviews(data.reviews)
       } else {
@@ -66,12 +113,9 @@ export default function GymProfile() {
     };
     fetchdatafn();
   }, []);
-  console.log(reviews,"reviewewewe")
-  const redirectToPayment =(packageAmount: number | undefined,packageDuration: string)=>{
-    localStorage.setItem("coach",JSON.stringify(coach))
-    router.push(`/user/payment?coach_Id=${coach?._id}&user_Id=${user?._id}&packageAmount=${packageAmount}&packageDuration=${packageDuration}&userEmail=${user?.email}&userName=${user.userName}`)
-  }
 
+console.log(registerUserSlot,"00000000000000")
+ 
   const handleReviewSubmit = async () => {
     if (!reviewText.trim()) {
       toast.error("Review cannot be empty");
@@ -93,6 +137,34 @@ export default function GymProfile() {
       toast.error("Error submitting review. Please try again.");
     }
   };
+
+
+  const redirectToPayment =(packageAmount: number | undefined,packageDuration: string)=>{
+    localStorage.setItem("coach",JSON.stringify(coach))
+    router.push(`/user/payment?coach_Id=${coach?._id}&user_Id=${user?._id}&packageAmount=${packageAmount}&packageDuration=${packageDuration}&userEmail=${user?.email}&userName=${user.userName}`)
+  }
+
+
+  const handlePackageSelect = (packageAmount: number, packageDuration: string) => {
+    if (coach?.availability) {
+      const generatedSlots = generateSlots(coach.availability);
+      setSlots(generatedSlots);
+      setPackageAmount(packageAmount)
+      setPackageDuration(packageDuration)
+      console.log(coach.availability)
+      console.log(generatedSlots,"------")
+      toast.success("Slots generated successfully!");
+    }
+  };
+
+  const setSelectedSlotfunction = (slot:string)=>{
+    setSelectedSlot(slot)
+    console.log(selectedSlot,"selectedSlotselectedSlot")
+    if(packageAmount && selectedSlot){
+      localStorage.setItem("coach",JSON.stringify(coach))
+    router.push(`/user/payment?coach_Id=${coach?._id}&user_Id=${user?._id}&slotTime=${selectedSlot}&packageAmount=${packageAmount}&packageDuration=${packageDuration}&userEmail=${user?.email}&userName=${user.userName}`)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -131,7 +203,6 @@ export default function GymProfile() {
   </button>
   </div>
 )}
-          
           </div>:""}
             <button
           onClick={()=>router.push("/user/coachList")}
@@ -143,12 +214,10 @@ export default function GymProfile() {
       </div>
       {user.enrolledPackage<=0?
       <section className="py-12 bg-gray-900">
-        <div className="container mx-auto px-6">
-                                                                        
+        <div className="container mx-auto px-6">                                                        
           <h2 className="text-5xl font-bold font-sans text-center mb-20">
             Choose Your Transformation Package
-          </h2>
-                                                                        
+          </h2>                                                   
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-gray-700  p-6 ml-10 rounded-3xl shadow-lg text-center">
               <h3 className="text-xl font-semibold">Monthly</h3>
@@ -158,11 +227,10 @@ export default function GymProfile() {
               <p className="mt-2 text-gray-300">
                 Access to gym workouts and online coaching
               </p>
-              <button onClick={()=>redirectToPayment(coach?.package?.monthlyPackage,"monthlyPackage")} className="mt-4 bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-600">
+              <button onClick={()=>handlePackageSelect(coach?.package?.monthlyPackage,"monthlyPackage")} className="mt-4 bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-600">
                 Select Plan
               </button>
             </div>
-
             <div className="bg-gray-700 p-6  rounded-3xl shadow-lg text-center">
               <h3 className="text-xl font-semibold">Quarterly</h3>
               <p className="mt-4 text-2xl font-bold text-red-500">
@@ -171,7 +239,7 @@ export default function GymProfile() {
               <p className="mt-2 text-gray-300">
                 Advanced plans with trainer guidance
               </p>
-              <button onClick={()=>redirectToPayment(coach?.package?.quarterlyPackage,"quarterlyPackage")} className="mt-4 bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-600">
+              <button onClick={()=>handlePackageSelect(coach?.package?.quarterlyPackage,"quarterlyPackage")} className="mt-4 bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-600">
                 Select Plan
               </button>
             </div>
@@ -184,13 +252,28 @@ export default function GymProfile() {
               <p className="mt-2 text-gray-300">
                 Full transformation plan with VIP perks
               </p>
-              <button onClick={()=>redirectToPayment(coach?.package?.yearlyPackage,"yearlyPackage")} className="mt-4 bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-600">
+              <button onClick={()=>handlePackageSelect(coach?.package?.yearlyPackage,"yearlyPackage")} className="mt-4 bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-red-600">
                 Select Plan
               </button>
             </div>
           </div>
         </div>
       </section>:""}
+      {/* Slot Generation Section */}
+      {slots.length > 0 && (
+        <section className="py-12 bg-gray-900">
+          <div className="container mx-auto px-6">
+            <h2 className="text-2xl font-bold text-center mb-8 text-white">Available Slots</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {slots.map((slot, index) => (
+                <div key={index} className="bg-gray-700 p-6 rounded-lg shadow-lg text-center">
+                  <h3 onClick={()=>setSelectedSlotfunction(slot)} className="text-lg font-semibold">{slot}</h3>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
  
 <section className="py-12 mt-10 w-fit mx-auto rounded-3xl bg-black-800">
   <div className="container mx-auto px-6 flex flex-col items-center">
@@ -207,7 +290,6 @@ export default function GymProfile() {
           <li>Contact: {coach?.phone}</li>
         </ul>
       </div>
-
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
         <h3 className="font-semibold text-lg mb-4 text-center">Training Info</h3>
         <ul className="space-y-4">
@@ -215,7 +297,6 @@ export default function GymProfile() {
           <li>Availability: {coach?.availability}</li>
         </ul>
       </div>
-
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
         <h3 className="font-semibold text-lg mb-4 text-center">Locating Info</h3>
         <ul className="space-y-4">
@@ -225,7 +306,6 @@ export default function GymProfile() {
           <li>Address: {coach?.address}</li>
         </ul>
       </div>
-
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
         <h3 className="font-semibold text-lg mb-4 text-center">Achievements</h3>
         <ul className="space-y-4">

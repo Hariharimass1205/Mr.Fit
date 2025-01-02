@@ -130,9 +130,6 @@ const Login: React.FC = () => {
   {...register("password", { required: "Your Passcode is required" })}
   className="w-full p-3 mb-1 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 />
-<small id="password-helper" className="text-white-500">
-  Your password should be at least 8 characters.
-</small>
             <small>{errors.password && <p className="text-red-500">{errors.password.message}</p>}</small>
             <div className="text-right mb-4">
 

@@ -319,8 +319,8 @@ console.log(payment)
   <p>Date of Enroll: {user?.enrolledDate}</p>
   <p>Expiration Date: {expirationDate}</p>
 
-  
-      <label className="block mt-4 font-medium"><strong>Your Payments:</strong></label>
+  {payment?.length?<div>
+  <h2 className="text-xl font-semibold mb-2 mt-5">Your Payment Details</h2>
       <div className="mt-2">
       {(payment ?? []).map((pay:any, index:number) => (
       <div key={index} className="border-b border-gray-300 pb-2 mb-2">
@@ -331,10 +331,11 @@ console.log(payment)
       <p>Transaction ID: {pay.transactionId}</p>
     )}
   </div>
+  
 ))}
-
-      </div>
-    
+  
+      </div> 
+</div>:<h1>no payment</h1>}
 </div>
 
         <div className="bg-cyan-200 shadow-md rounded-lg p-6">
