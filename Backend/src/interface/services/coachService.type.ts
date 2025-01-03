@@ -15,7 +15,11 @@ export type registerCoachServiceInput = {
     weight:number;
     noOfStudentsCoached:number;
     Students: string[];
-    availability:String;
+    availability:{ 
+      fromTime: string,
+      toTime: string,
+      workingDays:  string[]
+     },
     achievementBadges: {
         achievementsOne:String,
         achievementsTwo:String,

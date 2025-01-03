@@ -8,37 +8,20 @@ import { toast } from "react-toastify";
 
 
 
-const generateSlots = (availability: string) => {
+const generateSlots = (fromTime: string, toTime: string): string[] => {
   const slots: string[] = [];
-  let startTime: number;
-  let endTime: number;
-
-  if (availability === "24 Hours") {
-    startTime = 0; // 12 AM
-    endTime = 23;  // 11 PM
-  } else {
-    const match = availability.match(/(\d{1,2})(AM|PM)\s*to\s*(\d{1,2})(AM|PM)/);
-    if (match) {
-      startTime = convertTo24Hour(match[1], match[2]);
-      endTime = convertTo24Hour(match[3], match[4]);
-    } else {
-      return slots; // In case no valid availability is given
-    }
-  }
+  const startTime = convertTo24Hour(fromTime.split(/(?=[AP]M)/)[0], fromTime.slice(-2));
+  const endTime = convertTo24Hour(toTime.split(/(?=[AP]M)/)[0], toTime.slice(-2));
 
   for (let i = startTime; i < endTime; i++) {
     const startHour = i % 24;
     const endHour = (i + 1) % 24;
-    
     const startPeriod = startHour < 12 ? "AM" : "PM";
     const endPeriod = endHour < 12 ? "AM" : "PM";
-
     const startHour12 = startHour % 12 === 0 ? 12 : startHour % 12;
     const endHour12 = endHour % 12 === 0 ? 12 : endHour % 12;
-
     slots.push(`${startHour12} ${startPeriod} - ${endHour12} ${endPeriod}`);
   }
-
   return slots;
 };
 
@@ -50,6 +33,7 @@ const convertTo24Hour = (hour: string, period: string): number => {
 };
 
 
+
 interface coachState {
   _id:Types.ObjectId
   age: number;
@@ -58,7 +42,11 @@ interface coachState {
   height: number;
   weight: number;
   noOfStudentsCoached: number;
-  availability: string;
+  availability: { 
+    fromTime:String;
+    toTime:String;
+    workingDays:[String];
+  };
   achievementBadges: {
     achievementsOne:String,
     achievementsTwo:String,
@@ -144,15 +132,22 @@ console.log(registerUserSlot,"00000000000000")
 
   const handlePackageSelect = (packageAmount: number, packageDuration: string) => {
     if (coach?.availability) {
-      const generatedSlots = generateSlots(coach.availability);
-      setSlots(generatedSlots);
-      setPackageAmount(packageAmount)
-      setPackageDuration(packageDuration)
-      console.log(coach.availability)
-      console.log(generatedSlots,"------")
-      toast.success("Slots generated successfully!");
+     const generatedSlots = generateSlots(coach.availability.fromTime,coach.availability.toTime);
+     const availableSlots = filterAvailableSlots(generatedSlots, user?.slotTaken || null); // Pass single slot
+     setSlots(availableSlots);
+      setPackageAmount(packageAmount);
+      setPackageDuration(packageDuration);
     }
   };
+  
+  
+  
+  const filterAvailableSlots = (generatedSlots: string[], slotTaken: string | null) => {
+    if (!slotTaken) return generatedSlots; // If no slot is taken, all slots are available
+    return generatedSlots.filter((slot) => slot !== slotTaken);
+  };
+  
+  console.log(slots,"---444444444---")
 
   const setSelectedSlotfunction = (slot:string)=>{
     setSelectedSlot(slot)
@@ -192,10 +187,7 @@ console.log(registerUserSlot,"00000000000000")
  ""
 ) : (
   <div>
-  <button className="bg-cyan-500 px-6 py-2 rounded-lg font-semibold hover:bg-red-600">
-    Book a Slot
-  </button>
-    <button onClick={()=>router.push(`/user/chatPage?coach=${coach_id}&userId=${user?._id}`)} className="bg-gray-800 px-6 py-2 rounded-lg font-semibold ml-4 hover:bg-gray-700">
+    <button onClick={()=>router.push(`/user/chatPage?coach=${coach_id}&userId=${user?._id}`)} className=" top-4 right-4 mt-3 bg-cyan-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600">
     Chat with Coach
   </button>
   </div>
@@ -256,21 +248,28 @@ console.log(registerUserSlot,"00000000000000")
           </div>
         </div>
       </section>:""}
-      {/* Slot Generation Section */}
-      {slots.length > 0 && (
-        <section className="py-12 bg-gray-900">
-          <div className="container mx-auto px-6">
-            <h2 className="text-2xl font-bold text-center mb-8 text-white">Available Slots</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {slots.map((slot, index) => (
-                <div key={index} className="bg-gray-700 p-6 rounded-lg shadow-lg text-center">
-                  <h3 onClick={()=>setSelectedSlotfunction(slot)} className="text-lg font-semibold">{slot}</h3>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      
+      {slots.length > 0 ? (
+  <section className="py-12 bg-gray-900 ">
+    <div className="container mx-auto px-6 ">
+      <h2 className="text-2xl font-bold text-center mb-1   text-white">Available Slots</h2>
+      <p className="text-center mb-6">Note:Choose your slot as per the requirment , it cant be changed after the payment..</p>
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-1 m-2 ">
+        {slots.map((slot, index) => (
+          <button key={index} className="bg-gray-700  hover:bg-cyan-400  p-6 m-2 rounded-lg shadow-lg text-center">
+            <h3 onClick={() => setSelectedSlotfunction(slot)} className="text-lg font-semibold">
+              {slot}
+            </h3>
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+) : (
+  ""
+)}
+
+
  
 <section className="py-12 mt-10 w-fit mx-auto rounded-3xl bg-black-800">
   <div className="container mx-auto px-6 flex flex-col items-center">
@@ -289,10 +288,15 @@ console.log(registerUserSlot,"00000000000000")
       </div>
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
         <h3 className="font-semibold text-lg mb-4 text-center">Training Info</h3>
-        <ul className="space-y-4">
+        <ol className="space-y-4">
           <li>No. of Students Coached: {coach?.noOfStudentsCoached}</li>
-          <li>Availability: {coach?.availability}</li>
-        </ul>
+         
+          <li>Time Availability : {coach?.availability?.fromTime}   to : {coach?.availability?.toTime}</li>
+          <li >Days Availability :</li>
+          {coach?.availability?.workingDays.map((days:string,i:number)=>(
+            <li className="ml-32 text-orange-400" key={i} >{i + 1}.{days}</li>
+          ))}
+        </ol>
       </div>
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
         <h3 className="font-semibold text-lg mb-4 text-center">Locating Info</h3>

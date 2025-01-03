@@ -29,6 +29,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
 
   export const registerCoach = async (formData:any)=>{
    try {
+    console.log(formData,"------ffffffssssssssssss--------")
       const response = await Axios.post(`${SERVER_URL_COACH}/registerCoach`,{formData})
       console.log(response,"res from back")
       return response.data.success

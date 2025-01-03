@@ -13,7 +13,10 @@ const coachSchema = new Schema<Coach>({
     height:{type:Number,required:true},
     weight:{type:Number,required:true},
     noOfStudentsCoached:{type:Number},
-    availability:{type:String},
+    availability: { type:{
+      fromTime:{type:String},
+      toTime:{type: String},
+      workingDays:{type:[String]}}},
     Students: [{ 
       type: Schema.Types.ObjectId, 
       ref: "users" 

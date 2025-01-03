@@ -1,10 +1,11 @@
 import { Types } from "mongoose";
 import { registerCoachServiceInput, updateCoachScoreInput } from "./coachService.type";
+import { Coach } from "../coach";
 
 
 export interface ICoachService{
     updateCoachScore(data:updateCoachScoreInput):Promise<any | null>;
-    registerCoachService(coach:registerCoachServiceInput):Promise<registerCoachServiceInput | null>;
+    registerCoachService(coach:Coach):Promise<registerCoachServiceInput | null>;
     fetchCoachDataService(userId:Types.ObjectId):Promise<any | null>;
     saveProfilePic(url:string,userId:Types.ObjectId):Promise<any | null>;
     updateCoachPackage(objData:Object,userId:Types.ObjectId):Promise<any | null>;

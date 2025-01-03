@@ -8,7 +8,11 @@ export interface Coach{
     weight:number;
     noOfStudentsCoached:number;
     Students: [];
-    availability:String;
+    availability: { 
+      fromTime:String;
+      toTime:String;
+      workingDays:[String];
+    };
     achievementBadges: {
       achievementsOne:String,
       achievementsTwo:String,

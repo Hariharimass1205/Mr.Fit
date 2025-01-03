@@ -24,7 +24,7 @@ export class CoachService implements ICoachService{
 }
 
 
- registerCoachService = async (coach:Coach):Promise<registerCoachServiceInput | null>=>{
+ registerCoachService = async (coach:Coach):Promise<any | null>=>{
     try {
         const exsitingUser = await this.coachRepository.findUserByIdIsCoach(coach.userId)
         if(!exsitingUser){

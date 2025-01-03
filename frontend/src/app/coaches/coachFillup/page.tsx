@@ -7,8 +7,35 @@ import router, { useRouter } from "next/navigation";
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function CoachFillup() {
-  const router = useRouter()
-  const [formData, setFormData] = useState({
+  const router = useRouter();
+  const [formData, setFormData] = useState<{
+    fullName: string;
+    height: string;
+    phone: string;
+    weight: string;
+    age: string;
+    address: string;
+    availability: { fromTime: string; toTime: string; workingDays: string[] };
+    state: string;
+    city: string;
+    locality: string;
+    licenseOrAadhaar: string;
+  }>({
+    fullName: "",
+    height: "",
+    phone: "",
+    weight: "",
+    age: "",
+    address: "",
+    availability: { fromTime: "", toTime: "", workingDays: [] },
+    state: "",
+    city: "",
+    locality: "",
+    licenseOrAadhaar: "",
+  });
+  
+  
+  const [errors, setErrors] = useState({
     fullName: "",
     height: "",
     phone: "",
@@ -21,116 +48,121 @@ export default function CoachFillup() {
     locality: "",
     licenseOrAadhaar: "",
   });
-
-  const [errors, setErrors] = useState({
-    fullName: "",
-    height: "",
-    phone: "",
-    weight: "",
-    age: "",
-    address: "",
-    availability: "", 
-    state: "",
-    city: "",
-    locality: "",
-    licenseOrAadhaar: "",
-  });
-
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
-
-    // Update formData state
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-
-    // Clear the error when user starts typing
     setErrors((prev) => ({
       ...prev,
       [name]: "",
     }));
   };
-
+  
+  const handleAvailabilityChange = (e: { target: { name: string; value: string } }) => {
+    const { name, value } = e.target;
+  
+    setFormData((prev) => ({
+      ...prev,
+      availability: {
+        ...prev.availability,
+        [name]: value,
+      },
+    }));
+  };
+  
+  
+  const handleWorkingDaysChange = (day: string) => {
+    setFormData((prev) => {
+      const workingDays = prev.availability.workingDays.includes(day)
+        ? prev.availability.workingDays.filter((d) => d !== day)
+        : [...prev.availability.workingDays, day];
+  
+      return {
+        ...prev,
+        availability: {
+          ...prev.availability,
+          workingDays,
+        },
+      };
+    });
+  };
+  
   const validateForm = () => {
     const newErrors: any = {};
-
-    // Full Name
+  
     if (!formData.fullName.trim()) {
       newErrors.fullName = "Full Name is required.";
     }
-
-    // Height (should be a number)
-    if (!formData.height || isNaN(Number(formData.height)) || Number(formData.height) <= 0 || Number(formData.height)>300) {
+  
+    if (!formData.height || isNaN(Number(formData.height)) || Number(formData.height) <= 0 || Number(formData.height) > 300) {
       newErrors.height = "Height must be a positive number and lower than 300cm.";
     }
-
-    // Phone (should match a simple phone number pattern)
+  
     const phonePattern = /^[0-9]{10}$/;
     if (!formData.phone || !phonePattern.test(formData.phone)) {
       newErrors.phone = "Phone number must be exactly 10 digits.";
     }
-
-    // Weight (should be a number)
+  
     if (!formData.weight || isNaN(Number(formData.weight)) || Number(formData.weight) <= 0) {
       newErrors.weight = "Weight must be a positive number.";
     }
-
-    // Age (should be a number)
-    if (!formData.age || isNaN(Number(formData.age)) || Number(formData.age) <= 0 || Number(formData.age) >=110 ) {
+  
+    if (!formData.age || isNaN(Number(formData.age)) || Number(formData.age) <= 0 || Number(formData.age) >= 110) {
       newErrors.age = "Age must be a positive number and below 110.";
     }
-
-    // Address
+  
     if (!formData.address.trim()) {
       newErrors.address = "Address is required.";
     }
-
-    // State, City, Locality (all required)
+  
     if (!formData.state.trim()) {
       newErrors.state = "State is required.";
     }
+  
     if (!formData.city.trim()) {
       newErrors.city = "City is required.";
     }
+  
     if (!formData.locality.trim()) {
       newErrors.locality = "Locality is required.";
     }
-
-    // License or Aadhaar (alphanumeric validation)
+  
     const licensePattern = /^[A-Za-z0-9]{5,20}$/;
+
     if (!formData.licenseOrAadhaar || !licensePattern.test(formData.licenseOrAadhaar)) {
       newErrors.licenseOrAadhaar = "License or Aadhaar must be alphanumeric and between 5 to 20 characters long.";
     }
-
-    // Availability
-    if (!formData.availability) {
-      newErrors.availability = "Availability is required.";
+  
+    if (!formData.availability.fromTime || !formData.availability.toTime) {
+      newErrors.availability = "Time range is required.";
     }
-
+  
+    if (formData.availability.workingDays.length === 0) {
+      newErrors.availability = "Select at least one working day.";
+    }
+  
     setErrors(newErrors);
-
-    // Return false if there are any errors
+  
     return Object.keys(newErrors).length === 0;
   };
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!validateForm()) {
-      return; // Don't submit if form is invalid
+      return;
     }
-
     try {
       const response = await registerCoach(formData);
       if (response) {
-        router.replace(`/coaches/coachProfile`)
+        router.replace(`/coaches/coachProfile`);
       }
     } catch (error) {
       console.log(error);
     }
   };
-
   return (
     <>
     <ToastContainer></ToastContainer>
@@ -229,24 +261,98 @@ export default function CoachFillup() {
 
           {/* Availability */}
           <div>
-            <label className="block text-white font-semibold mb-2">Available Time:</label>
-            <div className="flex flex-wrap gap-20">
-              {[ "24 Hours", "4AM to 10PM", "5PM to 10PM" ].map((time) => (
-                <div className="flex items-center" key={time}>
-                  <input
-                    type="radio"
-                    name="availability"
-                    value={time}
-                    checked={formData.availability === time}
-                    onChange={handleChange}
-                    className="mr-2"
-                  />
-                  <label className="text-white">{time}</label>
+              <label className="block text-white font-semibold mb-2">Available Time:</label>
+              <div className="grid grid-cols-2 gap-4">
+  {/* From Time */}
+  <div className="flex gap-2 items-center">
+    <select
+      name="fromHour"
+      value={formData.availability.fromTime.split(" ")[0] || ""}
+      onChange={(e) =>
+        handleAvailabilityChange({
+          target: { name: "fromTime", value: `${e.target.value} ${formData.availability.fromTime.split(" ")[1] || "AM"}` },
+        })
+      }
+      className="p-3 border text-black border-gray-300 rounded w-1/2"
+    >
+      <option value="">Hour</option>
+      {[...Array(12)].map((_, i) => (
+        <option key={i + 1} value={i + 1}>
+          {i + 1}
+        </option>
+      ))}
+    </select>
+    <select
+      name="fromPeriod"
+      value={formData.availability.fromTime.split(" ")[1] || "AM"}
+      onChange={(e) =>
+        handleAvailabilityChange({
+          target: { name: "fromTime", value: `${formData.availability.fromTime.split(" ")[0] || "12"} ${e.target.value}` },
+        })
+      }
+      className="p-3 border text-black border-gray-300 rounded w-1/2"
+    >
+      <option value="AM">AM</option>
+      <option value="PM">PM</option>
+    </select>
+  </div>
+
+  {/* To Time */}
+  <div className="flex gap-2 items-center">
+    <select
+      name="toHour"
+      value={formData.availability.toTime.split(" ")[0] || ""}
+      onChange={(e) =>
+        handleAvailabilityChange({
+          target: { name: "toTime", value: `${e.target.value} ${formData.availability.toTime.split(" ")[1] || "AM"}` },
+        })
+      }
+      className="p-3 border text-black border-gray-300 rounded w-1/2"
+    >
+      <option value="">Hour</option>
+      {[...Array(12)].map((_, i) => (
+        <option key={i + 1} value={i + 1}>
+          {i + 1}
+        </option>
+      ))}
+    </select>
+    <select
+      name="toPeriod"
+      value={formData.availability.toTime.split(" ")[1] || "AM"}
+      onChange={(e) =>
+        handleAvailabilityChange({
+          target: { name: "toTime", value: `${formData.availability.toTime.split(" ")[0] || "12"} ${e.target.value}` },
+        })
+      }
+      className="p-3 border text-black border-gray-300 rounded w-1/2"
+    >
+      <option value="AM">AM</option>
+      <option value="PM">PM</option>
+    </select>
+  </div>
+</div>
+
+
+              <p className="text-red-500 text-sm">{errors.availability}</p>
+              <div>
+                <label className="block text-white font-semibold mt-4">Working Days:</label>
+                <div className="flex flex-wrap gap-4">
+                  {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
+                    <div key={day} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id={day}
+                        value={day}
+                        checked={formData.availability.workingDays.includes(day)}
+                        onChange={() => handleWorkingDaysChange(day)}
+                        className="mr-2"
+                      />
+                      <label htmlFor={day} className="text-white">{day}</label>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
-            {errors.availability && <p className="text-red-500 text-sm">{errors.availability}</p>}
-          </div>
 
           {/* Location Details */}
           <div className="grid text-black grid-cols-1 sm:grid-cols-3 gap-10">

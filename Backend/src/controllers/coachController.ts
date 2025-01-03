@@ -30,6 +30,7 @@ registerCoachController = async (req:CustomRequest,res:Response,next:NextFunctio
     try {
       const {role,id} = req.user
       const {formData} = req.body
+      console.log(formData,"formdatatata")
       const result = this.coachService.registerCoachService({
         name:formData.fullName,
         userId:new Types.ObjectId(`${id}`),
@@ -39,7 +40,11 @@ registerCoachController = async (req:CustomRequest,res:Response,next:NextFunctio
         weight:formData.weight,
         noOfStudentsCoached:0,
         Students:[],
-        availability:formData.availability,
+        availability:{ 
+           fromTime: formData.availability.fromTime,
+           toTime: formData.availability.toTime,
+           workingDays:  formData.availability.workingDays
+          },
         achievementBadges: {
           achievementsOne:"",
           achievementsTwo:"",
