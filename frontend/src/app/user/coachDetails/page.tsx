@@ -88,7 +88,7 @@ export default function GymProfile() {
   const [slots, setSlots] = useState<string[]>([]);
   const [packageAmount,setPackageAmount] = useState(0)
   const [packageDuration,setPackageDuration] = useState("")
-
+  const [fetchData,setFetchData] = useState<any>()
 
   useEffect(() => {
     const fetchdatafn = async () => {
@@ -96,6 +96,7 @@ export default function GymProfile() {
         const user = JSON.parse(localStorage.getItem("user") as string);
         setUser(user);
         const data = await fetchCoachDetails(coach_id, user._id);
+        setFetchData(data)
         setCoach(data.coach);
         const slots = data.studentsList.Students.map((student: { slotTaken: string }) => student.slotTaken);
         setRegisterSlot(slots);
@@ -133,7 +134,6 @@ export default function GymProfile() {
       toast.error("Error submitting review. Please try again.");
     }
   };
-
 
 
 
@@ -255,7 +255,6 @@ export default function GymProfile() {
           </div>
         </div>
       </section>:""}
-      
       {slots.length > 0 ? (
   <section className="py-12 bg-gray-900">
     <div className="container mx-auto px-6">
@@ -265,28 +264,39 @@ export default function GymProfile() {
       </p>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-1 m-2">
         {slots.map((slot, index) => {
-          // Normalize slots to ensure consistent comparison
           const normalizeSlot = (slot: string) =>
             slot.replace(/\s/g, "").replace("-", "to").toLowerCase();
-          const isSlotTaken = registerSlot
-            .map(normalizeSlot)
-            .includes(normalizeSlot(slot));
+
+          // Find the corresponding registered slot with expiration details
+          const matchedStudent = fetchData.studentsList.Students.find(
+            (student: { slotTaken: string }) => normalizeSlot(student.slotTaken) === normalizeSlot(slot)
+          );
+
+          const isSlotTaken = !!matchedStudent;
+          const expirationDate = matchedStudent ? matchedStudent.enrolledDurationExpire : "";
 
           return (
             <button
-  key={index}
-  className={`p-6 m-2 rounded-lg shadow-lg text-center ${
-    isSlotTaken
-      ? "bg-red-500 cursor-not-allowed"
-      : "bg-gray-700 hover:bg-cyan-400"
-  }`}
-  onClick={() => !isSlotTaken && setSelectedSlotfunction(slot)}
-  disabled={isSlotTaken}
-  title={isSlotTaken ? "Slot unavailable currently" : ""}
->
-  <h3 className="text-lg font-semibold">{slot}</h3>
-</button>
+              key={index}
+              className={`p-6 m-2 rounded-lg shadow-lg text-center relative overflow-hidden ${
+                isSlotTaken
+                  ? "bg-red-500 cursor-not-allowed"
+                  : "bg-gray-700 hover:bg-cyan-400"
+              }`}
+              onClick={() => !isSlotTaken && setSelectedSlotfunction(slot)}
+              disabled={isSlotTaken}
+            >
+              <h3 className="text-lg font-semibold">
+                {slot} {/* Display the time range */}
+              </h3>
 
+              {/* Tooltip to display the expiration date on hover */}
+              {isSlotTaken && (
+                <span className="absolute inset-0 mt-9 text-sm flex items-center justify-center text-white opacity-0 hover:opacity-100 transition-opacity">
+                  Expires: {expirationDate}
+                </span>
+              )}
+            </button>
           );
         })}
       </div>
@@ -295,6 +305,9 @@ export default function GymProfile() {
 ) : (
   ""
 )}
+
+
+
 
 
 
