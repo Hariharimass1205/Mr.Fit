@@ -11,8 +11,11 @@ import { toast } from "react-toastify";
 const generateSlots = (fromTime: string, toTime: string): string[] => {
   const slots: string[] = [];
   const startTime = convertTo24Hour(fromTime.split(/(?=[AP]M)/)[0], fromTime.slice(-2));
-  const endTime = convertTo24Hour(toTime.split(/(?=[AP]M)/)[0], toTime.slice(-2));
-
+  let endTime = convertTo24Hour(toTime.split(/(?=[AP]M)/)[0], toTime.slice(-2));
+  // Handle overnight scenarios
+  if (endTime <= startTime) {
+    endTime += 24; // Move `endTime` to the next day
+  }
   for (let i = startTime; i < endTime; i++) {
     const startHour = i % 24;
     const endHour = (i + 1) % 24;
@@ -22,6 +25,7 @@ const generateSlots = (fromTime: string, toTime: string): string[] => {
     const endHour12 = endHour % 12 === 0 ? 12 : endHour % 12;
     slots.push(`${startHour12} ${startPeriod} - ${endHour12} ${endPeriod}`);
   }
+  
   return slots;
 };
 
@@ -31,6 +35,7 @@ const convertTo24Hour = (hour: string, period: string): number => {
   if (period === "AM" && hour24 === 12) hour24 = 0;
   return hour24;
 };
+
 
 
 
@@ -79,7 +84,7 @@ export default function GymProfile() {
   const [reviewText, setReviewText] = useState("");
   const [starRating, setStarRating] = useState(0);
   const [selectedSlot,setSelectedSlot] = useState("");
-  const [registerUserSlot,setRegisterUserSlot] = useState<string[]>([])
+  const [registerSlot,setRegisterSlot] = useState<string[]>([])
   const [slots, setSlots] = useState<string[]>([]);
   const [packageAmount,setPackageAmount] = useState(0)
   const [packageDuration,setPackageDuration] = useState("")
@@ -88,22 +93,24 @@ export default function GymProfile() {
   useEffect(() => {
     const fetchdatafn = async () => {
       if (coach_id) {
-        const user = JSON.parse(localStorage.getItem("user") as string)
-        setUser(user)
-        const data = await fetchCoachDetails(coach_id,user._id);
-        console.log((coach?.userId?.slotTaken,"-------========="))
+        const user = JSON.parse(localStorage.getItem("user") as string);
+        setUser(user);
+        const data = await fetchCoachDetails(coach_id, user._id);
         setCoach(data.coach);
-        setRegisterUserSlot(data.studentsList.Students)
-        setUser(data.user)
-        setReviews(data.reviews)
+        const slots = data.studentsList.Students.map((student: { slotTaken: string }) => student.slotTaken);
+        setRegisterSlot(slots);
+        console.log("Collected Slots:", slots);
+        setUser(data.user);
+        setReviews(data.reviews);
       } else {
         console.log("coach_id missing in coach details");
       }
     };
     fetchdatafn();
   }, []);
+  
 
-console.log(registerUserSlot,"00000000000000")
+//console.log(registerSlot,"00000000000000")
  
   const handleReviewSubmit = async () => {
     if (!reviewText.trim()) {
@@ -132,22 +139,22 @@ console.log(registerUserSlot,"00000000000000")
 
   const handlePackageSelect = (packageAmount: number, packageDuration: string) => {
     if (coach?.availability) {
-     const generatedSlots = generateSlots(coach.availability.fromTime,coach.availability.toTime);
-     const availableSlots = filterAvailableSlots(generatedSlots, user?.slotTaken || null); // Pass single slot
-     setSlots(availableSlots);
+      const generatedSlots = generateSlots(coach.availability.fromTime, coach.availability.toTime);
+      const availableSlots = filterAvailableSlots(generatedSlots, registerSlot || []); // Pass array of taken slots
+      setSlots(availableSlots);
       setPackageAmount(packageAmount);
       setPackageDuration(packageDuration);
     }
   };
   
-  
-  
-  const filterAvailableSlots = (generatedSlots: string[], slotTaken: string | null) => {
-    if (!slotTaken) return generatedSlots; // If no slot is taken, all slots are available
-    return generatedSlots.filter((slot) => slot !== slotTaken);
+  const filterAvailableSlots = (generatedSlots: string[], slotsTaken: string[] | null) => {
+    if (!slotsTaken || slotsTaken.length === 0) return generatedSlots; // If no slots are taken, all slots are available
+    return generatedSlots.filter((slot) => !slotsTaken.includes(slot)); // Filter out all taken slots
   };
   
-  console.log(slots,"---444444444---")
+  
+  
+  //console.log(slots,"---444444444---")
 
   const setSelectedSlotfunction = (slot:string)=>{
     setSelectedSlot(slot)
@@ -250,24 +257,46 @@ console.log(registerUserSlot,"00000000000000")
       </section>:""}
       
       {slots.length > 0 ? (
-  <section className="py-12 bg-gray-900 ">
-    <div className="container mx-auto px-6 ">
-      <h2 className="text-2xl font-bold text-center mb-1   text-white">Available Slots</h2>
-      <p className="text-center mb-6">Note:Choose your slot as per the requirment , it cant be changed after the payment..</p>
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-1 m-2 ">
-        {slots.map((slot, index) => (
-          <button key={index} className="bg-gray-700  hover:bg-cyan-400  p-6 m-2 rounded-lg shadow-lg text-center">
-            <h3 onClick={() => setSelectedSlotfunction(slot)} className="text-lg font-semibold">
-              {slot}
-            </h3>
-          </button>
-        ))}
+  <section className="py-12 bg-gray-900">
+    <div className="container mx-auto px-6">
+      <h2 className="text-2xl font-bold text-center mb-1 text-white">Available Slots</h2>
+      <p className="text-center mb-6">
+        Note: Choose your slot as per the requirement; it can't be changed after the payment.
+      </p>
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-1 m-2">
+        {slots.map((slot, index) => {
+          // Normalize slots to ensure consistent comparison
+          const normalizeSlot = (slot: string) =>
+            slot.replace(/\s/g, "").replace("-", "to").toLowerCase();
+          const isSlotTaken = registerSlot
+            .map(normalizeSlot)
+            .includes(normalizeSlot(slot));
+
+          return (
+            <button
+  key={index}
+  className={`p-6 m-2 rounded-lg shadow-lg text-center ${
+    isSlotTaken
+      ? "bg-red-500 cursor-not-allowed"
+      : "bg-gray-700 hover:bg-cyan-400"
+  }`}
+  onClick={() => !isSlotTaken && setSelectedSlotfunction(slot)}
+  disabled={isSlotTaken}
+  title={isSlotTaken ? "Slot unavailable currently" : ""}
+>
+  <h3 className="text-lg font-semibold">{slot}</h3>
+</button>
+
+          );
+        })}
       </div>
     </div>
   </section>
 ) : (
   ""
 )}
+
+
 
 
  
