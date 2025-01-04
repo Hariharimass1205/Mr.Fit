@@ -35,6 +35,14 @@ export class CoachService implements ICoachService{
         throw error
     }
 }
+updateCoachAvailability = async (objData:Object,coach_id:Types.ObjectId):Promise<any | null>=>{
+    try {
+        const coachAvailability = await this.coachRepository.updateProfileAvailability(objData,coach_id)
+        return coachAvailability
+    } catch (error) {
+        throw error
+    }
+}
 
  fetchCoachDataService = async (userId:Types.ObjectId):Promise<any | null>=>{
     try {

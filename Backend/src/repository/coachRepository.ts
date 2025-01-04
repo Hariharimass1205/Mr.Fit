@@ -156,4 +156,19 @@ updateDietUser = async (userId:Types.ObjectId,dietEdit:any):Promise<any|null>=>{
     throw new Error('Database Error');
   }
 }
+updateProfileAvailability = async (objData:any,coach_id:Types.ObjectId):Promise<any|null>=>{
+  try {
+    console.log(objData?.availability,"777")
+    const updatedAvailability = await coachModel.updateOne({userId:coach_id},{$set:{
+      "availability.fromTime":objData?.availability?.fromTime,
+      "availability.toTime":objData?.availability?.toTime,
+      "availability.workingDays":objData?.availability?.workingDays,
+    }})
+    const coach = await  coachModel.findOne({userId:coach_id})
+    return coach
+  } catch (error) {
+    console.error('Error at updating availability coach by id:', error);
+    throw new Error('Database Error');
+  }
+}
 }

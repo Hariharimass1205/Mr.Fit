@@ -18,6 +18,7 @@ const PUBLIC_ROUTES = new Set([
   "/user/successPage"
 ]);
 const UNPROTECTED_ROUTES = new Set(["/_next/", "/favicon.ico", "/api/"]);
+
 export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
     const userAvailable = null

@@ -1,6 +1,6 @@
 "use client";
 
-import { changeProfilePic, fetchCoachData, savePackageBackend, saveProfiletoBackend, updateDiet } from "@/service/coachApi";
+import { changeProfilePic, fetchCoachData, saveAvailabilityBackend, savePackageBackend, saveProfiletoBackend, updateDiet } from "@/service/coachApi";
 import { useEffect, useState } from "react";
 import { Coach } from "../../../../utils/types";
 import { Types } from "mongoose";
@@ -68,9 +68,6 @@ export default function CoachProfile() {
     licenseOrAadhaar: "",
     role: "",
   });
-  const [editingStudentId, setEditingStudentId] = useState<Student | null>();
-  const [dietEdit, setDietEdit] = useState({ Meal1: '', Meal2: '', Meal3: '' });
-  const [viewingStudent, setViewingStudent] = useState<Student | null>(null);
   const [name, setName] = useState("");
   const [age, setAge] = useState(0);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -92,6 +89,13 @@ export default function CoachProfile() {
   const [error, setError] = useState<string | null>(null);
   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
   const [students, setStudents] = useState<Student[]>([]);
+  const [availability, setAvailability] = useState({
+    fromTime: "4 AM",
+    toTime: "10 AM",
+    workingDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+  });
+  const [isEditingAvailability, setIsEditingAvailability] = useState(false);
+  const [tempAvailability, setTempAvailability] = useState({ ...availability });
   useEffect(() => {
     const fetchCoachDatafn = async () => {
       try {
@@ -137,18 +141,11 @@ export default function CoachProfile() {
      setIsEditingProfile(false);
      toast.success("profile successfully updated")
   };
-
-
-  const handleViewClick = (student:any) => {
-    setViewingStudent(student);
-  };
-  
   const handleAchievementSave = async () => {
     try {
       const achieve = { achievementsOne ,achievementsTwo,achievementsThree};
       const dataSet = { coachId: coach.userId, achievement: achieve };
       const res = await saveAchievementBackend(dataSet);
-  
       // Update the coach state and clear the input
       setCoach((prev) => ({
         ...prev,
@@ -163,8 +160,6 @@ export default function CoachProfile() {
       toast.error("Failed to save achievement.");
     }
   };
-  
-
 
   const handlePackageSave = async () => {
     let pack ={
@@ -179,7 +174,6 @@ export default function CoachProfile() {
      setIsEditingPackage(false)
      toast.success("package successfully updated")
   };
-
   const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -188,47 +182,55 @@ export default function CoachProfile() {
       toast.success("profile pictured changed successfuly")
     }
   };
-
   if (loading) {
     return <div className="text-white">Loading...</div>;
   }
-
   if (error) {
     return <div className="text-red-500">{error}</div>;
   }
 
 
-  // diet process
+  // Availability Availability process
 
-  const handleEditClick = (student:any) => {
-    setEditingStudentId(student._id);
-    setDietEdit(student.Diet || { Meal1: '', Meal2: '', Meal3: '' });
-  };
-
-  const handleInputChange = (e:any) => {
-    const { name, value } = e.target;
-    setDietEdit((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSave = async (studentId:any) => {
-    // Here you would call the API to update the student's Diet field
-    console.log('Saving diet for student:', studentId, dietEdit);
-    const res = await updateDiet(studentId,dietEdit)
+  const handleSave =async  () => {
+    setAvailability(tempAvailability);
+    const res = await saveAvailabilityBackend(tempAvailability)
     if(res){
-      toast.success("successfully Diet Edited")
+      toast.success("availability changed successfuly")
     }
-    setEditingStudentId(null);
+    setIsEditingAvailability(false);
   };
-
+  console.log(availability,"avava---------------vavav")
   const handleCancel = () => {
-    setEditingStudentId(null);
-    setDietEdit({ Meal1: '', Meal2: '', Meal3: '' });
+    setTempAvailability({ ...availability });
+    setIsEditingAvailability(false);
+  };
+  const handleWorkingDaysChange = (day:any) => {
+    const updatedDays = tempAvailability.workingDays.includes(day)
+      ? tempAvailability.workingDays.filter((d) => d !== day)
+      : [...tempAvailability.workingDays, day];
+
+    setTempAvailability({ ...tempAvailability, workingDays: updatedDays });
   };
 
-  console.log(students,"ppppppppp")
+  const convertTo24Hour = (time:any) => {
+    const match = time.match(/(\d+)\s?(AM|PM)/i);
+    if (!match) return "";
+    const [_, hour, period] = match;
+    let hours = parseInt(hour, 10);
+    if (period.toUpperCase() === "PM" && hours !== 12) hours += 12;
+    if (period.toUpperCase() === "AM" && hours === 12) hours = 0;
+    return `${String(hours).padStart(2, "0")}`;
+  };
+
+  const convertTo12Hour = (time:any) => {
+    const intHour = parseInt(time, 10);
+    const period = intHour >= 12 ? "PM" : "AM";
+    const formattedHour = intHour % 12 === 0 ? 12 : intHour % 12;
+    return `${formattedHour} ${period}`;
+  };
+
+  console.log(availability,"avava---------------vavav")
   return (
     <div className="min-h-screen bg-gray-900 text-white font-sans p-4 relative">
       {/* Back Button */}
@@ -298,7 +300,6 @@ export default function CoachProfile() {
           onChange={(e) => setName(e.target.value)}
           className="w-full bg-gray-700 text-white p-3 rounded mb-4"
         />
-        
         <label className="block text-white mb-2">Age:</label>
         <input
           type="number"
@@ -306,7 +307,6 @@ export default function CoachProfile() {
           onChange={(e) => setAge(Number(e.target.value))}
           className="w-full bg-gray-700 text-white p-3 rounded mb-4"
         />
-        
         <label className="block text-white mb-2">Height (cm):</label>
         <input
           type="number"
@@ -314,7 +314,6 @@ export default function CoachProfile() {
           onChange={(e) => setHeight(Number(e.target.value))}
           className="w-full bg-gray-700 text-white p-3 rounded mb-4"
         />
-        
         <label className="block text-white mb-2">State:</label>
         <input
           type="text"
@@ -322,7 +321,6 @@ export default function CoachProfile() {
           onChange={(e) => setStates(e.target.value)}
           className="w-full bg-gray-700 text-white p-3 rounded mb-4"
         />
-        
         <label className="block text-white mb-2">Weight (kg):</label>
         <input
           type="number"
@@ -330,7 +328,6 @@ export default function CoachProfile() {
           onChange={(e) => setWeight(Number(e.target.value))}
           className="w-full bg-gray-700 text-white p-3 rounded mb-4"
         />
-        
         <label className="block text-white mb-2">Phone:</label>
         <input
           type="number"
@@ -374,8 +371,6 @@ export default function CoachProfile() {
     )}
   </div>
 </div>
-
-
    {/* Achievements Section */}
 <div className="bg-gray-800 rounded-lg shadow-md p-6 w-full mx-auto mt-2">
   <h2 className="text-2xl mb-4 font-extrabold text-red-500 flex justify-between items-center">
@@ -519,6 +514,91 @@ export default function CoachProfile() {
  </div>
 
         
+ <div className="bg-gray-800 rounded-lg shadow-md p-6 w-full mx-auto mt-2">
+      <h2 className="text-2xl mb-4 font-extrabold text-red-600 flex justify-between items-center">
+        Availability Details
+        <button
+          onClick={() => setIsEditingAvailability(!isEditingAvailability)}
+          className="ml-4 text-sm text-blue-400 hover:text-blue-600 underline">
+          {isEditingAvailability ? "Cancel" : "Edit"}
+        </button>
+      </h2>
+      <div className="mb-4">
+        {isEditingAvailability ? (
+          <div>
+            <label className="block text-white mb-2">From Time:</label>
+            <input
+              type="number"
+              min="0"
+              max="23"
+              value={convertTo24Hour(tempAvailability.fromTime)}
+              onChange={(e) =>
+                setTempAvailability({
+                  ...tempAvailability,
+                  fromTime: convertTo12Hour(e.target.value),
+                })
+              }
+              className="w-full bg-gray-700 text-white p-3 rounded mb-4"
+            />
+
+            <label className="block text-white mb-2">To Time:</label>
+            <input
+              type="number"
+              min="0"
+              max="23"
+              value={convertTo24Hour(tempAvailability.toTime)}
+              onChange={(e) =>
+                setTempAvailability({
+                  ...tempAvailability,
+                  toTime: convertTo12Hour(e.target.value),
+                })
+              }
+              className="w-full bg-gray-700 text-white p-3 rounded mb-4"
+            />
+
+            <label className="block text-white mb-2">Working Days:</label>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(
+                (day) => (
+                  <label key={day} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={tempAvailability.workingDays.includes(day)}
+                      onChange={() => handleWorkingDaysChange(day)}
+                      className="mr-2"
+                    />
+                    <span className="text-white">{day}</span>
+                  </label>
+                )
+              )}
+            </div>
+
+            <button
+              onClick={handleSave}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mr-2">
+              Save
+            </button>
+            <button
+              onClick={handleCancel}
+              className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4">
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <div className="text-white">
+            <p className="mb-2">
+              <span className="font-semibold">From Time:</span> {availability.fromTime}
+            </p>
+            <p className="mb-2">
+              <span className="font-semibold">To Time:</span> {availability.toTime}
+            </p>
+            <p className="mb-2">
+              <span className="font-semibold">Working Days:</span> {availability.workingDays.join(", ")}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
   
     
         {/* Buttons */}

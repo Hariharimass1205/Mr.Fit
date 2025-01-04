@@ -52,6 +52,16 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
     }
   }
 
+  export const saveAvailabilityBackend = async (availability:{})=>{
+    try {
+      const data = await Axios.post(`${SERVER_URL_COACH}/updateAvailability`,{availability})
+      return data
+    } catch (error) {
+      console.log(error)
+      throw handleAxiosError(error) 
+    }
+  }
+
   export const changeProfilePic = async (file:any)=>{
     try {
       const formData = new FormData()

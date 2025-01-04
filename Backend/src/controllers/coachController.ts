@@ -106,6 +106,19 @@ updateCoachPackage = async (req:CustomRequest,res:Response,next:NextFunction): P
     next(error);
   }
 }
+updateAvailability = async(req: CustomRequest, res: Response, next: NextFunction): Promise<void>=>{
+try {
+  const {id} = req?.user
+    const coach_id = new mongoose.Types.ObjectId(id)
+    const objData = req.body
+    console.log(coach_id,objData,"=========")
+    const result = await this.coachService.updateCoachAvailability(objData,coach_id)
+    res.status(HttpStatus.OK).json(result)
+} catch (error) {
+  console.error("Error at updating coach availabilaty in con");
+  next(error);
+}
+}
 updateCoachProfile= async (req:CustomRequest,res:Response,next:NextFunction): Promise<void>=>{
  try {
   const {id} = req?.user

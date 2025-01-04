@@ -155,7 +155,6 @@ checkUserAndOtpSent = async (data:checkUserAndOtpSentInput): Promise<any|null>=>
 fetchCoachListSer= async ():Promise<any|null>=>{
     try {
         const data = await this.userRepository.fetchCoachListRep()
-        console.log(data,"sercive 2nd")
         return data
     } catch (error) {
         console.log("error at fetching cocah list in service")

@@ -18,5 +18,6 @@ coachRouter.patch("/updatPackage",authMiddleware,controller.updateCoachPackage)
 coachRouter.patch("/updatProfile",authMiddleware,controller.updateCoachProfile)
 coachRouter.patch("/saveCoachAchievement",authMiddleware,controller.updateCoachAchievement)
 coachRouter.put("/updateDiet",controller.updateUserDiet)
+coachRouter.post('/updateAvailability',authMiddleware,controller.updateAvailability)
 
 export default coachRouter
