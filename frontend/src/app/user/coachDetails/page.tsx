@@ -89,6 +89,7 @@ export default function GymProfile() {
   const [packageAmount,setPackageAmount] = useState(0)
   const [packageDuration,setPackageDuration] = useState("")
   const [fetchData,setFetchData] = useState<any>()
+  const [showSlots, setShowSlots] = useState(true);
 
   useEffect(() => {
     const fetchdatafn = async () => {
@@ -136,8 +137,11 @@ export default function GymProfile() {
   };
 
 
-
+ const handleCloseBtn = ()=>{
+  setShowSlots(false)
+ }
   const handlePackageSelect = (packageAmount: number, packageDuration: string) => {
+    setShowSlots(true)
     if (coach?.availability) {
       const generatedSlots = generateSlots(coach.availability.fromTime, coach.availability.toTime);
       const availableSlots = filterAvailableSlots(generatedSlots, registerSlot || []); // Pass array of taken slots
@@ -255,56 +259,68 @@ export default function GymProfile() {
           </div>
         </div>
       </section>:""}
-      {slots.length > 0 ? (
-  <section className="py-12 bg-gray-900">
-    <div className="container mx-auto px-6">
-      <h2 className="text-2xl font-bold text-center mb-1 text-white">Available Slots</h2>
-      <p className="text-center mb-6">
-        Note: Choose your slot as per the requirement; it can't be changed after the payment.
-      </p>
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-1 m-2">
-        {slots.map((slot, index) => {
-          const normalizeSlot = (slot: string) =>
-            slot.replace(/\s/g, "").replace("-", "to").toLowerCase();
 
-          // Find the corresponding registered slot with expiration details
-          const matchedStudent = fetchData.studentsList.Students.find(
-            (student: { slotTaken: string }) => normalizeSlot(student.slotTaken) === normalizeSlot(slot)
-          );
+      
+      {showSlots && slots.length > 0 ? (
+        <section className="py-12 bg-gray-900 relative m-20">
+          <div className="container mx-auto px-6">
+            <h2 className="text-2xl font-bold text-center mb-1 text-white">Available Slots</h2>
 
-          const isSlotTaken = !!matchedStudent;
-          const expirationDate = matchedStudent ? matchedStudent.enrolledDurationExpire : "";
-
-          return (
+            {/* Close Button in the top-right corner */}
             <button
-              key={index}
-              className={`p-6 m-2 rounded-lg shadow-lg text-center relative overflow-hidden ${
-                isSlotTaken
-                  ? "bg-red-500 cursor-not-allowed"
-                  : "bg-gray-700 hover:bg-cyan-400"
-              }`}
-              onClick={() => !isSlotTaken && setSelectedSlotfunction(slot)}
-              disabled={isSlotTaken}
+              className="absolute top-4 right-8 rounded-lg bg-slate-400 p-2 text-sm cursor-pointer"
+              onClick={handleCloseBtn}
             >
-              <h3 className="text-lg font-semibold">
-                {slot} {/* Display the time range */}
-              </h3>
-
-              {/* Tooltip to display the expiration date on hover */}
-              {isSlotTaken && (
-                <span className="absolute inset-0 mt-9 text-sm flex items-center justify-center text-white opacity-0 hover:opacity-100 transition-opacity">
-                  Expires: {expirationDate}
-                </span>
-              )}
+              X close
             </button>
-          );
-        })}
-      </div>
-    </div>
-  </section>
-) : (
-  ""
-)}
+
+            <p className="text-center mb-6 text-xs">
+              Note: Choose your slot as per the requirement; it can't be changed after the payment.
+            </p>
+
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-1 m-2">
+              {slots.map((slot, index) => {
+                const normalizeSlot = (slot: string) =>
+                  slot.replace(/\s/g, "").replace("-", "to").toLowerCase();
+
+                // Find the corresponding registered slot with expiration details
+                const matchedStudent = fetchData.studentsList.Students.find(
+                  (student: { slotTaken: string }) => normalizeSlot(student.slotTaken) === normalizeSlot(slot)
+                );
+
+                const isSlotTaken = !!matchedStudent;
+                const expirationDate = matchedStudent ? matchedStudent.enrolledDurationExpire : "";
+
+                return (
+                  <button
+                    key={index}
+                    className={`p-6 m-2 rounded-lg shadow-lg text-center relative overflow-hidden ${
+                      isSlotTaken
+                        ? "bg-red-500 cursor-not-allowed"
+                        : "bg-gray-700 hover:bg-cyan-400"
+                    }`}
+                    onClick={() => !isSlotTaken && setSelectedSlotfunction(slot)}
+                    disabled={isSlotTaken}
+                  >
+                    <h3 className="text-lg font-semibold">
+                      {slot} {/* Display the time range */}
+                    </h3>
+
+                    {/* Tooltip to display the expiration date on hover */}
+                    {isSlotTaken && (
+                      <span className="absolute inset-0 mt-9 text-sm flex items-center justify-center text-white opacity-0 hover:opacity-100 transition-opacity">
+                        Expires: {expirationDate}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      ) : (
+        ""
+      )}
 
 
 
