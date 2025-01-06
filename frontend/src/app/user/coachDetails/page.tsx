@@ -365,7 +365,7 @@ export default function GymProfile() {
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
         <h3 className="font-semibold text-lg mb-4 text-center">Achievements</h3>
         <ul className="space-y-4">
-         <li>{coach?.achievementBadges?.achievementsOne}</li>
+         <li className="mt-4 bg-red-500 px-4 py-2 rounded-lg font-semibold w-fit">{coach?.achievementBadges?.achievementsOne}</li>
          <li>{coach?.achievementBadges?.achievementsTwo}</li>
          <li>{coach?.achievementBadges?.achievementsThree}</li>
         </ul>
