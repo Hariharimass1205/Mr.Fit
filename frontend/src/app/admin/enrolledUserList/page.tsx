@@ -1,8 +1,7 @@
 "use client";
 
 import Layout from "@/components/admin/layout";
-import Modal from "@/components/admin/modal"
-import { fetchDataList, handleBlockFun, handleUnBlockFun } from "@/service/adminApi";
+import { fetchDataList } from "@/service/adminApi";
 import { useEffect, useState } from "react";
 
 interface User {
@@ -11,18 +10,19 @@ interface User {
   phone: string;
   email: string;
   isBlocked: boolean;
+  enrolledDate: string;
+  enrolledDurationExpire: string;
+  enrolledPackage: string;
+  coachId: { name: string };
+  enrolledDuration: string;
 }
 
 const EnrolledUserList: React.FC = () => {
-
-
-
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,24 +36,14 @@ const EnrolledUserList: React.FC = () => {
     fetchData();
   }, []);
 
+  const filteredUsers = users.filter((user) =>
+    user.userName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-
-
-  const openModal = (user: User) => {
-    setSelectedUser(user);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setSelectedUser(null);
-    setIsModalOpen(false);
-  };
-
-
-  const totalPages = Math.ceil(users.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentUsers = users.slice(indexOfFirstItem, indexOfLastItem);
+  const currentUsers = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
@@ -62,7 +52,7 @@ const EnrolledUserList: React.FC = () => {
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
-  
+
   return (
     <Layout>
       <div className="flex justify-between shadow-lg items-center p-4 bg-white rounded-3xl">
@@ -70,7 +60,9 @@ const EnrolledUserList: React.FC = () => {
           <input
             type="text"
             placeholder="Search"
-            className="px-4 py-2 rounded-full border border-gray-300"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="px-4 py-2 rounded-full border border-gray-300 text-black"
           />
         </div>
         <div className="flex items-center space-x-4">
@@ -83,9 +75,10 @@ const EnrolledUserList: React.FC = () => {
       <h1 className="text-4xl font-bold text-black mt-10 mb-6 text-center">
         Enrolled User Management
       </h1>
+
       {error ? (
         <p className="text-red-500 text-center">{error}</p>
-      ) : users.length > 0 ? (
+      ) : filteredUsers.length > 0 ? (
         <>
           <div className="p-4">
             <table className="table-auto text-slate-950 w-full border-collapse border justify-center border-gray-300 rounded-lg">
@@ -100,11 +93,8 @@ const EnrolledUserList: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentUsers.map((user, index) => (
-                  <tr
-                    key={user.id || index}
-                    className="hover:bg-gray-50 transition-colors duration-200"
-                  >
+                {currentUsers.map((user,i) => (
+                  <tr key={i} className="hover:bg-gray-50 transition-colors duration-200">
                     <td className="px-6 py-4 border border-gray-300 text-gray-700">
                       {user.enrolledDate}
                     </td>
@@ -123,7 +113,6 @@ const EnrolledUserList: React.FC = () => {
                     <td className="px-6 py-4 border border-gray-300 justify-center text-gray-700">
                       {user.enrolledDuration}
                     </td>
-                  
                   </tr>
                 ))}
               </tbody>
@@ -152,7 +141,6 @@ const EnrolledUserList: React.FC = () => {
       ) : (
         <p className="text-center text-gray-700">Loading users...</p>
       )}
-
     </Layout>
   );
 };

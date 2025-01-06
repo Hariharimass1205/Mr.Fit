@@ -19,6 +19,9 @@ const CoachList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,13 +39,13 @@ const CoachList: React.FC = () => {
     try {
       const result = await handleBlockFun(email);
       if (result) {
-        setCoach((prevUsers) =>
-          prevUsers.map((user) =>
-            user.email === email ? { ...user, isBlocked: true } : user
+        setCoach((prevCoaches) =>
+          prevCoaches.map((coach) =>
+            coach.email === email ? { ...coach, isBlocked: true } : coach
           )
         );
       }
-      setIsModalOpen(false); // Close the modal after blocking
+      setIsModalOpen(false);
     } catch (error) {
       console.log("Error blocking user:", error);
     }
@@ -52,9 +55,9 @@ const CoachList: React.FC = () => {
     try {
       const result = await handleUnBlockFun(email);
       if (result) {
-        setCoach((prevUsers) =>
-          prevUsers.map((user) =>
-            user.email === email ? { ...user, isBlocked: false } : user
+        setCoach((prevCoaches) =>
+          prevCoaches.map((coach) =>
+            coach.email === email ? { ...coach, isBlocked: false } : coach
           )
         );
       }
@@ -64,9 +67,9 @@ const CoachList: React.FC = () => {
   };
 
   const handleApprovalChange = async (email: string, newStatus: string) => {
-    setCoach((prevUsers) =>
-      prevUsers.map((user) =>
-        user.email === email ? { ...user, isApproved: newStatus } : user
+    setCoach((prevCoaches) =>
+      prevCoaches.map((coach) =>
+        coach.email === email ? { ...coach, isApproved: newStatus } : coach
       )
     );
     try {
@@ -90,14 +93,41 @@ const CoachList: React.FC = () => {
     setIsModalOpen(false);
   };
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1); // Reset to the first page when searching
+  };
+
+  const filteredCoaches = coach.filter((coach) =>
+    coach.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    coach.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    coach.phone.includes(searchQuery)
+  );
+
+  const totalPages = Math.ceil(filteredCoaches.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  
+  const currentCoaches = filteredCoaches.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
   return (
     <Layout>
       <div className="flex justify-between shadow-lg items-center p-4 bg-white rounded-3xl">
         <div className="flex items-center">
           <input
             type="text"
-            placeholder="Search"
-            className="px-4 py-2 rounded-full border border-gray-300"
+            placeholder="Search by Name, Email, or Phone"
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="px-4 py-2 rounded-full border border-gray-300 text-black"
           />
         </div>
         <div className="flex items-center space-x-4">
@@ -113,7 +143,7 @@ const CoachList: React.FC = () => {
 
       {error ? (
         <p className="text-red-500 text-center">{error}</p>
-      ) : coach.length > 0 ? (
+      ) : currentCoaches.length > 0 ? (
         <div className="text-black overflow-x-auto px-4 py-4">
           <table className="min-w-full table-auto border-collapse border border-gray-900">
             <thead>
@@ -127,7 +157,7 @@ const CoachList: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {coach.map((coach, index) => (
+              {currentCoaches.map((coach, index) => (
                 <tr key={index} className="text-center hover:bg-gray-100">
                   <td className="border px-4 py-2">{coach.userName}</td>
                   <td className="border px-4 py-2">{coach.phone}</td>
@@ -173,6 +203,27 @@ const CoachList: React.FC = () => {
       ) : (
         <p className="text-center text-gray-700">Loading coaches...</p>
       )}
+
+      {/* Pagination */}
+      <div className="flex justify-center items-center mt-6">
+        <button
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          className={`px-4 py-2 mr-2 rounded ${currentPage === 1 ? "bg-gray-300" : "bg-blue-500 hover:bg-blue-600 text-white"}`}
+        >
+          Previous
+        </button>
+        <span className="text-gray-700">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className={`px-4 py-2 ml-2 rounded ${currentPage === totalPages ? "bg-gray-300" : "bg-blue-500 hover:bg-blue-600 text-white"}`}
+        >
+          Next
+        </button>
+      </div>
 
       {isModalOpen && selectedCoach && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
