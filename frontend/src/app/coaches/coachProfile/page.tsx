@@ -90,9 +90,9 @@ export default function CoachProfile() {
   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
   const [students, setStudents] = useState<Student[]>([]);
   const [availability, setAvailability] = useState({
-    fromTime: "4 AM",
-    toTime: "10 AM",
-    workingDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    fromTime: "",
+    toTime: "",
+    workingDays: [""],
   });
   const [isEditingAvailability, setIsEditingAvailability] = useState(false);
   const [tempAvailability, setTempAvailability] = useState({ ...availability });
@@ -103,6 +103,11 @@ export default function CoachProfile() {
         setCoach(response.coach);
         setName(response?.coach.name);
         setStudents(response.coach.Students)
+        setAvailability({
+          fromTime : response.coach.availability.fromTime,
+          toTime:response.coach.availability.toTime,
+          workingDays:response.coach.availability.workingDays,
+        })
         setAge(response.coach.age);
         setStates(response.coach.state);
         setWeight(response.coach.weight);
@@ -429,7 +434,6 @@ export default function CoachProfile() {
       {achievementsOne && (
         <div className="bg-orange-500 text-white p-3 rounded-lg shadow-sm">
           {achievementsOne}
-          
         </div>
       )}
       {achievementsTwo && (

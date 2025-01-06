@@ -318,6 +318,7 @@ console.log(payment)
   </a>
   <p>Date of Enroll: {user?.enrolledDate}</p>
   <p>Expiration Date: {expirationDate}</p>
+  <p>Slot Timing: {user?.slotTaken}</p>
 
   {payment?.length?<div>
   <h2 className="text-xl font-semibold mb-2 mt-5">Your Payment Details</h2>
@@ -331,11 +332,9 @@ console.log(payment)
       <p>Transaction ID: {pay.transactionId}</p>
     )}
   </div>
-  
 ))}
-  
       </div> 
-</div>:<h1>no payment</h1>}
+</div>:<h1>No Payment Details</h1>}
 </div>
 
         <div className="bg-cyan-200 shadow-md rounded-lg p-6">

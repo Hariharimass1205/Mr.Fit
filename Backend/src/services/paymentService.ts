@@ -55,6 +55,7 @@ export class PaymentService implements IPaymentService{
 
  async updateBookingStatus(bookingData: any) {
       try {
+        
         const updatedBooking = await this.paymentRepository.updateBookingStatus(bookingData);
      return updatedBooking
       } catch (error:any) {

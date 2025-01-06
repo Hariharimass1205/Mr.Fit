@@ -26,6 +26,7 @@ export type User = {
     quizScore:Number;
     isApproved:string;
     role:string;
+    slotTaken:string;
     isRegisted:boolean;
     Diet?: {
       Meal1: string | null;

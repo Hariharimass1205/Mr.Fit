@@ -145,6 +145,7 @@ export default function GymProfile() {
     if (coach?.availability) {
       const generatedSlots = generateSlots(coach.availability.fromTime, coach.availability.toTime);
       const availableSlots = filterAvailableSlots(generatedSlots, registerSlot || []); // Pass array of taken slots
+      console.log(generatedSlots,"generatedSlots",availableSlots,"availableSlots")
       setSlots(availableSlots);
       setPackageAmount(packageAmount);
       setPackageDuration(packageDuration);
@@ -297,7 +298,7 @@ export default function GymProfile() {
                     className={`p-6 m-2 rounded-lg shadow-lg text-center relative overflow-hidden ${
                       isSlotTaken
                         ? "bg-red-500 cursor-not-allowed"
-                        : "bg-gray-700 hover:bg-cyan-400"
+                        : "bg-gray-700 hover:bg-green-400"
                     }`}
                     onClick={() => !isSlotTaken && setSelectedSlotfunction(slot)}
                     disabled={isSlotTaken}
@@ -308,8 +309,8 @@ export default function GymProfile() {
 
                     {/* Tooltip to display the expiration date on hover */}
                     {isSlotTaken && (
-                      <span className="absolute inset-0 mt-9 text-sm flex items-center justify-center text-white opacity-0 hover:opacity-100 transition-opacity">
-                        Expires: {expirationDate}
+                      <span className="absolute inset-0 mt-10 text-sm flex items-center justify-center text-white opacity-0 hover:opacity-100 transition-opacity">
+                        Available after: {expirationDate}
                       </span>
                     )}
                   </button>

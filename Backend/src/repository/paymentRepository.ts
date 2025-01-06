@@ -33,52 +33,58 @@ export class PaymentRepository implements IPaymentRepository{
    }
 }
 
-updateBookingStatus=async(bookingData:any): Promise<any|null>=> {
+updateBookingStatus = async (bookingData: any): Promise<any | null> => {
   try {
-    const{ txnid,email,coachId,status,amount,userId,packageType,slotTime } = bookingData
-    console.log( txnid,email,coachId,status,amount,userId,"details  deatils //////////")
+    const { txnid, email, coachId, status, amount, userId, packageType, slotTime } = bookingData;
+    console.log(txnid, email, coachId, status, amount, userId, "details  details //////////");
+
     const enrolledPackage = `${packageType}`;
-        const updatedPayment = await paymentModel.updateOne({userEmail:email},{$set:{paymentStatus:"completed"}})
-        const createRoom = await chatRoomModel.create({user:userId,coach:coachId})
-        const payment = await paymentModel.findOne({userEmail:email,userId:userId})
-        const paymentDate = new Intl.DateTimeFormat("en-US").format(new Date(payment.transactionDate));
-        const expireDate = calculateExpirationDate(paymentDate,enrolledPackage)
-        let arr = slotTime.split("")
-        for(let i=0;i<arr.length;i++){
-          if(arr[i]==`"`){
-            arr.splice(i,1)
-            }
-        }
-        let slotT = arr.join("")
-        console.log(slotT,"-------------------0000000-------------------")
-        const userCoachIdUpdate = await userModel.updateOne(
-          { _id: userId },
-          {
-            $set: {
-              enrolledPackage:amount,
-              enrolledDuration:enrolledPackage, 
-              coachId: coachId,
-              enrolledDate: paymentDate,
-              enrolledDurationExpire:expireDate,
-              slotTaken:slotT
-            },
-          }
-        );
-        const addUserIdToCoach = await coachModel.updateOne(
-          { _id: new mongoose.Types.ObjectId(coachId) },
-          {
-            $addToSet: { Students: new mongoose.Types.ObjectId(userId) },
-            $inc: { noOfStudentsCoached: 1 }
-          }
-        );
-      console.log(userId,addUserIdToCoach,coachId,"coach student updated result")
-        const updatedUser =  await userModel.findOne({_id:userId})
-        return updatedPayment
+    const updatedPayment = await paymentModel.updateOne(
+      { userEmail: email },
+      { $set: { paymentStatus: "completed" } }
+    );
+
+    const createRoom = await chatRoomModel.create({ user: userId, coach: coachId });
+    const payment = await paymentModel.findOne({ userEmail: email, userId: userId });
+    const paymentDate = new Intl.DateTimeFormat("en-US").format(new Date(payment.transactionDate));
+    const expireDate = calculateExpirationDate(paymentDate, enrolledPackage);
+    const slotT = slotTime.replace(/^"|"$/g, "").replace(/\s(?=[AP]M)/g, "");
+
+
+    console.log(slotT, "-------------------0000000-------------------");
+
+    const userCoachIdUpdate = await userModel.updateOne(
+      { _id: userId },
+      {
+        $set: {
+          enrolledPackage: amount,
+          enrolledDuration: enrolledPackage,
+          coachId: coachId,
+          enrolledDate: paymentDate,
+          enrolledDurationExpire: expireDate,
+          slotTaken: slotT,
+        },
+      }
+    );
+
+    const addUserIdToCoach = await coachModel.updateOne(
+      { _id: new mongoose.Types.ObjectId(coachId) },
+      {
+        $addToSet: { Students: new mongoose.Types.ObjectId(userId) },
+        $inc: { noOfStudentsCoached: 1 },
+      }
+    );
+
+    console.log(userId, addUserIdToCoach, coachId, "coach student updated result");
+    const updatedUser = await userModel.findOne({ _id: userId });
+
+    return updatedPayment;
   } catch (error) {
     console.error("Error in payment doc creation:", error);
-     throw new Error(error.message);
+    throw new Error(error.message);
   }
-}
+};
+
 getCoachEmail = async (coachId:string): Promise<any|null>=>{
   try {
     const coach_Id = new mongoose.Types.ObjectId(coachId as string)

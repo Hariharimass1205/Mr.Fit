@@ -111,7 +111,6 @@ try {
   const {id} = req?.user
     const coach_id = new mongoose.Types.ObjectId(id)
     const objData = req.body
-    console.log(coach_id,objData,"=========")
     const result = await this.coachService.updateCoachAvailability(objData,coach_id)
     res.status(HttpStatus.OK).json(result)
 } catch (error) {

@@ -255,6 +255,7 @@ private async handleExpiredEnrollments() {
           enrolledDuration: "",
           enrolledDate: "",
           coachId: null,
+          slotTaken:null
         },
       }
     );

@@ -1,11 +1,12 @@
 "use client";
 import { getMessages, getRoomId, SaveChat, SaveChatCoach } from '@/service/chatApi';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { formatDate } from '../../../../utils/dateFormat';
 import { io, Socket } from 'socket.io-client';
 
 const ChatPage = () => {
+  const msgRef = useRef(null)
   const searchParams = useSearchParams();
   const router = useRouter();
   const [messages, setMessages] = useState<any[]>([]);
@@ -234,6 +235,7 @@ const ChatPage = () => {
         <div className="bg-gray-700 text-white flex items-center p-4 border-t border-gray-600 mt-4">
           <form onSubmit={handleSendMessage} className="flex w-full">
             <input
+            ref={msgRef}
               type="text"
               placeholder="Type a message..."
               value={newMessage}
