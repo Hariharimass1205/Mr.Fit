@@ -13,8 +13,6 @@ interface UserPayload extends JwtPayload {
   }
 
   const authMiddleware = (req:CustomRequest,res:Response,next:NextFunction)=>{
-    console.log('backrmd 1');
-    
         const accessToken = req.cookies.accessToken
         const refreshToken = req.cookies.refreshToken
         console.log(accessToken,refreshToken,"middle token console")

@@ -35,7 +35,6 @@ export class PaymentController implements IPaymentController {
     try {
 
       const { txnid, email, productinfo, status, amount, udf1, package: packageType,slotTime } = req.body;
-      console.log(slotTime,txnid, email, productinfo, status,"==================")
       const userId = udf1;
       const coachId = productinfo;
       await this.paymentService.getCoachEmail(coachId)

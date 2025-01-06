@@ -110,9 +110,6 @@ export default function GymProfile() {
     };
     fetchdatafn();
   }, []);
-  
-
-//console.log(registerSlot,"00000000000000")
  
   const handleReviewSubmit = async () => {
     if (!reviewText.trim()) {
@@ -145,7 +142,6 @@ export default function GymProfile() {
     if (coach?.availability) {
       const generatedSlots = generateSlots(coach.availability.fromTime, coach.availability.toTime);
       const availableSlots = filterAvailableSlots(generatedSlots, registerSlot || []); // Pass array of taken slots
-      console.log(generatedSlots,"generatedSlots",availableSlots,"availableSlots")
       setSlots(availableSlots);
       setPackageAmount(packageAmount);
       setPackageDuration(packageDuration);

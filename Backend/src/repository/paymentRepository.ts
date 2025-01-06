@@ -36,8 +36,6 @@ export class PaymentRepository implements IPaymentRepository{
 updateBookingStatus = async (bookingData: any): Promise<any | null> => {
   try {
     const { txnid, email, coachId, status, amount, userId, packageType, slotTime } = bookingData;
-    console.log(txnid, email, coachId, status, amount, userId, "details  details //////////");
-
     const enrolledPackage = `${packageType}`;
     const updatedPayment = await paymentModel.updateOne(
       { userEmail: email },
@@ -49,10 +47,6 @@ updateBookingStatus = async (bookingData: any): Promise<any | null> => {
     const paymentDate = new Intl.DateTimeFormat("en-US").format(new Date(payment.transactionDate));
     const expireDate = calculateExpirationDate(paymentDate, enrolledPackage);
     const slotT = slotTime.replace(/^"|"$/g, "").replace(/\s(?=[AP]M)/g, "");
-
-
-    console.log(slotT, "-------------------0000000-------------------");
-
     const userCoachIdUpdate = await userModel.updateOne(
       { _id: userId },
       {
@@ -75,7 +69,6 @@ updateBookingStatus = async (bookingData: any): Promise<any | null> => {
       }
     );
 
-    console.log(userId, addUserIdToCoach, coachId, "coach student updated result");
     const updatedUser = await userModel.findOne({ _id: userId });
 
     return updatedPayment;

@@ -92,9 +92,7 @@ login = async(req:Request,res:Response,next:NextFunction) : Promise<void> =>{
 googleLogin = async (req:Request,res:Response,next:NextFunction):Promise<void>=> {
   try {
       const { email, displayName } = req.body
-      console.log(email,displayName)
       const {user, accessToken, refreshToken} =  await this.userService.googleUser(email,displayName)
-      console.log(user,"useruseruser")
       res.cookie("accessToken",accessToken,{
         sameSite:"strict",
         httpOnly:false
@@ -210,7 +208,6 @@ fetchCoachDetails = async(req:Request,res:Response,next:NextFunction)=>{
       const coach_Id = new mongoose.Types.ObjectId(coach as string)
       const user_Id = new mongoose.Types.ObjectId(user as string)
       const result = await this.userService.fetchCoachDetails(coach_Id,user_Id)
-      console.log(result)
       res.status(HttpStatus.OK).json({success:true,coachUserDetails:result})
    } catch (error) {
     console.error("error at fetching coach Details ");
@@ -244,7 +241,6 @@ try {
 addReview = async (req:Request,res:Response,next:NextFunction) =>{
   try {
     const {coachId,userId,review,starRating} = req.body
-    console.log(coachId,userId,review,starRating,";;;;;;;;;;;")
     const result = await this.userService.addReview(coachId,userId,review,starRating)
     if(result){
     res.status(HttpStatus.OK).json({success:true})

@@ -30,7 +30,6 @@ registerCoachController = async (req:CustomRequest,res:Response,next:NextFunctio
     try {
       const {role,id} = req.user
       const {formData} = req.body
-      console.log(formData,"formdatatata")
       const result = this.coachService.registerCoachService({
         name:formData.fullName,
         userId:new Types.ObjectId(`${id}`),

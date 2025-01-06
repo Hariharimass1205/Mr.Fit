@@ -90,7 +90,6 @@ verifyOTPService = async (otpData:verifyOTPServiceInput): Promise<string | null>
         const user = await this.userRepository.googleUser(email,displayName);
           const accessToken = generateAccessToken(user._id, "user");
           const refreshToken = generateRefreshToken(user._id, "user");
-          console.log(accessToken,refreshToken,"kkkkkkkkkkkkkkkkkkkkkk")
           return { user, accessToken, refreshToken };
     } catch (error) {
         throw error;
@@ -106,7 +105,6 @@ checkUserAndOtpSent = async (data:checkUserAndOtpSentInput): Promise<any|null>=>
         if(!saveOTP){
             throw new Error("user not found")
         }
-        console.log(saveOTP.otp,'okoko');
         return saveOTP
     } catch (error) {
         console.log("error at checkUser at service")

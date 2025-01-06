@@ -21,16 +21,13 @@ export class CoachRepository implements ICoachRepository{
   try {
       const userExists = await userModel.findOne({_id:id}).exec();
       if (!userExists) {
-        console.log(userExists,"hiiiiiiiiiiiii")
           throw new Error(`User with id ${id} not found.`);
       }
-      console.log(userExists?.userName,"userName")
       const updateRegistorField = await userModel.updateOne(
           { _id:id },
           { $set: { isRegisted: true } }
       );
       const coach = await userModel.findOne({ _id:id, isRegisted:true }).exec();
-      console.log(coach, "from coach repo", updateRegistorField);
       return coach;
   } catch (error) {
       console.error('Error in findUserByIdIsCoach:', error.message);
@@ -42,7 +39,6 @@ export class CoachRepository implements ICoachRepository{
  createCoach = async (coach: Coach): Promise<Coach>=> {
     try {
       const newCoach = new coachModel(coach);
-      console.log(newCoach,"updated")
       return await newCoach.save();
     } catch (error) {
       console.log(error)
@@ -66,7 +62,6 @@ fetchCoachDataRepo = async (userId:Types.ObjectId):Promise<any|null>=>{
   }
   updateProfilePicture = async (url:string,userId:Types.ObjectId):Promise<any|null>=>{
     try {
-      console.log("saving......")
       const updateMessage = await userModel.updateOne({_id:userId},{profileImage:url})
       const userInfo = await userModel.findOne({_id:userId})
       return userInfo
@@ -137,7 +132,6 @@ try {
     console.log("Achievements updated successfully");
   }
   const res2 = await coachModel.find({ userId: userId})
-  console.log(res2,"res222")
   return res2
 } catch (error) {
   console.error('Error at updating achievemeent coach by id:', error);
@@ -158,7 +152,6 @@ updateDietUser = async (userId:Types.ObjectId,dietEdit:any):Promise<any|null>=>{
 }
 updateProfileAvailability = async (objData:any,coach_id:Types.ObjectId):Promise<any|null>=>{
   try {
-    console.log(objData?.availability,"777")
     const updatedAvailability = await coachModel.updateOne({userId:coach_id},{$set:{
       "availability.fromTime":objData?.availability?.fromTime,
       "availability.toTime":objData?.availability?.toTime,

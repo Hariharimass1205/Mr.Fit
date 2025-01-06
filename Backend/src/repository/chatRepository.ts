@@ -11,7 +11,6 @@ export class chatRepository implements IChatRepository{
     async saveMessageRepo(reqBody: any): Promise<any | null> {
         try {
           const { senderId, coachId, content } = reqBody;
-          console.log(reqBody,"------------")
           if (!senderId || !coachId || !content) {
             console.error("Missing required fields in request body:", reqBody);
             throw new Error("Missing required fields (senderId, coachId, content)");
@@ -30,7 +29,6 @@ export class chatRepository implements IChatRepository{
             content,
             roomId: room._id,
           });
-          console.log("Message successfully saved to database:", message);
           const roomStringId = room._id.toString();
           io.to(roomStringId).emit("message", {
             _id: message._id,
@@ -41,7 +39,6 @@ export class chatRepository implements IChatRepository{
             isRead: message.isRead,
             timestamp: message.timestamp,
           });
-          console.log("Message successfully emitted to user room:", roomStringId);
           return message;
         } catch (error) {
           console.error("Error in saveMessageRepo:", error.message);
@@ -83,7 +80,6 @@ export class chatRepository implements IChatRepository{
             isRead: message.isRead,
             timestamp: message.timestamp,
           });
-          console.log("Message successfully emitted coach to room:", roomStringId);
           return message;
         } catch (error) {
           console.error("Error in saveMessageRepo:", error.message);

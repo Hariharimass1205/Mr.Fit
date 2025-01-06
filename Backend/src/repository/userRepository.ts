@@ -6,6 +6,8 @@ import coachModel from "../model/coachModel";
 import mongoose, { Types } from "mongoose";
 import reviewModel from "../model/reviewModel";
 import paymentModel from "../model/paymentModel";
+import { sendEmail } from "../utils/sendEmail";
+import dietStoreModel from "../model/DietStoreModel";
 
 
 export class UserRepository implements IUserRepository{
@@ -206,6 +208,24 @@ addDietGoalRepo= async (userId:Types.ObjectId,data: {
 }):Promise<any|null>=>{
   try {
     const user_Id = new mongoose.Types.ObjectId(userId)
+    const user =  await userModel.findById({_id:user_Id})
+    const { Meal1, Meal2, Meal3, Goal } = user.Diet;
+    const dietData = {
+      coachId:user.coachId,
+      user_Id,
+      providedMeal1: Meal1 || "Not provided",
+      providedMeal2: Meal2 || "Not provided",
+      providedMeal3: Meal3 || "Not provided",
+      water: Goal?.Water || "Not provided",
+      Calories: Goal?.Calories || "Not provided",
+      Steps: Goal?.Steps || "Not provided",
+      Protein: Goal?.Protein || "Not provided",
+      Carbohydrates: Goal?.Carbohydrates || "Not provided",
+      Fats: Goal?.Fats || "Not provided",
+      Fiber: Goal?.Fiber || "Not provided",
+      SleepTime: Goal?.SleepTime || "Not provided",
+    };
+    const newDiet = await dietStoreModel.create(dietData);
     const savedData = await userModel.updateOne(
       { _id: user_Id },
       {
@@ -234,7 +254,14 @@ addDietGoalRepo= async (userId:Types.ObjectId,data: {
 //jobs 
 private async handleExpiredEnrollments() {
   try {
+     const  text = `Your package got expired , Go grab ur best slot with your best coach `
     const today = new Date().toISOString().split('T')[0];
+    const expiredUsers = await userModel.find({enrolledDurationExpire: today})
+    if(expiredUsers.length){
+      for(let i=0;i<expiredUsers.length;i++){
+        await sendEmail(expiredUsers[i].email,text);
+      }
+    }
     const result = await userModel.updateMany(
       { enrolledDurationExpire: today },
       {

@@ -91,7 +91,8 @@ const EnrolledUserList: React.FC = () => {
             <table className="table-auto text-slate-950 w-full border-collapse border justify-center border-gray-300 rounded-lg">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="px-6 py-3 border border-gray-300 text-left">Date</th>
+                  <th className="px-6 py-3 border border-gray-300 text-left">Enrolled Date</th>
+                  <th className="px-6 py-3 border border-gray-300 text-left">Expire Date</th>
                   <th className="px-6 py-3 border border-gray-300 text-left">Name</th>
                   <th className="px-6 py-3 border border-gray-300 text-left">Package</th>
                   <th className="px-6 py-3 border border-gray-300 text-left">Coach Name</th>
@@ -106,6 +107,9 @@ const EnrolledUserList: React.FC = () => {
                   >
                     <td className="px-6 py-4 border border-gray-300 text-gray-700">
                       {user.enrolledDate}
+                    </td>
+                    <td className="px-6 py-4 border border-gray-300 text-gray-700">
+                      {user.enrolledDurationExpire}
                     </td>
                     <td className="px-6 py-4 border border-gray-300 text-gray-700">
                       {user.userName.toLocaleUpperCase()}
