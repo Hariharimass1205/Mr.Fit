@@ -211,22 +211,25 @@ addDietGoalRepo= async (userId:Types.ObjectId,data: {
     const user_Id = new mongoose.Types.ObjectId(userId)
     const user =  await userModel.findById({_id:user_Id})
     const { Meal1, Meal2, Meal3, Goal } = user.Diet;
+    console.log(user_Id,user,data,"fromm reppppo")
+
     const dietData = {
       coachId:user.coachId,
-      user_Id,
+      userId:user._id,
       providedMeal1: Meal1 || "Not provided",
       providedMeal2: Meal2 || "Not provided",
       providedMeal3: Meal3 || "Not provided",
-      water: Goal?.Water || "Not provided",
-      Calories: Goal?.Calories || "Not provided",
-      Steps: Goal?.Steps || "Not provided",
-      Protein: Goal?.Protein || "Not provided",
-      Carbohydrates: Goal?.Carbohydrates || "Not provided",
-      Fats: Goal?.Fats || "Not provided",
-      Fiber: Goal?.Fiber || "Not provided",
-      SleepTime: Goal?.SleepTime || "Not provided",
+      water: data?.water || "Not provided",
+      Calories: data?.calories || "Not provided",
+      Steps: data?.steps || "Not provided",
+      Protein: data?.protein || "Not provided",
+      Carbohydrates: data?.Carbohydrates || "Not provided",
+      Fats: data?.Fats || "Not provided",
+      Fiber: data?.Fiber || "Not provided",
+      SleepTime: data?.SleepTime || "Not provided",
     };
     const newDiet = await dietStoreModel.create(dietData);
+    await newDiet.save()
     const savedData = await userModel.updateOne(
       { _id: user_Id },
       {
@@ -244,7 +247,8 @@ addDietGoalRepo= async (userId:Types.ObjectId,data: {
         },
       }
     );
-    return savedData;
+    const uu = await userModel.findById({ _id: user_Id })
+    return uu;
   } catch (error) {
     console.error('Error at diet goal:', error);
     throw new Error('Database Error');

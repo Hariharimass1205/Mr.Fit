@@ -256,8 +256,9 @@ addReview = async (req:Request,res:Response,next:NextFunction) =>{
 addDietGoal  = async (req:CustomRequest,res:Response,next:NextFunction) =>{
   try {
     const {data,userId} = req.body
+    console.log(data,userId,"--------") 
     const resData = await this.userService.addDietGoal(userId,data)
-    res.status(HttpStatus.OK).send({success:true})
+    res.status(HttpStatus.OK).send({success:true,resData:resData})
   } catch (error) {
     console.error("error at editng/updating user Details ");
      next(error);

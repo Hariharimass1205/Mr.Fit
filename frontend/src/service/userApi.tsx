@@ -164,7 +164,6 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
     try {
       const {data} = await Axios.get(`${SERVER_URL_USER}/fetchUserDetails?userId=${user_id}&coachId=${coach_id}`)
       const {coach,user,payment} = data.usercoachDeatails
-      console.log(data.usercoachDeatails,"from apiii")
      if(data){
       return {coach,user,payment}
      }
@@ -197,7 +196,8 @@ export const UpdateReview = async (coachId:Types.ObjectId,userId:Types.ObjectId,
 export const submitDietGoal = async (userId:Types.ObjectId,data:Object):Promise<any>=>{
     try {
       const response = await Axios.post(`${SERVER_URL_USER}/addDietGoal`,{userId,data})
-      return response.data.success
+      console.log(response,"000000")
+      return response.data
     } catch (error) {
       console.log("error at user review api")
       console.log(error)

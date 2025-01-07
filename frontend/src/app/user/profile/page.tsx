@@ -23,6 +23,7 @@ export default function Dashboard() {
   const { register, handleSubmit, formState: { errors }, setValue } = useForm();
   const [coach, setCoach] = useState<Coach | null>(null);
   const [payment,setPayment] = useState<any | null>(null)
+ 
   const [inputs, setInputs] = useState({
     water: 0,
     calories: 0,
@@ -71,7 +72,8 @@ export default function Dashboard() {
     }
     fetchUserData();
   }, [dailyData,inputs]);
-console.log(payment)
+ const [saveBtn ,setSaveBtn]  = useState(true)
+
    const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -81,16 +83,29 @@ console.log(payment)
     }
   };
 
+
+
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setInputs((prev) => ({ ...prev, [name]: value }));
   };
-
   const handleDietSave = async () => {
     setDailyData(inputs);
     if(user?._id){
     const res = await submitDietGoal(user._id,inputs)
-    if(res){
+    if(res.success){
+      setDailyData({
+        water: res?.resData?.Diet?.Goal?.Water,
+    calories: res?.resData?.Diet?.Goal?.Calories,
+    protein: res?.resData?.Diet?.Goal?.Protein,
+    steps: res?.resData?.Diet?.Goal?.Steps,
+    Carbohydrates:res?.resData?.Diet?.Goal?.Carbohydrates,
+    Fats:res?.resData?.Diet?.Goal?.Fats,
+    Fiber:res?.resData?.Diet?.Goal?.Fiber,
+    SleepTime:res?.resData?.Diet?.Goal?.SleepTime
+      })
+      setSaveBtn(false)
       toast.success("successfully submitted the diet goal")
     }
     }
@@ -187,15 +202,16 @@ console.log(payment)
             <div className="border bg-cyan-200 rounded-lg p-4 ">
               <h3 className="font-medium mb-2  ">Daily Summary</h3>
               <p>Water: {`${user?.Diet?.Goal?.Water || "0"}`}</p>
-      <p>Calories: {`${user?.Diet?.Goal?.Calories|| "0"}`}</p>
-      <p>Protein: {`${user?.Diet?.Goal?.Protein || "0"}`}</p>
-      <p>Steps:{`${user?.Diet?.Goal?.Steps || "0"}`}</p>
-      <p>Carbohydrates: {`${user?.Diet?.Goal?.Carbohydrates || "0"}`}</p>
-      <p>Fats:{`${user?.Diet?.Goal?.Fats || "0"}`}</p>
-      <p>Fiber:{`${user?.Diet?.Goal?.Fiber || "0"}`}</p>
-      <p>SleepTime: {`${user?.Diet?.Goal?.SleepTime || "0"}`}</p>
+              <p>Calories: {`${user?.Diet?.Goal?.Calories|| "0"}`}</p>
+              <p>Protein: {`${user?.Diet?.Goal?.Protein || "0"}`}</p>
+              <p>Steps:{`${user?.Diet?.Goal?.Steps || "0"}`}</p>
+              <p>Carbohydrates: {`${user?.Diet?.Goal?.Carbohydrates || "0"}`}</p>
+              <p>Fats:{`${user?.Diet?.Goal?.Fats || "0"}`}</p>
+              <p>Fiber:{`${user?.Diet?.Goal?.Fiber || "0"}`}</p>
+              <p>SleepTime: {`${user?.Diet?.Goal?.SleepTime || "0"}`}</p>
             </div>
             <div className="border bg-cyan-200 p-4 rounded-md">
+                       <div>
   <h3 className="font-medium mb-4 text-lg">Update Daily Details</h3>
   <form className="grid grid-cols-2 gap-4 mb-6">
     {[
@@ -219,8 +235,8 @@ console.log(payment)
         />
       </div>
     ))}
-    <div className="col-span-2 flex justify-center">
-      {currentHour >= 21?<button
+    {user?.Diet?.Goal?.Calories?<h1>Thank you for your submission</h1>: <div className="col-span-2 flex justify-center">
+      {21 >= 21?<button
         type="button"
         onClick={handleDietSave}
         className="bg-green-500 hover:bg-green-700 text-white py-1.5 px-3 rounded w-auto text-sm"
@@ -230,8 +246,11 @@ console.log(payment)
       <h2>Submit your todays diet goal after "9:00 pm"</h2>
       }
       
-    </div>
+    </div>}
+   
   </form>
+  </div>
+  
   <div>
     <label className="text-sm">Notes:</label>
     <small className="text-black text-xs block">
