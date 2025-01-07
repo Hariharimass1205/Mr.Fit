@@ -13,6 +13,7 @@ import paymentRouter from "./routes/paymentRoute";
 import chatRouter from "./routes/chatRouter";
 import { errorHandles } from "./middlesware/errrorHandlers";
 import { socketHandler } from "./utils/chat";
+import { IisBlockHandle } from "./middlesware/isBlockHandler";
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ app.use("/chat", chatRouter);
 
 // Global Error Handler
 app.use(errorHandles);
+app.use(IisBlockHandle)
 
 // Start Server
 const PORT = process.env.PORT || 5000;

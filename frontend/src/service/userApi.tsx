@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { SERVER_URL_CHAT, SERVER_URL_USER } from '../../utils/serverURL';
 import { log } from 'console';
 import { Types } from 'mongoose';
+import { redirect } from 'next/navigation';
 
 
 
@@ -16,6 +17,9 @@ const Axios = axios.create({
 export const handleAxiosError = (error:any)=>{
   console.log(error)
   const errorMessage = error?.response?.data?.errorMessage || "Unexpected error occurred"
+  if(error?.response?.data?.message == "Access denied: Your account is blocked."){
+    redirect("/login")
+  }
   console.log(errorMessage)
   return new Error(errorMessage)
 }
@@ -169,7 +173,7 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
     }
   }
 
-  export const updateUserProfile = async (data:any):Promise<any>=>{
+export const updateUserProfile = async (data:any):Promise<any>=>{
     try {
       const response = await Axios.put(`${SERVER_URL_USER}/updateUserData`,data)
       return response.data.res[0]
@@ -178,10 +182,11 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
       console.log(error)
     }
   }
-  export const UpdateReview = async (coachId:Types.ObjectId,userId:Types.ObjectId,review:string,starRating:number):Promise<any>=>{
+
+export const UpdateReview = async (coachId:Types.ObjectId,userId:Types.ObjectId,review:string,starRating:number):Promise<any>=>{
     try {
       const response = await Axios.post(`${SERVER_URL_USER}/addReview`,{coachId,userId,review,starRating})
-      return response.data.success
+      return response.data
     } catch (error) {
       console.log("error at user review api")
       console.log(error)

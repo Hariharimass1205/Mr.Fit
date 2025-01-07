@@ -2,6 +2,7 @@ import { Router } from "express";
 import { adminReository } from "../repository/adminRepository";
 import { adminController } from "../controllers/adminController";
 import { adminService } from "../services/adminService";
+import authMiddleware from "../middlesware/jwtVerification";
 
 const adminRouter = Router()
 const repository = new adminReository()

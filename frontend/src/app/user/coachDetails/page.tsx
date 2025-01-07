@@ -110,29 +110,35 @@ export default function GymProfile() {
     };
     fetchdatafn();
   }, []);
- 
-  const handleReviewSubmit = async () => {
+
+   console.log(reviews,"rererer")
+
+   const handleReviewSubmit = async () => {
     if (!reviewText.trim()) {
       toast.error("Review cannot be empty");
       return;
     }
+  
     try {
-          const response = await UpdateReview(coach._id,user._id,reviewText,starRating,)
-          console.log(coach._id,user._id,reviewText)
-       if (response)  
-          {
-            setReviewText(""); // Clear the review text
-            toast.success("Review submitted successfully!");
-            setIsModalOpen(false); // Close the modal
-          }else{
-            toast.error("Review not submitted ");
-          }
+      const response = await UpdateReview(coach._id, user._id, reviewText, starRating);
+      if (response && response._id) {
+        setReviews((prevReviews: any) => {
+          return [response, ...prevReviews];
+        });
+        setReviewText("");
+        setStarRating(0);
+        setIsModalOpen(false);
+        toast.success("Review submitted successfully!");
+      } else {
+        toast.error("Review not submitted.");
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Error submitting review:", error);
       toast.error("Error submitting review. Please try again.");
     }
   };
-
+  
+  
 
  const handleCloseBtn = ()=>{
   setShowSlots(false)

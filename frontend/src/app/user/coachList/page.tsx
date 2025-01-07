@@ -93,7 +93,6 @@ export default function CoachList() {
     const fetchData = async () => {
       try {
         const data = await fetchcoachList();
-        console.log(data,"--------")
         setCoaches(data);
         setFilteredCoaches(data);
       } catch (error) {

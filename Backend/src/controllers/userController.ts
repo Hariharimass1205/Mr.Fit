@@ -243,7 +243,7 @@ addReview = async (req:Request,res:Response,next:NextFunction) =>{
     const {coachId,userId,review,starRating} = req.body
     const result = await this.userService.addReview(coachId,userId,review,starRating)
     if(result){
-    res.status(HttpStatus.OK).json({success:true})
+    res.status(HttpStatus.OK).json(result)
     }else{
       res.status(HttpStatus.NOT_FOUND).json({success:false})
     }

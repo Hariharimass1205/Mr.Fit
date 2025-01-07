@@ -52,17 +52,9 @@ const Dashboard: React.FC = () => {
     }
   });
 
-  // Assuming you want to track coach joins for each month, use the following:
-  // For example, if you track how many coaches joined each month
-  // Fill the `coachesByMonth` array with the count for each month (or a hardcoded array if needed)
 
-  // Dummy data for coaches join per month (replace this with actual data)
-  // This can be updated based on your own logic or available data.
-  const coachesJoinedByMonth = [1, 2, 0, 3, 1, 2, 0, 0, 4, 3, 2, 1]; // Example
-
-  // Replace the coachesByMonth with actual data if you have it
+  const coachesJoinedByMonth = [1, 2, 0, 3, 1, 2, 0, 0, 4, 3, 2, 1];
   coachesByMonth.splice(0, 12, ...coachesJoinedByMonth);
-
   const revenueChartData = {
     labels: [
       "January", "February", "March", "April", "May", "June",
@@ -93,7 +85,7 @@ const Dashboard: React.FC = () => {
       {
         label: "Coaches Joined",
         data: coachesByMonth,
-        backgroundColor: "#E91E63", // Pink for coaches
+        backgroundColor: "#E91E63", 
       },
     ],
   };
@@ -101,7 +93,6 @@ const Dashboard: React.FC = () => {
   return (
     <Layout>
       <h1 className="text-5xl text-black font-semibold mt-10 mb-8">Dashboard</h1>
-
       {/* Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="p-6 bg-gradient-to-br from-blue-500 to-purple-500 text-white shadow-lg rounded-lg">
@@ -116,7 +107,7 @@ const Dashboard: React.FC = () => {
           <h3 className="text-lg font-semibold">Enrolled Users</h3>
           <p className="text-3xl font-bold">{totalEnrolledUsers}</p>
         </div>
-        <div className="p-6 bg-gradient-to-br from-green-500 to-teal-500 text-white shadow-lg rounded-lg">
+        <div className="p-6 bg-gradient-to-br from-red-500 to-red-900 text-white shadow-lg rounded-lg">
           <h3 className="text-lg font-semibold">Pending approvals</h3>
           <p className="text-3xl font-bold">{pendingApprovalsList}</p>
         </div>

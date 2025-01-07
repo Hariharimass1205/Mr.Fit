@@ -25,6 +25,7 @@ export class UserRepository implements IUserRepository{
     }
 
 
+
  findUserByEmail = async (email:String)=>{
     try {
         const user = await userModel.findOne({ email }).exec();
@@ -184,13 +185,13 @@ addReview= async (coachId:Types.ObjectId,userId:Types.ObjectId,review:string,sta
   try {
      const coach_Id = new mongoose.Types.ObjectId(coachId)
      const user_Id = new mongoose.Types.ObjectId(userId)
-     await reviewModel.create({
+     const data =  await reviewModel.create({
       userId:user_Id,
       coachId:coach_Id,
       review:review,
       starRating:starRating
      })
-     return {success:true}
+      return data
   } catch (error) {
     console.error('Error user add review:', error);
     throw new Error('Database Error');
