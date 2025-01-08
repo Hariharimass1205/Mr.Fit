@@ -18,6 +18,7 @@ const ChatPage = () => {
   const [coachName, setCoachName] = useState("Coach");
   const [socket, setSocket] = useState<Socket | null>(null);
    const [roomId, setRoomId] = useState<string | null>(null)
+   const messagesEndRef = useRef<HTMLDivElement>(null);
 
    useEffect(() => {
     const fetchRoomId = async () => {
@@ -146,6 +147,13 @@ const ChatPage = () => {
     fetchChatDetails();
   }, [userId, coachId]);
 
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
   // Handle sending a message
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -231,6 +239,7 @@ const ChatPage = () => {
           ) : (
             <p className="text-center text-gray-400 mt-6">No messages available.</p>
           )}
+          <div ref={messagesEndRef}></div>
         </div>
         <div className="bg-gray-700 text-white flex items-center p-4 border-t border-gray-600 mt-4">
           <form onSubmit={handleSendMessage} className="flex w-full">
