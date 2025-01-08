@@ -40,7 +40,9 @@ export const getMessages = async (userId:any,coachId:string)=>{
 }
 export const getRoomId = async (userId:any,coachId:string)=>{
   try {
+    console.log(userId,coachId,"from ipa")
     const res = await Axios.get(`${SERVER_URL_CHAT}/getRoomId?userId=${userId}&coachId=${coachId}`)
+    console.log(res,"00000077777777744444444")
     return res
   } catch (error) {
     console.log("error at user msg api getMessages")

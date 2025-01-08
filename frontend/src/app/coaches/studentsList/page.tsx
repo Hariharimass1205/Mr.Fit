@@ -14,6 +14,7 @@ interface Student {
   enrolledDuration: string;
   enrolledDurationExpire: string;
   enrolledDate: string;
+  slotTaken:string;
   Diet: {
     Meal1: string;
     Meal2: string;
@@ -51,7 +52,6 @@ const StudentList = () => {
     };
     fetchCoachDatafn();
   }, []);
-
   const handleEditClick = (student: any) => {
     setEditingStudentId(student._id);
     setDietEdit(student.Diet || { Meal1: "", Meal2: "", Meal3: "" });
@@ -112,7 +112,9 @@ console.log(students,"studentsstudentsstudents")
               <th className="px-6 py-3">Duration</th>
               <th className="px-6 py-3">Expire</th>
               <th className="px-6 py-3">Enrolled</th>
+              <th className="px-6 py-3">Slot</th>
               <th className="px-6 py-3">Actions</th>
+              
               <th className="px-6 py-3">chat</th>
             </tr>
           </thead>
@@ -126,6 +128,7 @@ console.log(students,"studentsstudentsstudents")
                 <td className="px-6 py-4">{student.enrolledDuration}</td>
                 <td className="px-6 py-4">{student.enrolledDurationExpire}</td>
                 <td className="px-6 py-4">{student.enrolledDate}</td>
+                <td className="px-6 py-4">{student?.slotTaken}</td>
                 <td className="px-6 py-4 flex space-x-2">
                   <button
                     onClick={() => handleEditClick(student)}

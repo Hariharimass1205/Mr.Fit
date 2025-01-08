@@ -16,7 +16,6 @@ const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   useEffect(() => {
     const token = cookies.get("accessToken");
-
     if (token) {
       // Create the socket connection with token and credentials
       const socketInstance = io(CLIENT_URL, {

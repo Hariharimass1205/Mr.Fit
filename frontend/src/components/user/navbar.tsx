@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { fetchData, logoutApi } from '@/service/userApi';
 import { log } from 'console';
+import { io } from 'socket.io-client';
 
 const Navbar: React.FC = () => {
   const [user, setUser] = useState();
@@ -54,6 +55,8 @@ const Navbar: React.FC = () => {
         setIsAth(false);
       }
     }
+
+  
   }, [user,isRegistered]);
   
 

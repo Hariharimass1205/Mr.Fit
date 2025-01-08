@@ -30,6 +30,7 @@ export class chatRepository implements IChatRepository{
             roomId: room._id,
           });
           const roomStringId = room._id.toString();
+          
           io.to(roomStringId).emit("message", {
             _id: message._id,
             roomId: message.roomId,
@@ -47,7 +48,6 @@ export class chatRepository implements IChatRepository{
       }
       
 
-
       async saveMessageCoachRepo(reqBody: any): Promise<any | null> {
         try {
           const { senderId, coachId, content } = reqBody;
@@ -55,37 +55,52 @@ export class chatRepository implements IChatRepository{
             console.error("Missing required fields in request body:", reqBody);
             throw new Error("Missing required fields (senderId, coachId, content)");
           }
-          const room = await chatRoomModel.findOne({ user: coachId , coach:  senderId });
-          if (!room) { 
+      
+          const room = await chatRoomModel.findOne({ user: coachId, coach: senderId });
+          if (!room) {
             console.error("Room not found for the given user and coach IDs:", {
               senderId,
               coachId,
             });
             throw new Error("Chat room not found");
           }
+      
           const message = await messageModel.create({
-            senderId:senderId,
+            senderId,
             receiverId: coachId,
             content,
             roomId: room._id,
           });
           console.log("Message successfully saved to database:", message);
+      
           const roomStringId = room._id.toString();
-          io.to(roomStringId).emit("message", {
-            _id: message._id,
-            roomId: message.roomId,
-            senderId: message.senderId,
-            receiverId: message.receiverId,
-            content: message.content,
-            isRead: message.isRead,
-            timestamp: message.timestamp,
-          });
+          console.log(roomStringId,"lllllllllllllllllllllllllll");
+          
+          const isLink = /^https?:\/\/[^\s$.?#].[^\s]*$/i.test(content);
+      
+          if (isLink) {
+            console.log("Emitting linkNotification event:", {
+              message: "A new link has been shared",
+              link: content,
+              senderId,
+              timestamp: message.timestamp,
+            });
+            
+            io.to(roomStringId).emit("linkNotification", {
+              message: "A new link has been shared",
+              link: content,
+              senderId,
+              timestamp: message.timestamp,
+            });
+          }
+          
           return message;
         } catch (error) {
           console.error("Error in saveMessageRepo:", error.message);
           throw new Error("Error occurred while saving the message");
         }
       }
+      
 
 
 
@@ -102,11 +117,13 @@ async getMessage(userId:string,coachId:string): Promise<any | null>{
         }
     } 
 
-    async getRoomId(userId:string,coachId:string): Promise<any | null>{
+    async getRoomId(userId:any,coachId:any): Promise<any | null>{
         try {
+          console.log(userId,coachId,"==========ddddddddd===========")
         const userIds = new Types.ObjectId(userId);
         const coachIds = new Types.ObjectId(coachId);
         const roomId = await chatRoomModel.findOne({user:userIds,coach:coachIds})
+        console.log(roomId,"[[[[[[[[[[[")
         return roomId._id
         } catch (error) {
             throw new Error("error at msg fetching");
