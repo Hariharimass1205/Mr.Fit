@@ -111,8 +111,7 @@ export default function GymProfile() {
     fetchdatafn();
   }, []);
 
-   console.log(reviews,"rererer")
-
+  console.log(fetchData,"=====")
    const handleReviewSubmit = async () => {
     if (!reviewText.trim()) {
       toast.error("Review cannot be empty");
@@ -290,10 +289,8 @@ export default function GymProfile() {
                 const matchedStudent = fetchData.studentsList.Students.find(
                   (student: { slotTaken: string }) => normalizeSlot(student.slotTaken) === normalizeSlot(slot)
                 );
-
                 const isSlotTaken = !!matchedStudent;
                 const expirationDate = matchedStudent ? matchedStudent.enrolledDurationExpire : "";
-
                 return (
                   <button
                     key={index}

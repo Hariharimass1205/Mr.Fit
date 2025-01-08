@@ -264,4 +264,20 @@ addDietGoal  = async (req:CustomRequest,res:Response,next:NextFunction) =>{
      next(error);
   }
   }
+
+  updateSlot  = async (req:CustomRequest,res:Response,next:NextFunction) =>{
+    try {
+      const {id} = req?.user
+      const user_id = new mongoose.Types.ObjectId(id)
+      const resData = await this.userService.updateSlot(req.body.slot,user_id)
+      if(resData.coachEmail){
+      const  text = `Mr.${resData?.user?.userName} have changed thier SlotTime to ${resData?.user?.slotTaken}`
+      await sendEmail(resData?.coachEmail,text);
+      }
+      res.status(HttpStatus.OK).send({success:true,resData:resData.user})
+    } catch (error) {
+      console.error("error at updating user slot time Details ");
+       next(error);
+    }
+    }
 }

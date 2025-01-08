@@ -30,4 +30,5 @@ export interface IUserService {
   updateUserProfile(idd:Types.ObjectId,data:any):Promise<any | null>
   addReview(coachId:Types.ObjectId,userId:Types.ObjectId,review:string,starRating:number):Promise<any | null>
   addDietGoal(userId:Types.ObjectId,data:Object):Promise<any | null>
+  updateSlot(slot:string,userId:Types.ObjectId): Promise<any>
 }

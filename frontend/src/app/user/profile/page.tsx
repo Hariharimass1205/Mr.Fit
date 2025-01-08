@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { fetchDataUserDetails, submitDietGoal, updateUserProfile } from "@/service/userApi";
+import { fetchDataUserDetails, submitDietGoal, updateSlotTiming, updateUserProfile } from "@/service/userApi";
 import { useRouter } from "next/navigation";
 import { User, Coach } from "../../../../utils/types";
 import { FieldError, useForm } from "react-hook-form";
@@ -17,13 +17,46 @@ interface IPayment {
   transactionId?: string; // Optional
 }
 
+
+const generateSlots = (fromTime: string, toTime: string): string[] => {
+  const slots: string[] = [];
+  const startTime = convertTo24Hour(fromTime.split(/(?=[AP]M)/)[0], fromTime.slice(-2));
+  let endTime = convertTo24Hour(toTime.split(/(?=[AP]M)/)[0], toTime.slice(-2));
+  // Handle overnight scenarios
+  if (endTime <= startTime) {
+    endTime += 24; // Move `endTime` to the next day
+  }
+  for (let i = startTime; i < endTime; i++) {
+    const startHour = i % 24;
+    const endHour = (i + 1) % 24;
+    const startPeriod = startHour < 12 ? "AM" : "PM";
+    const endPeriod = endHour < 12 ? "AM" : "PM";
+    const startHour12 = startHour % 12 === 0 ? 12 : startHour % 12;
+    const endHour12 = endHour % 12 === 0 ? 12 : endHour % 12;
+    slots.push(`${startHour12} ${startPeriod} - ${endHour12} ${endPeriod}`);
+  }
+  
+  return slots;
+};
+
+const convertTo24Hour = (hour: string, period: string): number => {
+  let hour24 = parseInt(hour, 10);
+  if (period === "PM" && hour24 !== 12) hour24 += 12;
+  if (period === "AM" && hour24 === 12) hour24 = 0;
+  return hour24;
+};
+
+
+
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const { register, handleSubmit, formState: { errors }, setValue } = useForm();
-  const [coach, setCoach] = useState<Coach | null>(null);
+  const [coach, setCoach] = useState<any | null>(null);
   const [payment,setPayment] = useState<any | null>(null)
- 
+  const [slots, setSlots] = useState<string[]>([]);
+  const [fetchData,setFetchData] = useState<any>()
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputs, setInputs] = useState({
     water: 0,
     calories: 0,
@@ -34,9 +67,11 @@ export default function Dashboard() {
     Fiber:0,
     SleepTime:0
   });
-
+  const [slotTime,setSlotTime] = useState("")
   const [packageExpired, setPackageExpired] = useState(false);
   const [expirationDate, setExpirationDate] = useState("");
+  const [registerSlot,setRegisterSlot] = useState<string[]>([])
+  const [showSlots, setShowSlots] = useState(true);
   const [dailyData, setDailyData] = useState({
     water: 0,
     calories: 0,
@@ -48,7 +83,7 @@ export default function Dashboard() {
     SleepTime:0
   });
 
-  const currentHour = new Date().getHours();
+  console.log(coach,"coacoaococao");
   const [isEditing, setIsEditing] = useState(false);
   const [newProfileImage, setNewProfileImage] = useState<string>("");
 
@@ -56,10 +91,13 @@ export default function Dashboard() {
     async function fetchUserData() {
       try {
         const userFromLocalStorage = JSON.parse(localStorage.getItem("user") as string);
-        const {user,coach,payment} = await fetchDataUserDetails(userFromLocalStorage._id, userFromLocalStorage.coachId);
+        const {user,coach,payment,coachSlots,studentsList} = await fetchDataUserDetails(userFromLocalStorage._id, userFromLocalStorage.coachId);
         setUser(user);
         setCoach(coach[0]);
         setPayment(payment)
+        setSlotTime(user?.slotTaken)
+        setRegisterSlot(coachSlots)
+        setFetchData(studentsList)
       if(user?.enrolledDate && user?.enrolledDuration) {
           const calculatedExpiration = calculateExpirationDate(user.enrolledDate, user.enrolledDuration);
           setExpirationDate(calculatedExpiration);
@@ -71,8 +109,8 @@ export default function Dashboard() {
       }
     }
     fetchUserData();
-  }, [dailyData,inputs]);
- const [saveBtn ,setSaveBtn]  = useState(true)
+  }, [dailyData,inputs,slotTime]);
+console.log(user,user?.slotTaken,"00000-------00000")
 
    const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -85,6 +123,36 @@ export default function Dashboard() {
 
 
 
+  const setSelectedSlotfunction = async  (slot:string)=>{
+    console.log(slot,"selectedSlotselectedSlot")
+    const res = await updateSlotTiming(slot)
+    console.log(res,"resresres")
+    if(res){
+        setIsModalOpen(false);
+        setSlotTime(res.slotTaken)
+        toast.success("successfully changed you Slot timing")
+        toast.success("successfully sent Mail to your coach ")
+    }
+  }
+
+  //slot management
+  const handleEditButtonClick = () => {
+    setIsModalOpen(true);
+    if (coach?.availability) {
+      const generatedSlots = generateSlots(coach.availability.fromTime, coach.availability.toTime);
+      const availableSlots = filterAvailableSlots(generatedSlots, registerSlot || []); // Pass array of taken slots
+      setSlots(availableSlots);
+    }
+  };
+
+  const filterAvailableSlots = (generatedSlots: string[], slotsTaken: string[] | null) => {
+    if (!slotsTaken || slotsTaken.length === 0) return generatedSlots;  
+    return generatedSlots.filter((slot) => !slotsTaken.includes(slot)); 
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -105,7 +173,6 @@ export default function Dashboard() {
     Fiber:res?.resData?.Diet?.Goal?.Fiber,
     SleepTime:res?.resData?.Diet?.Goal?.SleepTime
       })
-      setSaveBtn(false)
       toast.success("successfully submitted the diet goal")
     }
     }
@@ -113,7 +180,6 @@ export default function Dashboard() {
 
   const onSubmit = async (data: any) => {
     try {
-     
       const savedData = await updateUserProfile(data);
       if (savedData) {
         setUser(savedData);
@@ -337,7 +403,7 @@ export default function Dashboard() {
   </a>
   <p>Date of Enroll: {user?.enrolledDate}</p>
   <p>Expiration Date: {expirationDate}</p>
-  <p>Slot Timing: {user?.slotTaken}</p>
+  <p>Slot Timing: {slotTime}<span   onClick={handleEditButtonClick} className="text-blue-500 underline ml-3 cursor-pointer">change slot</span></p>
 
   {payment?.length?<div>
   <h2 className="text-xl font-semibold mb-2 mt-5">Your Payment Details</h2>
@@ -370,7 +436,60 @@ export default function Dashboard() {
 
       {/* Coaching and Diet Section */}
     
+
+
+    
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl relative">
+            <button
+              className="absolute top-2 right-2 bg-gray-300 text-black px-2 py-1 rounded hover:bg-gray-400"
+              onClick={handleCloseModal}
+            >
+              X Close
+            </button>
+            <h2 className="text-lg text-black font-bold text-center mb-4">Available Slots</h2>
+            <p className="text-black text-center mb-4 text-xs">
+              Note: Choose your slot as per the requirement; it can't be changed after the payment.
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+              {slots.map((slot, index) => {
+                const normalizeSlot = (slot:any) =>
+                  slot.replace(/\s/g, "").replace("-", "to").toLowerCase();
+
+                const matchedStudent = fetchData.Students.find(
+                  (student:any) => normalizeSlot(student.slotTaken) === normalizeSlot(slot)
+                );
+                const isSlotTaken = !!matchedStudent;
+                const expirationDate = matchedStudent ? matchedStudent.enrolledDurationExpire : "";
+
+                return (
+                  <button
+                    key={index}
+                    className={`p-4 m-1 rounded shadow text-center relative overflow-hidden ${
+                      isSlotTaken
+                        ? "bg-red-500 cursor-not-allowed"
+                        : "bg-gray-700 hover:bg-green-400"
+                    }`}
+                    onClick={() => !isSlotTaken && setSelectedSlotfunction(slot)}
+                    disabled={isSlotTaken}
+                  >
+                    <h3 className="text-sm font-medium">{slot}</h3>
+                    {isSlotTaken && (
+                      <span className="absolute inset-0 mt-8 text-xs flex items-center justify-center text-white opacity-0 hover:opacity-100 transition-opacity">
+                        Available after: {expirationDate}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
+    
    
   );
 }

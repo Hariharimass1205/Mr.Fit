@@ -121,10 +121,17 @@ fetchCoachDetailsRep = async (coach_id:Types.ObjectId,user_Id:Types.ObjectId)=>{
 }
 fetchUserDetailsRep = async (coach_Id:Types.ObjectId,user_Id:Types.ObjectId)=>{
   try {
-    const user = await userModel.findOne({_id:user_Id})
+    const user = await userModel.findOne({_id:user_Id}) 
+    let arr = []
+   
     const coach = await coachModel.find({_id:user.coachId}).populate("userId","profileImage quizScore")
+    const studentsList = await coachModel.findOne({_id:user.coachId}).populate("Students", "userName slotTaken enrolledDurationExpire");
+    for(let i=0;i<=coach?.length;i++){
+        const a = await userModel.findOne({_id:coach[0]?.Students[i]})
+        arr.push(a.slotTaken)
+    }
     const userPayment = await paymentModel.find({userId:user_Id})
-    const data = {user:user,coach:coach,payment:userPayment}
+    const data = {user:user,coach:coach,payment:userPayment,coachSlots:arr,studentsList:studentsList} 
     return data
   } catch (error) {
     console.error('Error fetching coach List:', error);
@@ -180,6 +187,18 @@ googleUser= async (email: string, name: string)=> {
   }
 }
 
+updateSlot=async (slot:string,userId:Types.ObjectId)=>{
+  try {
+    const slotT = slot.replace(/^"|"$/g, "").replace(/\s(?=[AP]M)/g, "");
+    const userUpdate = await userModel.updateOne({_id:userId},{slotTaken:slotT})
+    const userDeatils = await userModel.findOne({_id:userId}).populate("coachId")
+    const coachEmail = await userModel.findOne({_id:userDeatils.coachId.userId})
+    return {coachEmail:coachEmail.email,user:userDeatils}
+  } catch (error) {
+    console.error('Error handling update slot', error);
+    throw error;
+  }
+}
 
 addReview= async (coachId:Types.ObjectId,userId:Types.ObjectId,review:string,starRating:number):Promise<any|null>=>{
   try {

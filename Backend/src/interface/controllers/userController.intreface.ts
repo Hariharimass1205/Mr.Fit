@@ -12,4 +12,5 @@ export interface IUserController {
     fetchUserDetails(req: Request, res: Response, next: NextFunction): Promise<any>
     updateUserProfile(req:CustomRequest,res:Response,next:NextFunction):Promise<any>
     addDietGoal(req:CustomRequest,res:Response,next:NextFunction):Promise<any>
+    updateSlot(req:CustomRequest,res:Response,next:NextFunction)
 }

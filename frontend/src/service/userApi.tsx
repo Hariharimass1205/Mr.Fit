@@ -163,9 +163,9 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
   export const fetchDataUserDetails = async (user_id:string,coach_id:string):Promise<any>=>{
     try {
       const {data} = await Axios.get(`${SERVER_URL_USER}/fetchUserDetails?userId=${user_id}&coachId=${coach_id}`)
-      const {coach,user,payment} = data.usercoachDeatails
+      const {coach,user,payment,coachSlots,studentsList} = data.usercoachDeatails
      if(data){
-      return {coach,user,payment}
+      return {coach,user,payment,coachSlots,studentsList}
      }
     } catch (error) {
       console.log(error,"erroe at fetching user details page ")
@@ -192,6 +192,15 @@ export const UpdateReview = async (coachId:Types.ObjectId,userId:Types.ObjectId,
     }
   }
 
+export const updateSlotTiming = async (slot:string):Promise<any>=>{
+try {
+  const response = await Axios.post(`${SERVER_URL_USER}/updateSlot`,{slot})
+  return response.data.resData
+} catch (error) {
+  console.log("Error in updating slot time:", error);
+    throw handleAxiosError(error) 
+}
+}
 
 export const submitDietGoal = async (userId:Types.ObjectId,data:Object):Promise<any>=>{
     try {

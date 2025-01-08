@@ -55,6 +55,15 @@ verifyOTPService = async (otpData:verifyOTPServiceInput): Promise<string | null>
     }
 }
 
+updateSlot = async (slot:string,userId:Types.ObjectId): Promise<any>=>{
+    try {
+        const data = await this.userRepository.updateSlot(slot,userId)
+        return data
+    } catch (error) {
+        throw new Error("error at fetching data for navbar");
+    }
+}
+
  loginUser = async (loginData:loginUserInput): Promise<loginUserOutput>=>{
  try {
     const email = loginData.email
