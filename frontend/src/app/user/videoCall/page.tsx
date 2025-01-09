@@ -2,28 +2,39 @@
 
 import { useEffect, useRef } from "react";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { SaveChatCoach } from "@/service/chatApi";
 
 const RoomPage = () => {
   const searchParams = useSearchParams();
+  const router = useRouter(); // Initialize the router
   const roomId = searchParams.get("roomId") || "Your Name";
   const coachName = searchParams.get("coachName") || "Your Name";
-  const coachId = searchParams.get("coachId") || ""
-  const userId = searchParams.get("userId") || ""
+  const coachId = searchParams.get("coachId") || "";
+  const userId = searchParams.get("userId") || "";
   const meetingRef = useRef<HTMLDivElement>(null);
-  
+
   // Generate the share link before navigation
   const shareLink = `${window.location.origin}${window.location.pathname}?roomId=${roomId}`;
-  async function sentMsg(shareLink:string){
-    const response = await SaveChatCoach({
-      content: shareLink,
-      senderId: coachId,
-      coachId: userId
-    });
+
+  // Function to send the share link
+  async function sentMsg(shareLink: string) {
+    try {
+      await SaveChatCoach({
+        content: shareLink,
+        senderId: coachId,
+        coachId: userId,
+      });
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   }
-  
-  
+
+  // Function to handle navigation on exit
+  function handleExit() {
+    router.push("/user/home");
+  }
+
   useEffect(() => {
     if (meetingRef.current) {
       const appId = 693151417;
@@ -49,9 +60,11 @@ const RoomPage = () => {
           mode: ZegoUIKitPrebuilt.OneONoneCall,
         },
         showScreenSharingButton: false,
+        onLeaveRoom: handleExit, // Trigger navigation when exiting
       });
     }
-    sentMsg(shareLink)
+
+    sentMsg(shareLink);
   }, [roomId, shareLink]);
 
   return (
