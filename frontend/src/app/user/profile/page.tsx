@@ -137,12 +137,12 @@ export default function Dashboard() {
 
 
   const setSelectedSlotfunction = async  (slot:string)=>{
-    console.log(slot,"selectedSlotselectedSlot")
+    alert("Changing of Slot timing Often will be a inconvenience for your coach")
     const res = await updateSlotTiming(slot)
     console.log(res,"resresres")
     if(res){
-        setIsModalOpen(false);
-        setSlotTime(res.slotTaken)
+      setIsModalOpen(false);
+      setSlotTime(res.slotTaken)
         toast.success("successfully changed you Slot timing")
         toast.success("successfully sent Mail to your coach ")
     }

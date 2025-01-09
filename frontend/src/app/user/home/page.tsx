@@ -98,10 +98,11 @@ export default function Home() {
     }
   }, [socket, roomId]);
 
-
   return (
     <>
       <Navbar />
+
+      {/* Video call notification div */}
       {videoLink && (
         <div
           className="fixed top-5 right-5 bg-green-500 text-white p-4 rounded-lg cursor-pointer z-50"

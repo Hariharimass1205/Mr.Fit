@@ -99,8 +99,9 @@ export class UserRepository implements IUserRepository{
 
 fetchCoachListRep = async ()=>{
   try {
-    const user = await coachModel.find().populate("userId","profileImage")
-    return {data:user}
+    const user:any = await coachModel.find().populate("userId","profileImage isBlocked")
+    const data = user.filter((coach)=>!coach.userId.isBlocked!)
+    return {data:data}
   } catch (error) {
     console.error('Error fetching coach List:', error);
     throw new Error('Database Error');

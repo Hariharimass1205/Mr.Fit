@@ -35,16 +35,18 @@ const ChatPage = () => {
     };
 
     fetchRoomId();
-
     const socketConnection = io('http://localhost:5000', { withCredentials: true });
+
     socketConnection.on('connect', () => {
       console.log('Connected to WebSocket server');
     });
+
     socketConnection.on('message', (message: any) => {
       setMessages(prevState => [...prevState, message]);
     });
 
     setSocket(socketConnection);
+
     return () => {
       if (socketConnection) {
         socketConnection.disconnect();
@@ -75,6 +77,7 @@ const ChatPage = () => {
           const response = await getMessages(userId, coachId);
           const messagesData = response?.data || [];
           setMessages(messagesData);
+
           const name = messagesData[0]?.receiverId?.name || "Coach";
           setCoachName(name);
         } catch (error) {
@@ -85,10 +88,10 @@ const ChatPage = () => {
     };
     fetchChatDetails();
   }, [userId, coachId]);
-  
+
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'instant' });
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 

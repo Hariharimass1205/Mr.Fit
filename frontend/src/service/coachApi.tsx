@@ -1,6 +1,8 @@
 import axios from "axios";
 import { SERVER_URL_COACH } from '../../utils/serverURL';
 import { Types } from "mongoose";
+import { redirect } from "next/navigation";
+import { logoutApi } from "./userApi";
 
 const Axios = axios.create({
   baseURL:`${SERVER_URL_COACH}`,
@@ -10,12 +12,16 @@ const Axios = axios.create({
   withCredentials:true
 })
 
-export const handleAxiosError = (error:any)=>{
-  console.log(error)
-  const errorMessage = error?.response?.data?.errorMessage || "Unexpected error occurred"
-  console.log(errorMessage)
-  return new Error(errorMessage)
-}
+const handleAxiosError = async (error:any) => {
+  console.log("error from errorhandle", error);
+  if (
+    error?.response?.data?.message === "Access denied: Your account is blocked." ||
+    error?.response?.request?.status === 403
+  ) {
+    await logoutApi();
+    redirect("/login");
+  }
+};
 
 export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
     try {
@@ -111,6 +117,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
       return result
     } catch (error) {
       console.log(error)
+      throw handleAxiosError(error) 
     }
 }
 export const updateDiet = async (studentId:Types.ObjectId,dietEdit:Object):Promise<any>=>{
@@ -119,6 +126,7 @@ export const updateDiet = async (studentId:Types.ObjectId,dietEdit:Object):Promi
     return result.data.success
   } catch (error) {
     console.log(error,"error at updating diet")
+    throw handleAxiosError(error) 
   }
 }
   

@@ -28,7 +28,7 @@ userRouter.post('/resendOTP',controller.HandleResendOTP)
 
 userRouter.post("/fetchdata",authMiddleware,IisBlockHandle,controller.fetchUserData)
 userRouter.get('/fetchCoachdata',authMiddleware,IisBlockHandle,controller.fetchCoachlist) 
-userRouter.get('/fetchUserDetails',controller.fetchUserDetails) 
+userRouter.get('/fetchUserDetails',authMiddleware,IisBlockHandle,controller.fetchUserDetails) 
 userRouter.get('/fetchCoachDetails',authMiddleware,IisBlockHandle,controller.fetchCoachDetails) 
 userRouter.put('/updateUserData',authMiddleware,IisBlockHandle,authMiddleware,controller.updateUserProfile)
 userRouter.post('/addReview',authMiddleware,IisBlockHandle,controller.addReview)

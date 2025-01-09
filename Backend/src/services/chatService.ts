@@ -32,14 +32,12 @@ export class chatService implements IChatService{
         throw new Error("error at getting message.");
     }
    }
-   async getRoomId(userId:any,coachId:any): Promise<any | null>{
+   async getRoomId(userId:string,coachId:string): Promise<any | null>{
     try {
         const megData = await this.chatRepository.getRoomId(userId,coachId)
-        console.log(megData,"from serivce")
         return megData
     } catch (error) {
-        console.log(error)
-        throw new Error("error at getting room id.");
+        throw new Error("error at getting message.");
     }
    }
 }
