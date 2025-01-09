@@ -36,12 +36,11 @@ export default function Home() {
     };
 
     fetchUserData();
-  }, []); // Run only once when the component mounts
+  }, []); 
 
   useEffect(() => {
     const fetchRoomId = async () => {
       try {
-        // Only call getRoomId if both userId and coachId are not null
         if (userId && coachId) {
           const response = await getRoomId(userId, coachId);
           if (response?.data) {
@@ -58,43 +57,29 @@ export default function Home() {
     };
 
     fetchRoomId();
-  }, [userId, coachId]); // Only run when userId and coachId are updated
-
-  // Log when roomId is updated
-  useEffect(() => {
-    if (roomId) {
-      console.log("Room ID updated:", roomId);
-    }
-  }, [roomId]); // Runs when roomId changes
+  }, [userId, coachId]); 
 
   const handleJoinRoom = () => {
     if (videoLink) {
       console.log("Joining video room:", videoLink);
-      // Redirect or trigger your video call logic
-      window.location.href = videoLink; // Assuming videoLink is the room URL
+      window.location.href = videoLink; 
     }
   };
 
   // Socket setup
   useEffect(() => {
     const socketConnection = io("http://localhost:5000", { withCredentials: true });
-
     socketConnection.on("connect", () => {
       console.log("Socket connected:", socketConnection.id);
     });
-
     socketConnection.on("disconnect", () => {
       console.log("Socket disconnected");
     });
-
-    // Listen for the incoming linkNotification
     socketConnection.on("linkNotification", (data) => {
       console.log("Incoming video call link:", data);
       setVideoLink(data.link); // Store the video link
     });
-
     setSocket(socketConnection);
-
     return () => {
       if (socketConnection) {
         socketConnection.disconnect();
@@ -107,18 +92,16 @@ export default function Home() {
     if (socket && roomId) {
       console.log(`Joining room: ${roomId}`);
       socket.emit("joinRoom", roomId);
-
       socket.on("roomJoined", (confirmation) => {
         console.log("Room join confirmed:", confirmation);
       });
     }
   }, [socket, roomId]);
 
+
   return (
     <>
       <Navbar />
-
-      {/* Video call notification div */}
       {videoLink && (
         <div
           className="fixed top-5 right-5 bg-green-500 text-white p-4 rounded-lg cursor-pointer z-50"

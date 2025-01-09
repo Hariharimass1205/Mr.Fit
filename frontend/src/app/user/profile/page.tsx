@@ -82,10 +82,24 @@ export default function Dashboard() {
     Fiber:0,
     SleepTime:0
   });
+  const [isDisabled, setIsDisabled] = useState(true);
 
-  console.log(coach,"coacoaococao");
+  useEffect(() => {
+    // input diable concept
+    const checkTime = () => {
+      const now = new Date();
+      const currentHour = now.getHours();
+      setIsDisabled(currentHour < 21); 
+    };
+    checkTime();
+    const interval = setInterval(checkTime, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+
   const [isEditing, setIsEditing] = useState(false);
   const [newProfileImage, setNewProfileImage] = useState<string>("");
+  const currentHour = new Date().getHours();
 
   useEffect(() => {
     async function fetchUserData() {
@@ -110,7 +124,6 @@ export default function Dashboard() {
     }
     fetchUserData();
   }, [dailyData,inputs,slotTime]);
-console.log(user,user?.slotTaken,"00000-------00000")
 
    const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -295,6 +308,7 @@ console.log(user,user?.slotTaken,"00000-------00000")
         <input
           type="number"
           name={field.name}
+          disabled={isDisabled}
           value={field.value}
           onChange={handleInputChange}
           className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
@@ -302,7 +316,7 @@ console.log(user,user?.slotTaken,"00000-------00000")
       </div>
     ))}
     {user?.Diet?.Goal?.Calories?<h1>Thank you for your submission</h1>: <div className="col-span-2 flex justify-center">
-      {21 >= 21?<button
+      {currentHour >= 21?<button
         type="button"
         onClick={handleDietSave}
         className="bg-green-500 hover:bg-green-700 text-white py-1.5 px-3 rounded w-auto text-sm"

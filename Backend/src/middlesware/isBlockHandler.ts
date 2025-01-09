@@ -11,7 +11,7 @@ export async function  IisBlockHandle(req:CustomRequest,res:Response,next:NextFu
          return
      }
      const user = await userModel.findById(user_id.id)
-     console.log(user.isBlocked,"isBlockedisBlocked")
+     console.log(user.userName,user.isBlocked,"isBlockedisBlocked")
      if(user.isBlocked){
          res.status(403).json({ message: "Access denied: Your account is blocked." });
          return

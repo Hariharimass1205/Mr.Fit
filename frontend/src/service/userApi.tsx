@@ -3,7 +3,7 @@ import { SERVER_URL_CHAT, SERVER_URL_USER } from '../../utils/serverURL';
 import { log } from 'console';
 import { Types } from 'mongoose';
 import { redirect } from 'next/navigation';
-
+import { useRouter } from 'next/router';
 
 
 const Axios = axios.create({
@@ -14,15 +14,16 @@ const Axios = axios.create({
   withCredentials:true
 })
 
-export const handleAxiosError = (error:any)=>{
-  console.log(error)
-  const errorMessage = error?.response?.data?.errorMessage || "Unexpected error occurred"
-  if(error?.response?.data?.message == "Access denied: Your account is blocked."){
-    redirect("/login")
+const handleAxiosError = async (error:any) => {
+  console.log("error from errorhandle", error);
+  if (
+    error?.response?.data?.message === "Access denied: Your account is blocked." ||
+    error?.response?.request?.status === 403
+  ) {
+    await logoutApi();
+    redirect("/login");
   }
-  console.log(errorMessage)
-  return new Error(errorMessage)
-}
+};
 
 
 export const signupApi = async (reqBody: Record<string, any>) => {
@@ -117,6 +118,7 @@ export const resendOTP = async (email:any):Promise<any>=>{
 
 export const logoutApi = async()=>{
   try {
+    console.log("from error handle")
     const response = await Axios.post(`${SERVER_URL_USER}/logout`)
     return response.data
   } catch (error) {
@@ -133,6 +135,7 @@ export const fetchData = async ()=>{
    }
   } catch (error) {
     console.log(error)
+    throw handleAxiosError(error) 
   }
 }
 
@@ -145,6 +148,7 @@ export const fetchcoachList = async ()=>{
    }
   } catch (error) {
     console.log(error)
+    throw handleAxiosError(error) 
   }
 }
 
@@ -157,6 +161,7 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
    }
   } catch (error) {
     console.log(error)
+    throw handleAxiosError(error) 
   }
 }
 
@@ -169,6 +174,7 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
      }
     } catch (error) {
       console.log(error,"erroe at fetching user details page ")
+      throw handleAxiosError(error) 
     }
   }
 
@@ -178,7 +184,7 @@ export const updateUserProfile = async (data:any):Promise<any>=>{
       return response.data.res[0]
     } catch (error) {
       console.log("error at user api editng api")
-      console.log(error)
+      throw handleAxiosError(error) 
     }
   }
 
@@ -187,8 +193,8 @@ export const UpdateReview = async (coachId:Types.ObjectId,userId:Types.ObjectId,
       const response = await Axios.post(`${SERVER_URL_USER}/addReview`,{coachId,userId,review,starRating})
       return response.data
     } catch (error) {
-      console.log("error at user review api")
-      console.log(error)
+      console.log("error at user review api",error)
+      throw handleAxiosError(error) 
     }
   }
 
@@ -210,6 +216,7 @@ export const submitDietGoal = async (userId:Types.ObjectId,data:Object):Promise<
     } catch (error) {
       console.log("error at user review api")
       console.log(error)
+      throw handleAxiosError(error) 
     }
   }
 
