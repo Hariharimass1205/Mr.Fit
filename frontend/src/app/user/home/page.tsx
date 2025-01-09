@@ -62,8 +62,9 @@ export default function Home() {
   const handleJoinRoom = () => {
     if (videoLink) {
       console.log("Joining video room:", videoLink);
-      window.location.href = videoLink; 
-    }
+      window.open(videoLink, "_blank");
+      setVideoLink(null)
+    }    
   };
 
   // Socket setup

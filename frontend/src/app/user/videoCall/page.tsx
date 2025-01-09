@@ -32,7 +32,13 @@ const RoomPage = () => {
 
   // Function to handle navigation on exit
   function handleExit() {
-    router.push("/user/home");
+    if (window.opener) {
+      window.close();
+    } else {
+      // Navigate to the home page as a fallback if tab cannot be closed
+      console.warn("Unable to close the tab. Redirecting to /user/home instead.");
+      router.push("/user/home");
+    }
   }
 
   useEffect(() => {
