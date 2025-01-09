@@ -257,7 +257,7 @@ const ChatPage = () => {
             >
               Send
             </button>
-            <button className="bg-cyan-600 ml-3 text-white px-6 py-1 rounded-md hover:bg-cyan-800 focus:outline-none"  onClick={() => window.open(`/user/videoCall?roomId=${userId}&coachName=${coachName}`)}>Video Call</button>
+            <button className="bg-cyan-600 ml-3 text-white px-6 py-1 rounded-md hover:bg-cyan-800 focus:outline-none"  onClick={() => window.open(`/user/videoCall?roomId=${userId}&coachName=${coachName}&coachId=${coachId}&userId=${userIDS}`)}>Video Call</button>
           </form>
         </div>
       </div>
