@@ -46,7 +46,6 @@ export class chatRepository implements IChatRepository{
         }
       }
       
-
       async saveMessageCoachRepo(reqBody: any): Promise<any | null> {
         try {
           const { senderId, coachId, content } = reqBody;
@@ -55,6 +54,7 @@ export class chatRepository implements IChatRepository{
             console.error("Missing required fields in request body:", reqBody);
             throw new Error("Missing required fields (senderId, coachId, content)");
           }
+      
           const room = await chatRoomModel.findOne({ user: coachId, coach: senderId });
           if (!room) {
             console.error("Room not found for the given user and coach IDs:", {
@@ -63,14 +63,26 @@ export class chatRepository implements IChatRepository{
             });
             throw new Error("Chat room not found");
           }
+      
+          // Check if the content is a link
+          const isLink = /^https?:\/\/[^\s$.?#].[^\s]*$/i.test(content);
+          const messageContent = isLink
+            ? "Video call "  // If it's a link, label it as "Video call invitation"
+            : content;
+      
+          // Save the message, don't store type in the database
           const message = await messageModel.create({
             senderId,
             receiverId: coachId,
-            content,
+            content: messageContent,
             roomId: room._id,
           });
+      
           console.log("Message successfully saved to database:", message);
+      
           const roomStringId = room._id.toString();
+      
+          // Emit the message event to the room
           io.to(roomStringId).emit("message", {
             _id: message._id,
             roomId: message.roomId,
@@ -80,10 +92,10 @@ export class chatRepository implements IChatRepository{
             isRead: message.isRead,
             timestamp: message.timestamp,
           });
-          const isLink = /^https?:\/\/[^\s$.?#].[^\s]*$/i.test(content);
+      
           if (isLink) {
             console.log("Emitting linkNotification event:", {
-              message: "A new link has been shared",
+              message: "A video call invitation has been shared",
               link: content,
               senderId,
               timestamp: message.timestamp,
@@ -91,7 +103,7 @@ export class chatRepository implements IChatRepository{
       
             // Emit a separate event for link notifications
             io.to(roomStringId).emit("linkNotification", {
-              message: "A new link has been shared",
+              message: "A video call invitation has been shared",
               link: content,
               senderId,
               timestamp: message.timestamp,
@@ -104,6 +116,7 @@ export class chatRepository implements IChatRepository{
           throw new Error("Error occurred while saving the message");
         }
       }
+      
 
 
 async getMessage(userId:string,coachId:string): Promise<any | null>{

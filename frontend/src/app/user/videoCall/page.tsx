@@ -26,7 +26,7 @@ const RoomPage = () => {
         coachId: userId,
       });
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.log("Error sending message:", error);
     }
   }
 
@@ -75,10 +75,6 @@ const RoomPage = () => {
 
   return (
     <div>
-      {/* Display or use the share link if needed */}
-      <div>
-        Share Link: <a href={shareLink}>{shareLink}</a>
-      </div>
       {/* This div will serve as the container for the ZegoUIKit */}
       <div ref={meetingRef} style={{ width: "100%", height: "100vh" }}></div>
     </div>

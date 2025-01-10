@@ -41,7 +41,6 @@ updateBookingStatus = async (bookingData: any): Promise<any | null> => {
       { userEmail: email },
       { $set: { paymentStatus: "completed" } }
     );
-
     const createRoom = await chatRoomModel.create({ user: userId, coach: coachId });
     const payment = await paymentModel.findOne({ userEmail: email, userId: userId });
     const paymentDate = new Intl.DateTimeFormat("en-US").format(new Date(payment.transactionDate));

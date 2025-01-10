@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { SERVER_URL_CHAT } from '../../utils/serverURL';
+import { logoutApi } from './userApi';
+import { redirect } from 'next/navigation';
 
 const Axios = axios.create({
   baseURL:`${SERVER_URL_CHAT}`,
@@ -9,6 +11,18 @@ const Axios = axios.create({
   withCredentials:true
 })
 
+const handleAxiosError = async (error:any) => {
+  console.log("error from errorhandle", error);
+  if (
+    error?.response?.data?.message === "Access denied: Your account is blocked." ||
+    error?.response?.request?.status === 403
+  ) {
+    await logoutApi();
+    redirect("/login");
+  }
+};
+
+
 export const SaveChat = async (reqBody: {content:string,senderId: string,coachId: string})=>{
     try {
       const res = await Axios.post(`${SERVER_URL_CHAT}/saveMsg`,{reqBody})
@@ -16,6 +30,7 @@ export const SaveChat = async (reqBody: {content:string,senderId: string,coachId
     } catch (error) {
       console.log("error at user msg api SaveChat")
       console.log(error)
+      throw handleAxiosError(error) 
     }
   }
 
@@ -26,6 +41,7 @@ export const SaveChat = async (reqBody: {content:string,senderId: string,coachId
     } catch (error) {
       console.log("error at user msg api SaveChat")
       console.log(error)
+      throw handleAxiosError(error) 
     }
   }
 
@@ -36,6 +52,7 @@ export const getMessages = async (userId:any,coachId:string)=>{
     } catch (error) {
       console.log("error at user msg api getMessages")
       console.log(error)
+      throw handleAxiosError(error) 
     }
 }
 export const getRoomId = async (userId:any,coachId:string)=>{
@@ -45,5 +62,6 @@ export const getRoomId = async (userId:any,coachId:string)=>{
   } catch (error) {
     console.log("error at user msg api getMessages")
       console.log(error)
+      throw handleAxiosError(error) 
   }
 }

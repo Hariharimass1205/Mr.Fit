@@ -1,4 +1,6 @@
 import { NextFunction, Request,Response } from "express";
+import { CustomRequest } from "../../middlesware/jwtVerification";
+
 export interface ICoachController{
     saveScore(req: Request, res: Response, next: NextFunction): Promise<void>
     registerCoachController(req: Request, res: Response, next: NextFunction): Promise<void>
@@ -8,4 +10,5 @@ export interface ICoachController{
     updateCoachProfile(req: Request, res: Response, next: NextFunction): Promise<void>
     updateCoachAchievement(req: Request, res: Response, next: NextFunction): Promise<void>
     updateAvailability(req: Request, res: Response, next: NextFunction): Promise<void>
+    addCoachImg(req:CustomRequest, res: Response, next: NextFunction): Promise<void>
 }

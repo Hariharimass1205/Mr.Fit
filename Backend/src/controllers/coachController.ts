@@ -153,6 +153,28 @@ updateUserDiet= async (req:Request,res:Response,next:NextFunction) : Promise<voi
   next(error);
  }
 }
+addCoachImg = async (req: CustomRequest, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { id } = req.user;
+    const idd = new mongoose.Types.ObjectId(id);
+    console.log("All files received:", req.files);
+
+    const profilePicUrl = (req.files as any)?.profilePic?.[0]?.location; // Single image
+    const coachPicturesUrls = (req.files as any)?.coachPictures?.map((file: any) => file.location); // Multiple images
+
+    console.log("Profile Pic URL:", profilePicUrl);
+    console.log("Coach Pictures URLs:", coachPicturesUrls);
+
+    // res.status(200).json({
+    //   message: "Images uploaded successfully",
+    //   profilePicUrl,
+    //   coachPicturesUrls,
+    // });
+  } catch (error) {
+    console.error("Error uploading coach images:", error);
+    next(error);
+  }
+};
 
 }
 

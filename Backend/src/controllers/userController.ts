@@ -220,6 +220,7 @@ fetchUserDetails = async(req:Request,res:Response,next:NextFunction)=>{
      const coach_Id = new mongoose.Types.ObjectId(coachId as string);
      const user_Id = new mongoose.Types.ObjectId(userId as string);
      const result = await this.userService.fetchUserDetails(coach_Id,user_Id)
+     console.log(result,"ppppppp")
      res.status(HttpStatus.OK).json({success:true,usercoachDeatails:result})
   } catch (error) {
    console.error("error at fetching coach/user Details ");

@@ -27,10 +27,10 @@ const ChatPage = () => {
         if (response) {
           setRoomId(response.data as string); // Ensure this is string
         } else {
-          console.error("Room ID is undefined");
+          console.log("Room ID is undefined");
         }
       } catch (error) {
-        console.error("Error fetching roomId:", error);
+        console.log("Error fetching roomId:", error);
       }
     };
 
@@ -75,10 +75,10 @@ const ChatPage = () => {
         if (response) {
           setRoomId(response.data as string); // Ensure this is string
         } else {
-          console.error("Room ID is undefined");
+          console.log("Room ID is undefined");
         }
       } catch (error) {
-        console.error("Error fetching roomId:", error);
+        console.log("Error fetching roomId:", error);
       }
     };
     fetchRoomId();
@@ -150,7 +150,7 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      messagesEndRef.current.scrollIntoView({ behavior: 'instant' });
     }
   }, [messages]);
 

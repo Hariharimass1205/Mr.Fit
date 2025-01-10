@@ -21,5 +21,6 @@ coachRouter.patch("/updatProfile",authMiddleware,IisBlockHandle,controller.updat
 coachRouter.patch("/saveCoachAchievement",authMiddleware,controller.updateCoachAchievement)
 coachRouter.put("/updateDiet",authMiddleware,IisBlockHandle,controller.updateUserDiet)
 coachRouter.post('/updateAvailability',authMiddleware,IisBlockHandle,controller.updateAvailability)
+coachRouter.post("/addCoachImg",authMiddleware,IisBlockHandle,uploadMiddleware,controller.addCoachImg)
 
 export default coachRouter

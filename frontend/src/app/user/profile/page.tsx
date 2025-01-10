@@ -435,7 +435,6 @@ export default function Dashboard() {
       </div> 
 </div>:<h1>No Payment Details</h1>}
 </div>
-
         <div className="bg-cyan-200 shadow-md rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">Your Diet Plan</h2>
           <ul className="list-disc pl-5 space-y-2">
@@ -447,12 +446,7 @@ export default function Dashboard() {
       </div>
         </div>
       </div>
-
-      {/* Coaching and Diet Section */}
-    
-
-
-    
+      {/* Coaching and Diet Section */}    
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-2xl relative">

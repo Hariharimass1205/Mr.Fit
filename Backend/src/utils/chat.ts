@@ -26,7 +26,7 @@ export const socketHandler = (io: SocketIOServer) => {
     socket.on("message", (messageData: MessageData) => {
       const { chatId, text, senderId } = messageData;
       if (!chatId || !text || !senderId) {
-        console.error("Invalid message data:", messageData);
+        console.error("Invalid message data:", messageData , "chatId : ",chatId, );
         socket.emit("error", { message: "Invalid message data" });
         return;
       }

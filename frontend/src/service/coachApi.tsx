@@ -120,7 +120,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
       throw handleAxiosError(error) 
     }
 }
-export const updateDiet = async (studentId:Types.ObjectId,dietEdit:Object):Promise<any>=>{
+export const updateDiet = async (studentId:string,dietEdit:Object):Promise<any>=>{
   try {
     const result = await Axios.put(`${SERVER_URL_COACH}/updateDiet`,{studentId,dietEdit})
     return result.data.success
@@ -129,4 +129,27 @@ export const updateDiet = async (studentId:Types.ObjectId,dietEdit:Object):Promi
     throw handleAxiosError(error) 
   }
 }
+export const saveCoachImg = async (img1: any, img2: any, img3: any): Promise<any> => {
+  try {
+    const formData = new FormData();
+    formData.append("profilePic", img1);
+    formData.append("coachPictures", img2);
+    formData.append("coachPictures", img3);
+    const res = await axios.post(
+      `${SERVER_URL_COACH}/addCoachImg`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
   

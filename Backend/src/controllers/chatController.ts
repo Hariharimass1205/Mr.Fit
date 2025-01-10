@@ -22,6 +22,7 @@ try {
 saveMessageCoach = async (req:Request,res:Response,next:NextFunction)=>{
   try {
       const {reqBody} = req.body
+      console.log(reqBody,"from coach front")
       const result = await this.chatService.saveMessageCoach(reqBody)
       res.status(HttpStatus.OK).json({success:true})
   } catch (error) {

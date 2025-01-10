@@ -1,9 +1,7 @@
-import axios, { AxiosError } from 'axios';
-import { SERVER_URL_CHAT, SERVER_URL_USER } from '../../utils/serverURL';
-import { log } from 'console';
+import axios from 'axios';
+import { SERVER_URL_USER } from '../../utils/serverURL';
 import { Types } from 'mongoose';
 import { redirect } from 'next/navigation';
-import { useRouter } from 'next/router';
 
 
 const Axios = axios.create({
@@ -13,6 +11,13 @@ const Axios = axios.create({
   },
   withCredentials:true
 })
+
+export const handleAxiosErrorlogin = (error:any)=>{
+  console.log(error)
+  const errorMessage = error?.response?.data?.errorMessage || "Unexpected error occurred"
+  console.log(errorMessage)
+  return new Error(errorMessage)
+}
 
 const handleAxiosError = async (error:any) => {
   console.log("error from errorhandle", error);
@@ -25,7 +30,6 @@ const handleAxiosError = async (error:any) => {
   }
 };
 
-
 export const signupApi = async (reqBody: Record<string, any>) => {
   try {
     const response = await Axios.post(`${SERVER_URL_USER}/signup`, reqBody);
@@ -35,7 +39,6 @@ export const signupApi = async (reqBody: Record<string, any>) => {
     throw handleAxiosError(error) 
   }
 };
-
 
 
 export const googleLogin = async (userData:Object)=>{
@@ -72,7 +75,7 @@ export const loginApi = async (reqBody: Record<string, any>)=>{
     return response.data
   } catch (error:any) {
     console.log(error);
-    throw handleAxiosError(error) 
+    throw handleAxiosErrorlogin(error) 
   }
 }
 export const forgotpasswordEmail = async (email:string):Promise<any>=>{
@@ -116,16 +119,16 @@ export const resendOTP = async (email:any):Promise<any>=>{
   }
 }
 
-export const logoutApi = async()=>{
+export const logoutApi = async () => {
   try {
-    console.log("from error handle")
-    const response = await Axios.post(`${SERVER_URL_USER}/logout`)
-    return response.data
+    const response = await Axios.post(`${SERVER_URL_USER}/logout`);
+    return response.data;
   } catch (error) {
-    console.log("Error in logout:", error);
-    throw handleAxiosError(error) 
+    console.error("Error in logout:", error);
+    throw new Error("Failed to log out. Please try again.");
   }
-}
+};
+
 
 export const fetchData = async ()=>{
   try {

@@ -129,7 +129,7 @@ fetchUserDetailsRep = async (coach_Id:Types.ObjectId,user_Id:Types.ObjectId)=>{
     const studentsList = await coachModel.findOne({_id:user.coachId}).populate("Students", "userName slotTaken enrolledDurationExpire");
     for(let i=0;i<=coach?.length;i++){
         const a = await userModel.findOne({_id:coach[0]?.Students[i]})
-        arr.push(a.slotTaken)
+        arr.push(a?.slotTaken)
     }
     const userPayment = await paymentModel.find({userId:user_Id})
     const data = {user:user,coach:coach,payment:userPayment,coachSlots:arr,studentsList:studentsList} 

@@ -1,9 +1,9 @@
 "use client";
 import { fetchCoachData, updateDiet } from "@/service/coachApi";
 import { useState, useEffect } from "react";
-import { toast,ToastContainer} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useRouter } from "next/navigation"; // import useRouter for navigation
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/navigation";
 
 // Define a type for the student
 interface Student {
@@ -14,7 +14,7 @@ interface Student {
   enrolledDuration: string;
   enrolledDurationExpire: string;
   enrolledDate: string;
-  slotTaken:string;
+  slotTaken: string;
   Diet: {
     Meal1: string;
     Meal2: string;
@@ -34,11 +34,13 @@ interface Student {
 
 const StudentList = () => {
   const [students, setStudents] = useState<Student[]>([]);
-  const [editingStudentId, setEditingStudentId] = useState<Student | null>(null);
+  const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [editingStudentId, setEditingStudentId] = useState<string | null>(null);
   const [dietEdit, setDietEdit] = useState({ Meal1: "", Meal2: "", Meal3: "" });
   const [viewingStudent, setViewingStudent] = useState<Student | null>(null);
-  const [coachId,setCoachId] = useState();
-  const router = useRouter(); // useRouter hook for navigation
+  const [coachId, setCoachId] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCoachDatafn = async () => {
@@ -46,18 +48,20 @@ const StudentList = () => {
         const response = await fetchCoachData();
         setCoachId(response.coach._id);
         setStudents(response.coach.Students);
+        setFilteredStudents(response.coach.Students);
       } catch {
         console.log("Error at student list");
       }
     };
     fetchCoachDatafn();
   }, []);
-  const handleEditClick = (student: any) => {
+
+  const handleEditClick = (student: Student) => {
     setEditingStudentId(student._id);
     setDietEdit(student.Diet || { Meal1: "", Meal2: "", Meal3: "" });
   };
 
-  const handleSave = async (studentId: any) => {
+  const handleSave = async (studentId: string) => {
     const res = await updateDiet(studentId, dietEdit);
     if (res) {
       toast.success("Successfully Diet Edited");
@@ -70,7 +74,7 @@ const StudentList = () => {
     setDietEdit({ Meal1: "", Meal2: "", Meal3: "" });
   };
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setDietEdit((prev) => ({
       ...prev,
@@ -78,18 +82,30 @@ const StudentList = () => {
     }));
   };
 
-  const handleViewClick = (student: any) => {
+  const handleViewClick = (student: Student) => {
     setViewingStudent(student);
   };
 
-  // Back button click handler
   const handleBack = () => {
-    router.back(); // Navigate to the previous page
+    router.back();
   };
-console.log(students,"studentsstudentsstudents")
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.toLowerCase();
+    setSearchTerm(value);
+    const filtered = students.filter(
+      (student) =>
+        student.userName.toLowerCase().includes(value) ||
+        student.phone.includes(value) ||
+        student.district.toLowerCase().includes(value)
+    );
+    setFilteredStudents(filtered);
+  };
+
   return (
     <div className="p-8 relative">
-         <ToastContainer></ToastContainer>
+      <ToastContainer />
+
       {/* Back Button */}
       <button
         onClick={handleBack}
@@ -98,7 +114,18 @@ console.log(students,"studentsstudentsstudents")
         Back
       </button>
 
-      <h1 className="text-6xl text-cyan-400  font-bold mb-20 text-center">Student List</h1>
+      <h1 className="text-6xl text-cyan-400 font-bold mb-10 text-center">Student List</h1>
+
+      {/* Search Bar */}
+      <div className="mb-6">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          placeholder="Search by name, phone, or district"
+          className="w-full bg-gray-800 text-white px-4 py-2 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+        />
+      </div>
 
       {/* Students List Table */}
       <div className="overflow-x-auto bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
@@ -114,12 +141,11 @@ console.log(students,"studentsstudentsstudents")
               <th className="px-6 py-3">Enrolled</th>
               <th className="px-6 py-3">Slot</th>
               <th className="px-6 py-3">Actions</th>
-              
-              <th className="px-6 py-3">chat</th>
+              <th className="px-6 py-3">Chat</th>
             </tr>
           </thead>
           <tbody>
-            {students.map((student, index) => (
+            {filteredStudents.map((student, index) => (
               <tr key={student._id} className="hover:bg-gray-700">
                 <td className="px-6 py-4">{index + 1}</td>
                 <td className="px-6 py-4">{student.userName}</td>
@@ -128,7 +154,7 @@ console.log(students,"studentsstudentsstudents")
                 <td className="px-6 py-4">{student.enrolledDuration}</td>
                 <td className="px-6 py-4">{student.enrolledDurationExpire}</td>
                 <td className="px-6 py-4">{student.enrolledDate}</td>
-                <td className="px-6 py-4">{student?.slotTaken}</td>
+                <td className="px-6 py-4">{student.slotTaken}</td>
                 <td className="px-6 py-4 flex space-x-2">
                   <button
                     onClick={() => handleEditClick(student)}
@@ -144,8 +170,16 @@ console.log(students,"studentsstudentsstudents")
                   </button>
                 </td>
                 <td className="px-6 py-4">
-                    <button onClick={() => router.push(`/coaches/chatPage?user=${student._id}&coachId=${coachId}&userName=${student.userName}`)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">chat</button>
+                  <button
+                    onClick={() =>
+                      router.push(
+                        `/coaches/chatPage?user=${student._id}&coachId=${coachId}&userName=${student.userName}`
+                      )
+                    }
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                  >
+                    Chat
+                  </button>
                 </td>
               </tr>
             ))}
@@ -167,11 +201,8 @@ console.log(students,"studentsstudentsstudents")
                     {key.charAt(0).toUpperCase() + key.slice(1)}
                   </label>
                   <p className="text-white">
-                    {viewingStudent.Diet.Goal[key as keyof typeof viewingStudent.Diet.Goal] !=
-                    null
-                      ? String(
-                          viewingStudent.Diet.Goal[key as keyof typeof viewingStudent.Diet.Goal]
-                        )
+                    {viewingStudent.Diet.Goal[key as keyof typeof viewingStudent.Diet.Goal] != null
+                      ? String(viewingStudent.Diet.Goal[key as keyof typeof viewingStudent.Diet.Goal])
                       : "Not added"}
                   </p>
                 </div>

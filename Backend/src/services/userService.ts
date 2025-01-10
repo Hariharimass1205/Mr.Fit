@@ -60,7 +60,7 @@ updateSlot = async (slot:string,userId:Types.ObjectId): Promise<any>=>{
         const data = await this.userRepository.updateSlot(slot,userId)
         return data
     } catch (error) {
-        throw new Error("error at fetching data for navbar");
+        throw new Error("error at update data for navbar");
     }
 }
 
@@ -165,7 +165,7 @@ fetchCoachListSer= async ():Promise<any|null>=>{
         return data
     } catch (error) {
         console.log("error at fetching cocah list in service")
-        throw new Error("error at fetching data for navbar");
+        throw new Error("error at fetching coach data for navbar");
     }
 }
 
@@ -175,7 +175,7 @@ fetchCoachDetails= async (coach_id:Types.ObjectId,user_Id:Types.ObjectId):Promis
         return data
     } catch (error) {
         console.log("error at fetching cocah list in service")
-        throw new Error("error at fetching data for navbar");
+        throw new Error("error at fetching data coach for navbar");
     }
 }
 
