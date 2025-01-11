@@ -1,5 +1,4 @@
 import { createSlice,PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "@reduxjs/toolkit/query";
 import { AuthData } from "../../../utils/types";
 
 

@@ -1,5 +1,5 @@
 "use client";
-import { getMessages, getRoomId, SaveChat, SaveChatCoach } from '@/service/chatApi';
+import { getMessages, getRoomId, SaveChatCoach } from '@/service/chatApi';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { formatDate } from '../../../../utils/dateFormat';

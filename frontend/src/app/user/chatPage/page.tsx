@@ -81,6 +81,7 @@ const ChatPage = () => {
           const name = messagesData[0]?.receiverId?.name || "Coach";
           setCoachName(name);
         } catch (error) {
+          console.log(error)
           setMessages([]);
           setCoachName("Coach");
         }
@@ -91,7 +92,7 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      messagesEndRef.current.scrollIntoView({ behavior: 'instant' });
     }
   }, [messages]);
 

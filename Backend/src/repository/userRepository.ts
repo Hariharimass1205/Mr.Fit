@@ -131,7 +131,7 @@ fetchUserDetailsRep = async (coach_Id:Types.ObjectId,user_Id:Types.ObjectId)=>{
         const a = await userModel.findOne({_id:coach[0]?.Students[i]})
         arr.push(a?.slotTaken)
     }
-    const userPayment = await paymentModel.find({userId:user_Id})
+    const userPayment = await paymentModel.find({userId:user_Id,paymentStatus:"completed"})
     const data = {user:user,coach:coach,payment:userPayment,coachSlots:arr,studentsList:studentsList} 
     return data
   } catch (error) {
@@ -205,13 +205,15 @@ addReview= async (coachId:Types.ObjectId,userId:Types.ObjectId,review:string,sta
   try {
      const coach_Id = new mongoose.Types.ObjectId(coachId)
      const user_Id = new mongoose.Types.ObjectId(userId)
+     const userr = await userModel.findOne({_id:user_Id})
      const data =  await reviewModel.create({
       userId:user_Id,
       coachId:coach_Id,
       review:review,
       starRating:starRating
      })
-      return data
+     
+      return {data:data,userName:userr.userName}
   } catch (error) {
     console.error('Error user add review:', error);
     throw new Error('Database Error');

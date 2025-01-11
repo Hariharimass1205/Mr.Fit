@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { fetchDataUserDetails, submitDietGoal, updateSlotTiming, updateUserProfile } from "@/service/userApi";
 import { useRouter } from "next/navigation";
-import { User, Coach } from "../../../../utils/types";
+import { User } from "../../../../utils/types";
 import { FieldError, useForm } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,12 +10,12 @@ import { calculateExpirationDate } from "../../../../utils/expirationFinder";
 import banner from '../../../../public/assets/backGround/pexels-alesiakozik-7289250.jpg'
 import { changeProfilePic } from "@/service/coachApi";
 
-interface IPayment {
-  amount: number;
-  transactionDate: string;
-  paymentStatus: 'pending' | 'completed' | 'failed';
-  transactionId?: string; // Optional
-}
+// interface IPayment {
+//   amount: number;
+//   transactionDate: string;
+//   paymentStatus: 'pending' | 'completed' | 'failed';
+//   transactionId?: string; // Optional
+// }
 
 
 const generateSlots = (fromTime: string, toTime: string): string[] => {
@@ -71,7 +71,6 @@ export default function Dashboard() {
   const [packageExpired, setPackageExpired] = useState(false);
   const [expirationDate, setExpirationDate] = useState("");
   const [registerSlot,setRegisterSlot] = useState<string[]>([])
-  const [showSlots, setShowSlots] = useState(true);
   const [dailyData, setDailyData] = useState({
     water: 0,
     calories: 0,
@@ -82,14 +81,12 @@ export default function Dashboard() {
     Fiber:0,
     SleepTime:0
   });
-  const [isDisabled, setIsDisabled] = useState(true);
-
+  console.log(setValue)
   useEffect(() => {
     // input diable concept
     const checkTime = () => {
       const now = new Date();
       const currentHour = now.getHours();
-      setIsDisabled(currentHour < 21); 
     };
     checkTime();
     const interval = setInterval(checkTime, 60000);
@@ -124,12 +121,13 @@ export default function Dashboard() {
     }
     fetchUserData();
   }, [dailyData,inputs,slotTime]);
-
+console.log(payment,"paypay")
    const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setNewProfileImage(URL.createObjectURL(file)); 
               const res = await changeProfilePic(file)
+              console.log(res)
               toast.success("profile pictured changed successfuly")
     }
   };
@@ -308,8 +306,7 @@ export default function Dashboard() {
         <input
           type="number"
           name={field.name}
-          disabled={isDisabled}
-          value={field.value}
+          value={field.value}min={0}
           onChange={handleInputChange}
           className="w-full border border-gray-300 rounded px-2 py-1 text-sm"
         />
@@ -325,12 +322,9 @@ export default function Dashboard() {
       </button>:
       <h2>Submit your todays diet goal after "9:00 pm"</h2>
       }
-      
     </div>}
-   
   </form>
   </div>
-  
   <div>
     <label className="text-sm">Notes:</label>
     <small className="text-black text-xs block">
@@ -338,11 +332,8 @@ export default function Dashboard() {
     </small>
   </div>
 </div>
-
-
           </div>
         </div>
-
         {/* User Details */}
         <div className="bg-white  shadow-md rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4 underline">Your Details</h2>
@@ -495,9 +486,6 @@ export default function Dashboard() {
           </div>
         </div>
       )}
-
     </div>
-    
-   
   );
 }

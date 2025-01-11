@@ -3,7 +3,6 @@ import Footer from '@/components/user/footer';
 import { toast,ToastContainer } from 'react-toastify';
 import { signupApi } from '@/service/userApi';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import 'react-toastify/dist/ReactToastify.css';
 import bg from "../../../../public/assets/backGround/pexels-olly-3775164.jpg"
@@ -18,7 +17,6 @@ type input = {
 }
 const Signup: React.FC = () => {
   const router = useRouter()
-  const [userExsit,SetUserExsit] = useState(false)
   const {
     register,
     handleSubmit,
@@ -41,8 +39,7 @@ const Signup: React.FC = () => {
         router.replace(`/otp?email=${email}`)
       }
     } catch (error:any) {
-      toast.error(error?.message)
-      SetUserExsit(true)
+      toast.info(error?.message)
     }
   };
   return (
@@ -132,34 +129,42 @@ const Signup: React.FC = () => {
               />
             </div>
             <small>{errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}</small>
-            <div className='mb-10 mt-10'>
-              <h2>Select Gender:</h2>
+            <div className="mb-10 mt-10">
+  <h2>Select Gender:</h2>
+  <label className="p-8">
+    <input
+      id="gender-male"
+      type="radio"
+      value="male"
+      {...register("gender", { required: "Please select your gender" })}
+    />
+    Male
+  </label>
+  <label className="p-8">
+    <input
+      id="gender-female"
+      type="radio"
+      value="female"
+      {...register("gender", { required: "Please select your gender" })}
+    />
+    Female
+  </label>
+  <label className="p-8">
+    <input
+      id="gender-other"
+      type="radio"
+      value="other"
+      {...register("gender", { required: "Please select your gender" })}
+    />
+    Other
+  </label>
+  <small>
+    {errors.gender && (
+      <p className="text-red-500">{errors.gender.message}</p>
+    )}
+  </small>
+</div>
 
-              <label className='p-8'>
-                <input
-                  type="radio"
-                  value="male"
-                  {...register('gender', { required: true })}
-                />
-                Male
-              </label>
-              <label className='p-8'>
-                <input
-                  type="radio"
-                  value="female"
-                  {...register('gender', { required: true })}
-                />
-                Female
-              </label>
-              <label className='p-8'>
-                <input
-                  type="radio"
-                  value="other"
-                  {...register('gender', { required: true })}
-                />
-                Other
-              </label>
-            </div>
             <button  type='submit' className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 mb-4">
               Signup
             </button>

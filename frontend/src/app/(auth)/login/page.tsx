@@ -1,6 +1,6 @@
 "use client";
 import Footer from '@/components/user/footer';
-import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa";
 import { googleLogin, loginApi } from '@/service/userApi';
 import { useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -76,7 +76,6 @@ const Login: React.FC = () => {
           theme: "colored",
         });
         setTimeout(() => {
-          
           router.replace("/user/home");
         }, 3000);
       }

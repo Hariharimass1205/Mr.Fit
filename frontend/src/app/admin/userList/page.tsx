@@ -28,6 +28,7 @@ const UserList: React.FC = () => {
         const data = await fetchDataList();
         setUsers(data?.users || []);
       } catch (err) {
+        console.log(err)
         setError("Failed to fetch users. Please try again later.");
       }
     };

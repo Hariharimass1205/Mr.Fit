@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { fetchcoachList } from "@/service/userApi";
 import { useRouter } from "next/navigation";
 import Footer from "@/components/user/footer";
-import Navbar from "@/components/user/navbar";
 
 interface Coach {
   _id: any;

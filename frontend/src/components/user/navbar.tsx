@@ -2,8 +2,6 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { fetchData, logoutApi } from '@/service/userApi';
-import { log } from 'console';
-import { io } from 'socket.io-client';
 
 const Navbar: React.FC = () => {
   const [user, setUser] = useState();
@@ -13,7 +11,6 @@ const Navbar: React.FC = () => {
   const [enrolledPackage,setEnrolledPackage] = useState(0)
   const [isAth, setIsAth] = useState<boolean>(false);
   const [isCoach,setIsCoach] = useState(false)
-  const [isApprovedBtn,setIsApprovedBtn] = useState("")
   const [quizScore,setQuizScore] = useState(0)
   const router = useRouter();
   //const userdataRedux = useAppSelector(state => state?.user?.user)
@@ -35,7 +32,6 @@ const Navbar: React.FC = () => {
       setEnrolledPackage(data?.result?.data?.enrolledPackage)
       setQuizScore(quizScore)
       setIsCoach(data?.result?.data?.isCoach);
-      setIsApprovedBtn(data?.result?.data?.isApproved)
     } catch (error) {
       console.log(error)
     }
@@ -85,9 +81,6 @@ const Navbar: React.FC = () => {
     if (updatedUser) {
       try {
         const user = JSON.parse(updatedUser);
-        const isCoachs = user.isCoach;
-        const quizScore = user.quizScore;
-        const isApproved = user.isApproved;
       } catch (error) {
         console.log(error);
       }

@@ -7,7 +7,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { CLIENT_URL } from "../../../../utils/serverURL";
 import { useSearchParams, useRouter } from "next/navigation";
 import payUApiCalls from "../../../../utils/apiCalls/payUApiCalls";
-import Image from 'next/image';
 
 const PayUPage = () => {
   const searchParams = useSearchParams();

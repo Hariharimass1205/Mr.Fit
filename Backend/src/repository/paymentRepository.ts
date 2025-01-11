@@ -38,8 +38,8 @@ updateBookingStatus = async (bookingData: any): Promise<any | null> => {
     const { txnid, email, coachId, status, amount, userId, packageType, slotTime } = bookingData;
     const enrolledPackage = `${packageType}`;
     const updatedPayment = await paymentModel.updateOne(
-      { userEmail: email },
-      { $set: { paymentStatus: "completed" } }
+      {userEmail: email },
+      {$set:{paymentStatus:"completed"}}
     );
     const createRoom = await chatRoomModel.create({ user: userId, coach: coachId });
     const payment = await paymentModel.findOne({ userEmail: email, userId: userId });

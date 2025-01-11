@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 
 const EnrollmentSuccess = () => {
   const searchParams = useSearchParams();
-  const order = searchParams.get("order");
   const data = searchParams.get("data");
   const parsedData = data ? JSON.parse(decodeURIComponent(data)) : null;
    const router = useRouter();

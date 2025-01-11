@@ -1,6 +1,6 @@
 "use client";
 
-import { changeProfilePic, fetchCoachData, saveAvailabilityBackend, saveCoachImg, savePackageBackend, saveProfiletoBackend, updateDiet } from "@/service/coachApi";
+import { changeProfilePic, fetchCoachData, saveAvailabilityBackend, savePackageBackend, saveProfiletoBackend } from "@/service/coachApi";
 import { useEffect, useState } from "react";
 import { Coach } from "../../../../utils/types";
 import { Types } from "mongoose";
@@ -22,14 +22,14 @@ interface Student {
     Meal2: string;
     Meal3: string;
     Goal:{
-      Water:Number|  null;
-      Calories:Number|  null;
-      Steps:Number|  null;
-      Protein:Number|  null;
-      Carbohydrates:Number|  null;
-      Fats:Number|  null;
-      Fiber:Number|  null;
-      SleepTime:Number|  null;
+      Water:number|  null;
+      Calories:number|  null;
+      Steps:number|  null;
+      Protein:number|  null;
+      Carbohydrates:number|  null;
+      Fats:number|  null;
+      Fiber:number|  null;
+      SleepTime:number|  null;
     }
   };
 }
@@ -85,8 +85,6 @@ export default function CoachProfile() {
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState(0);
   const [states, setStates] = useState("");
-  const [isEditingPictures, setIsEditingPictures] = useState(false);
-  const [selectedImages, setSelectedImages] = useState([null, null, null]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
@@ -126,12 +124,14 @@ export default function CoachProfile() {
         setAddress(response.coach.address);
         setLoading(false);
       } catch (error) {
+        console.log(error)
         setError("Failed to fetch coach data.");
         setLoading(false);
       }
     };
     fetchCoachDatafn();
   }, []);
+   console.log(students,"pppppppppp")
   const handleProfileSave = async () => {
       const objData={
       name: name,
@@ -152,6 +152,7 @@ export default function CoachProfile() {
       const achieve = { achievementsOne ,achievementsTwo,achievementsThree};
       const dataSet = { coachId: coach.userId, achievement: achieve };
       const res = await saveAchievementBackend(dataSet);
+      console.log(res)
       // Update the coach state and clear the input
       setCoach((prev) => ({
         ...prev,
@@ -163,12 +164,13 @@ export default function CoachProfile() {
       setIsEditingAchievement(false);
       toast.success("Achievement successfully added!");
     } catch (error) {
+      console.log(error)
       toast.error("Failed to save achievement.");
     }
   };
 
   const handlePackageSave = async () => {
-    let pack ={
+    const pack ={
       monthlyPackage:monthlyPackage,
       quarterlyPackage:quarterlyPackage,
       yearlyPackage:yearlyPackage
@@ -185,6 +187,7 @@ export default function CoachProfile() {
     if (file) {
       setProfileImageUrl(URL.createObjectURL(file)); 
       const res = await changeProfilePic(file)
+      console.log(res)
       toast.success("profile pictured changed successfuly")
     }
   };
@@ -206,6 +209,7 @@ export default function CoachProfile() {
     }
     setIsEditingAvailability(false);
   };
+  console.log(availability,"avava---------------vavav")
   const handleCancel = () => {
     setTempAvailability({ ...availability });
     setIsEditingAvailability(false);
@@ -222,6 +226,7 @@ export default function CoachProfile() {
     const match = time.match(/(\d+)\s?(AM|PM)/i);
     if (!match) return "";
     const [_, hour, period] = match;
+    console.log(_)
     let hours = parseInt(hour, 10);
     if (period.toUpperCase() === "PM" && hours !== 12) hours += 12;
     if (period.toUpperCase() === "AM" && hours === 12) hours = 0;
@@ -235,35 +240,7 @@ export default function CoachProfile() {
     return `${formattedHour} ${period}`;
   };
 
-
-//handle pictues
-const handleImageChange = (e:any, index:number) => {
-  const file = e.target.files[0];
-  if (file) {
-    const imageUrl = URL.createObjectURL(file);
-    const updatedImages:any = [...selectedImages];
-    updatedImages[index] = imageUrl;
-    setSelectedImages(updatedImages);
-  }
-};
-const handlePicturesSave = async  () => {
-  try {
-    console.log(selectedImages);
-    const img1 = selectedImages[3]
-    const img2 = selectedImages[1]
-    const img3 = selectedImages[2]
-    console.log(img1,"img1",img2,"img1",img3,"img1")
-    
-    const response = await saveCoachImg(img1,img2,img3)
-    if(response){
-      toast.success("successfully added Images")
-    }
-  } catch (error:any) {
-    toast.error(error)
-  }
- 
-};
-
+  console.log(availability,"avava---------------vavav")
   return (
     <div className="min-h-screen bg-gray-900 text-white font-sans p-4 relative">
       {/* Back Button */}
@@ -633,66 +610,7 @@ const handlePicturesSave = async  () => {
     </div>
   
     
-       {/* Additional Pictures Section */}
-<div className="bg-gray-800 rounded-lg shadow-md p-6 w-full mx-auto mt-2">
-  <h2 className="text-2xl mb-4 font-extrabold text-red-600 flex justify-between items-center">
-    Additional Pictures
-    <button
-      onClick={() => setIsEditingPictures(!isEditingPictures)}
-      className="ml-4 text-sm text-blue-400 hover:text-blue-600 underline"
-    >
-      {isEditingPictures ? "Cancel" : "Edit"}
-    </button>
-  </h2>
-  
-  {isEditingPictures ? (
-    <div>
-      <label className="block text-white mb-2">Select Images:</label>
-      <div className="flex gap-4 mb-4">
-        {/* Upload Input for Each Image */}
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="relative bg-gray-700 rounded-md overflow-hidden h-28 w-28">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleImageChange(e, i)}
-              className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-            />
-            {selectedImages[i] && (
-              <img
-                src={selectedImages[i]}
-                alt={`Additional Image ${i}`}
-                className="w-full h-full object-cover"
-              />
-            )}
-          </div>
-        ))}
-      </div>
-
-      <button
-        onClick={handlePicturesSave}
-        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-      >
-        Save Pictures
-      </button>
-    </div>
-  ) : (
-    <div className="flex gap-4 mt-4">
-      {selectedImages.map((image, index) => (
-        image ? (
-          <div key={index} className="bg-gray-700 rounded-md overflow-hidden h-28 w-28">
-            <img
-              src={image}
-              alt={`Displayed Image ${index + 1}`}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        ) : null
-      ))}
-    </div>
-  )}
-</div>
-
+        {/* Buttons */}
 
       </div>
     </div>

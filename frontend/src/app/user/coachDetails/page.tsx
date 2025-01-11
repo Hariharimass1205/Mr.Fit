@@ -39,39 +39,39 @@ const convertTo24Hour = (hour: string, period: string): number => {
 
 
 
-interface coachState {
-  _id:Types.ObjectId
-  age: number;
-  name: string;
-  phone: number;
-  height: number;
-  weight: number;
-  noOfStudentsCoached: number;
-  availability: { 
-    fromTime:String;
-    toTime:String;
-    workingDays:[String];
-  };
-  achievementBadges: {
-    achievementsOne:String,
-    achievementsTwo:String,
-    achievementsThree:String
-  },
-  package: {
-    monthlyPackage: number;
-    quarterlyPackage: number;
-    yearlyPackage: number;
-  };
-  state: string;
-  address: string;
-  city: string;
-  locality: string;
-  userId: {
-    _id:Types.ObjectId;
-    profileImage: any;
-    quizScore: number;
-  };
-}
+// interface coachState {
+//   _id:Types.ObjectId
+//   age: number;
+//   name: string;
+//   phone: number;
+//   height: number;
+//   weight: number;
+//   noOfStudentsCoached: number;
+//   availability: { 
+//     fromTime:String;
+//     toTime:String;
+//     workingDays:[String];
+//   };
+//   achievementBadges: {
+//     achievementsOne:String,
+//     achievementsTwo:String,
+//     achievementsThree:String
+//   },
+//   package: {
+//     monthlyPackage: number;
+//     quarterlyPackage: number;
+//     yearlyPackage: number;
+//   };
+//   state: string;
+//   address: string;
+//   city: string;
+//   locality: string;
+//   userId: {
+//     _id:Types.ObjectId;
+//     profileImage: any;
+//     quizScore: number;
+//   };
+// }
 
 export default function GymProfile() {
     const router = useRouter() 
@@ -110,8 +110,6 @@ export default function GymProfile() {
     };
     fetchdatafn();
   }, []);
-
-  console.log(fetchData,"=====")
    const handleReviewSubmit = async () => {
     if (!reviewText.trim()) {
       toast.error("Review cannot be empty");
@@ -224,7 +222,7 @@ export default function GymProfile() {
             <div className="bg-gray-700  p-6 ml-10 rounded-3xl shadow-lg text-center">
               <h3 className="text-xl font-semibold">Monthly</h3>
               <p className="mt-4 text-2xl font-bold text-red-500">
-                ${coach?.package?.monthlyPackage}
+              Rs:  {coach?.package?.monthlyPackage} 
               </p>
               <p className="mt-2 text-gray-300">
                 Access to gym workouts and online coaching
@@ -236,7 +234,7 @@ export default function GymProfile() {
             <div className="bg-gray-700 p-6  rounded-3xl shadow-lg text-center">
               <h3 className="text-xl font-semibold">Quarterly</h3>
               <p className="mt-4 text-2xl font-bold text-red-500">
-                ${coach?.package?.quarterlyPackage}
+              Rs:  {coach?.package?.quarterlyPackage}
               </p>
               <p className="mt-2 text-gray-300">
                 Advanced plans with trainer guidance
@@ -249,7 +247,7 @@ export default function GymProfile() {
             <div className="bg-gray-700 p-6 mr-10 rounded-3xl shadow-lg text-center">
               <h3 className="text-xl font-semibold">Yearly</h3>
               <p className="mt-4 text-2xl font-bold text-red-500">
-                ${coach?.package?.yearlyPackage}
+                Rs:  {coach?.package?.yearlyPackage} 
               </p>
               <p className="mt-2 text-gray-300">
                 Full transformation plan with VIP perks

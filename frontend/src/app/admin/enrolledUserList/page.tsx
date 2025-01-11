@@ -30,6 +30,7 @@ const EnrolledUserList: React.FC = () => {
         const data = await fetchDataList();
         setUsers(data?.enrolledUsers || []);
       } catch (err) {
+        console.log(err)
         setError("Failed to fetch users. Please try again later.");
       }
     };

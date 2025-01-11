@@ -20,11 +20,12 @@ userRouter.post("/signup", controller.register);
 userRouter.post("/sentOTP",controller.otpVerify)
 
 
-userRouter.post("/logout",controller.logout)
+userRouter.post("/logout",authMiddleware,controller.logout)
 userRouter.post('/forgotPassword1',controller.forgotPassword)
 userRouter.post('/ForgotOTPVerify',controller.forgotPasswordOTPVerify)
 userRouter.post('/saveNewPassword',controller.saveChangePassword)
 userRouter.post('/resendOTP',controller.HandleResendOTP)
+
 
 userRouter.post("/fetchdata",authMiddleware,IisBlockHandle,controller.fetchUserData)
 userRouter.get('/fetchCoachdata',authMiddleware,IisBlockHandle,controller.fetchCoachlist) 
@@ -34,5 +35,6 @@ userRouter.put('/updateUserData',authMiddleware,IisBlockHandle,authMiddleware,co
 userRouter.post('/addReview',authMiddleware,IisBlockHandle,controller.addReview)
 userRouter.post('/addDietGoal',authMiddleware,IisBlockHandle,controller.addDietGoal)
 userRouter.post('/updateSlot',authMiddleware,IisBlockHandle,authMiddleware,controller.updateSlot)
+
 
 export default userRouter

@@ -25,7 +25,6 @@ const handleAxiosError = async (error:any) => {
     error?.response?.data?.message === "Access denied: Your account is blocked." ||
     error?.response?.request?.status === 403
   ) {
-    await logoutApi();
     redirect("/login");
   }
 };
@@ -36,7 +35,7 @@ export const signupApi = async (reqBody: Record<string, any>) => {
     return response.data;
   } catch (error: any) {
     console.log(error,"from api")
-    throw handleAxiosError(error) 
+    throw handleAxiosErrorlogin(error) 
   }
 };
 
@@ -122,6 +121,7 @@ export const resendOTP = async (email:any):Promise<any>=>{
 export const logoutApi = async () => {
   try {
     const response = await Axios.post(`${SERVER_URL_USER}/logout`);
+    console.log(response,"logout res")
     return response.data;
   } catch (error) {
     console.error("Error in logout:", error);

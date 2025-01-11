@@ -50,25 +50,19 @@ const s3 = new S3Client({
 const S3storage = multerS3({
     s3: s3,
     bucket: process.env.s3_BUCKET_NAME!,
-    contentType: multerS3.AUTO_CONTENT_TYPE,
-    metadata: (req, file, cb) => {
-      console.log("Processing file metadata:", file);
-      cb(null, { fieldName: file.fieldname });
+    contentType:multerS3.AUTO_CONTENT_TYPE,
+    metadata: function (req, file, cb) {
+        cb(null, { fieldName: file.fieldname });
     },
-    key: (req, file, cb) => {
-      console.log("Processing file key:", file.originalname);
-      cb(null, Date.now().toString());
-    },
-  });
-  
-
+    key: function (req, file, cb) {
+        cb(null, Date.now().toString())
+    }
+})
 export const uploadMiddleware = multer({
     storage: S3storage,
     fileFilter,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-  }).fields([
-    { name: "profilePic", maxCount: 1 }, // Single image
-    { name: "coachPictures", maxCount: 3 }, // Up to 3 images
-  ]);
-  
-  
+}).fields([
+    { name: "profilePic", maxCount: 1 },
+    { name: "coachPictures", maxCount: 3 }
+])

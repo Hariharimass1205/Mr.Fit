@@ -15,7 +15,6 @@ interface UserPayload extends JwtPayload {
   const authMiddleware = (req:CustomRequest,res:Response,next:NextFunction)=>{
         const accessToken = req.cookies.accessToken
         const refreshToken = req.cookies.refreshToken
-        console.log(accessToken,refreshToken,"middle token console")
         if(accessToken){
             jwt.verify(accessToken,process.env.JWT_SECRET,(err:any,decoded:any)=>{
             if(err){
@@ -23,7 +22,7 @@ interface UserPayload extends JwtPayload {
             }
             const user = decoded as UserPayload;
             req.user = user;
-            return next();
+             next();
             })
         }
         else if(refreshToken){
@@ -41,7 +40,7 @@ interface UserPayload extends JwtPayload {
                     httpOnly: true,
                   });
                   req.user= user
-                  return next();      
+                   next();      
         })
   }else{
     res.status(HttpStatus.FORBIDDEN).json({message:"UnAutherized: Please Login"})

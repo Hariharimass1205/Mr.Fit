@@ -29,6 +29,7 @@ const CoachList: React.FC = () => {
         const data = await fetchDataList();
         setCoach(data?.coaches || []);
       } catch (err) {
+        console.log(err)
         setError("Failed to fetch coaches. Please try again later.");
       }
     };
