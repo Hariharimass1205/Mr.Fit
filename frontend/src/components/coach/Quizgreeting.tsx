@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { saveQuizScore } from '@/service/coachApi';
+import { saveQuizScore } from '../../service/coachApi';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast,ToastContainer} from 'react-toastify';
 import bg from '../../../public/assets/backGround/pexels-goumbik-669578.jpg'
@@ -63,12 +63,12 @@ const Quizgreeting: React.FC<QuizgreetingProps> = ({ score }) => {
       {numericScore >= 10 ? (
         <h1 className="text-4xl font-bold text-center px-8 w-5/6 mt-20 mb-20">
           <span className='text-cyan-500'>Mr.{userName}</span>, you have scored: {quizScore?quizScore:score}. That&apos;s appreciable... At the
-          bottom of the page, you can find a button called Request a call."
+          bottom of the page, you can find a button called Request a call.&quot;
           Click to receive a call for admin approval.
         </h1>
       ) : (
         <h1 className="text-4xl font-bold text-center px-8 w-5/6 mt-20 mb-20">
-          Mr. {userName}, you have scored: {quizScore?quizScore:score}. That's not up to our
+          Mr. {userName}, you have scored: {quizScore?quizScore:score}. That&apos;s not up to our
           expectation...Please prepare well by next time, and you have only a
           few opportunities to attend this registration.
         </h1>

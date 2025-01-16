@@ -1,11 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { fetchCoachDetails, UpdateReview } from "@/service/userApi";
+import { fetchCoachDetails, UpdateReview } from "../../../service/userApi";
 import img from "../../../../public/assets/backGround/pexels-ronin-10754972.jpg";
-import { Types } from "mongoose";
 import { toast } from "react-toastify";
-
+import Image from "next/image";
 
 
 const generateSlots = (fromTime: string, toTime: string): string[] => {
@@ -25,7 +24,6 @@ const generateSlots = (fromTime: string, toTime: string): string[] => {
     const endHour12 = endHour % 12 === 0 ? 12 : endHour % 12;
     slots.push(`${startHour12} ${startPeriod} - ${endHour12} ${endPeriod}`);
   }
-  
   return slots;
 };
 
@@ -35,43 +33,6 @@ const convertTo24Hour = (hour: string, period: string): number => {
   if (period === "AM" && hour24 === 12) hour24 = 0;
   return hour24;
 };
-
-
-
-
-// interface coachState {
-//   _id:Types.ObjectId
-//   age: number;
-//   name: string;
-//   phone: number;
-//   height: number;
-//   weight: number;
-//   noOfStudentsCoached: number;
-//   availability: { 
-//     fromTime:String;
-//     toTime:String;
-//     workingDays:[String];
-//   };
-//   achievementBadges: {
-//     achievementsOne:String,
-//     achievementsTwo:String,
-//     achievementsThree:String
-//   },
-//   package: {
-//     monthlyPackage: number;
-//     quarterlyPackage: number;
-//     yearlyPackage: number;
-//   };
-//   state: string;
-//   address: string;
-//   city: string;
-//   locality: string;
-//   userId: {
-//     _id:Types.ObjectId;
-//     profileImage: any;
-//     quizScore: number;
-//   };
-// }
 
 export default function GymProfile() {
     const router = useRouter() 
@@ -90,7 +51,6 @@ export default function GymProfile() {
   const [packageDuration,setPackageDuration] = useState("")
   const [fetchData,setFetchData] = useState<any>()
   const [showSlots, setShowSlots] = useState(true);
-
   useEffect(() => {
     const fetchdatafn = async () => {
       if (coach_id) {
@@ -101,7 +61,6 @@ export default function GymProfile() {
         setCoach(data.coach);
         const slots = data.studentsList.Students.map((student: { slotTaken: string }) => student.slotTaken);
         setRegisterSlot(slots);
-        console.log("Collected Slots:", slots);
         setUser(data.user);
         setReviews(data.reviews);
       } else {
@@ -115,7 +74,6 @@ export default function GymProfile() {
       toast.error("Review cannot be empty");
       return;
     }
-  
     try {
       const response = await UpdateReview(coach._id, user._id, reviewText, starRating);
       if (response && response._id) {
@@ -134,9 +92,6 @@ export default function GymProfile() {
       toast.error("Error submitting review. Please try again.");
     }
   };
-  
-  
-
  const handleCloseBtn = ()=>{
   setShowSlots(false)
  }
@@ -155,20 +110,14 @@ export default function GymProfile() {
     if (!slotsTaken || slotsTaken.length === 0) return generatedSlots; // If no slots are taken, all slots are available
     return generatedSlots.filter((slot) => !slotsTaken.includes(slot)); // Filter out all taken slots
   };
-  
-  
-  
-  //console.log(slots,"---444444444---")
 
   const setSelectedSlotfunction = (slot:string)=>{
     setSelectedSlot(slot)
-    console.log(selectedSlot,"selectedSlotselectedSlot")
     if(packageAmount && selectedSlot){
       localStorage.setItem("coach",JSON.stringify(coach))
     router.push(`/user/payment?coach_Id=${coach?._id}&user_Id=${user?._id}&slotTime=${selectedSlot}&packageAmount=${packageAmount}&packageDuration=${packageDuration}&userEmail=${user?.email}&userName=${user.userName}`)
     }
   }
-
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <div
@@ -189,8 +138,8 @@ export default function GymProfile() {
           </div>
           <h1 className="text-3xl font-bold mt-4">{coach?.name}</h1>
           <p className="mt-2 text-gray-300 text-center max-w-lg">
-            "Transforming lives one rep at a time. Specializing in personalized
-            fitness programs and coaching."
+          &quot;Transforming lives one rep at a time. Specializing in personalized
+            fitness programs and coaching.&quot;
           </p>
           {user.enrolledPackage>=0?
           <div className="flex space-x-4 mt-6">
@@ -243,7 +192,6 @@ export default function GymProfile() {
                 Select Plan
               </button>
             </div>
-
             <div className="bg-gray-700 p-6 mr-10 rounded-3xl shadow-lg text-center">
               <h3 className="text-xl font-semibold">Yearly</h3>
               <p className="mt-4 text-2xl font-bold text-red-500">
@@ -259,13 +207,10 @@ export default function GymProfile() {
           </div>
         </div>
       </section>:""}
-
-      
       {showSlots && slots.length > 0 ? (
         <section className="py-12 bg-gray-900 relative m-20">
           <div className="container mx-auto px-6">
             <h2 className="text-2xl font-bold text-center mb-1 text-white">Available Slots</h2>
-
             {/* Close Button in the top-right corner */}
             <button
               className="absolute top-4 right-8 rounded-lg bg-slate-400 p-2 text-sm cursor-pointer"
@@ -273,17 +218,13 @@ export default function GymProfile() {
             >
               X close
             </button>
-
             <p className="text-center mb-6 text-xs">
-              Note: Choose your slot as per the requirement; it can't be changed after the payment.
+              Note: Choose your slot as per the requirement; it can&apos;t be changed after the payment.
             </p>
-
             <div className="grid grid-cols-2 md:grid-cols-5 gap-1 m-2">
               {slots.map((slot, index) => {
                 const normalizeSlot = (slot: string) =>
                   slot.replace(/\s/g, "").replace("-", "to").toLowerCase();
-
-                // Find the corresponding registered slot with expiration details
                 const matchedStudent = fetchData.studentsList.Students.find(
                   (student: { slotTaken: string }) => normalizeSlot(student.slotTaken) === normalizeSlot(slot)
                 );
@@ -303,7 +244,6 @@ export default function GymProfile() {
                     <h3 className="text-lg font-semibold">
                       {slot} {/* Display the time range */}
                     </h3>
-
                     {/* Tooltip to display the expiration date on hover */}
                     {isSlotTaken && (
                       <span className="absolute inset-0 mt-10 text-sm flex items-center justify-center text-white opacity-0 hover:opacity-100 transition-opacity">
@@ -319,14 +259,6 @@ export default function GymProfile() {
       ) : (
         ""
       )}
-
-
-
-
-
-
-
- 
 <section className="py-12 mt-10 w-fit mx-auto rounded-3xl bg-black-800">
   <div className="container mx-auto px-6 flex flex-col items-center">
     <h2 className="text-4xl font-bold font-sans text-center mb-10">
@@ -423,7 +355,6 @@ export default function GymProfile() {
       ) : (
         <p className="text-gray-500 italic text-center">No reviews available yet.</p>
       )}
-
       <div className="mt-6">
         {!coach?.Students?.includes(user?._id) ? (
           <p className="text-cyan-500">Only enrolled people can add reviews</p>
@@ -438,7 +369,6 @@ export default function GymProfile() {
       </div>
     </div>
   </div>
-
   {/* Review Modal */}
   {isModalOpen && (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -468,7 +398,6 @@ export default function GymProfile() {
             </svg>
           ))}
         </div>
-
         {/* Review Text */}
         <textarea
           value={reviewText}
@@ -496,8 +425,6 @@ export default function GymProfile() {
     </div>
   )}
 </section>
-
-
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import Layout from "@/components/admin/layout";
-import { fetchDataList } from "@/service/adminApi";
+import Layout from "../../../components/admin/layout";
+import { fetchDataList } from "../../../service/adminApi";
 import { useEffect, useState } from "react";
 
 interface User {

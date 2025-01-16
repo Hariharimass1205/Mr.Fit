@@ -1,10 +1,10 @@
 "use client"
-import Footer from '@/components/user/footer';
+import Footer from '../../../../components/user/footer'
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSearchParams } from 'next/navigation';
-import { resendOTP, verifyOTPforForgotOtp } from '@/service/userApi';
+import { resendOTP, verifyOTPforForgotOtp } from '../../../../service/userApi';
 const bg = '/assets/backGround/neeww.jpg';
 
 type input = {

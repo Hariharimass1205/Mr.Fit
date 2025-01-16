@@ -1,7 +1,7 @@
 "use client";
 
-import Layout from "@/components/admin/layout";
-import { changeCoachStatus, fetchDataList, handleBlockFun, handleUnBlockFun } from "@/service/adminApi";
+import Layout from "../../../components/admin/layout";
+import { changeCoachStatus, fetchDataList, handleBlockFun, handleUnBlockFun } from "../../../service/adminApi";
 import { useEffect, useState } from "react";
 
 interface Coach {

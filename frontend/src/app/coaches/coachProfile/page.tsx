@@ -1,6 +1,6 @@
 "use client";
 
-import { changeProfilePic, fetchCoachData, saveAvailabilityBackend, savePackageBackend, saveProfiletoBackend } from "@/service/coachApi";
+import { changeProfilePic, fetchCoachData, saveAvailabilityBackend, savePackageBackend, saveProfiletoBackend } from "../../../service/coachApi";
 import { useEffect, useState } from "react";
 import { Coach } from "../../../../utils/types";
 import { Types } from "mongoose";
@@ -8,7 +8,8 @@ import bg from "../../../../public/assets/backGround/pexels-leonardho-1552106.jp
 import { useRouter } from "next/navigation";
 import { toast,ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { saveAchievementBackend } from "@/service/coachApi";
+import { saveAchievementBackend } from "../../../service/coachApi";
+import Image from "next/image";
 interface Student {
   _id: string;
   userName: string;
@@ -131,7 +132,6 @@ export default function CoachProfile() {
     };
     fetchCoachDatafn();
   }, []);
-   console.log(students,"pppppppppp")
   const handleProfileSave = async () => {
       const objData={
       name: name,
@@ -187,7 +187,6 @@ export default function CoachProfile() {
     if (file) {
       setProfileImageUrl(URL.createObjectURL(file)); 
       const res = await changeProfilePic(file)
-      console.log(res)
       toast.success("profile pictured changed successfuly")
     }
   };
@@ -209,7 +208,6 @@ export default function CoachProfile() {
     }
     setIsEditingAvailability(false);
   };
-  console.log(availability,"avava---------------vavav")
   const handleCancel = () => {
     setTempAvailability({ ...availability });
     setIsEditingAvailability(false);
@@ -264,7 +262,7 @@ export default function CoachProfile() {
           <div className="relative bg-gray-700 rounded-full overflow-hidden h-28 w-28">
             {profileImageUrl ? (
               <div className="justify-item-center">
-              <img src={profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
+              <Image src={profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
              
               </div>
             ) : (

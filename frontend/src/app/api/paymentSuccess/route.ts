@@ -25,9 +25,7 @@ data.slotTime = slotTime
 let PayUOrderId
   try {
     data.package = packageDure
-    console.log(data,"data")
      PayUOrderId = await PayUApiCalls.saveData(data);
-     console.log(PayUOrderId)
   } catch (error: any) {
     console.log(error);
   }

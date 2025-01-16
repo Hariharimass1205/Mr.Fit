@@ -1,9 +1,9 @@
-"use client";
+"use client";  // Make sure it's lowercase
 
-import { useEffect, useRef } from "react";
-import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
-import { useSearchParams, useRouter } from "next/navigation";
-import { SaveChatCoach } from "@/service/chatApi";
+import { useEffect, useRef, useState } from "react";
+import { SaveChatCoach } from "../../../service/chatApi";
+import { useRouter } from "next/navigation";  // Correct import here
+import { useSearchParams } from "next/navigation";  // Correct import here
 
 const RoomPage = () => {
   const searchParams = useSearchParams();
@@ -14,8 +14,18 @@ const RoomPage = () => {
   const userId = searchParams.get("userId") || "";
   const meetingRef = useRef<HTMLDivElement>(null);
 
-  // Generate the share link before navigation
-  const shareLink = `${window.location.origin}${window.location.pathname}?roomId=${roomId}`;
+  // State to track if the component is mounted (client-side)
+  const [isClient, setIsClient] = useState(false);
+  const [shareLink, setShareLink] = useState<string>("");
+
+  useEffect(() => {
+    // This ensures we are only running this code on the client side
+    setIsClient(true);
+    if (typeof window !== "undefined") {
+      const generatedLink = `${window.location.origin}${window.location.pathname}?roomId=${roomId}`;
+      setShareLink(generatedLink); // Set the share link in the state
+    }
+  }, [roomId]);
 
   // Function to send the share link
   async function sentMsg(shareLink: string) {
@@ -32,46 +42,54 @@ const RoomPage = () => {
 
   // Function to handle navigation on exit
   function handleExit() {
-    if (window.opener) {
+    if (typeof window !== "undefined" && window.opener) {
       window.close();
     } else {
       // Navigate to the home page as a fallback if tab cannot be closed
-      console.warn("Unable to close the tab. Redirecting to /user/home instead.");
       router.push("/user/home");
     }
   }
 
   useEffect(() => {
-    if (meetingRef.current) {
-      const appId = 693151417;
-      const serverSecret = "66df38c08b99ce891eb296a08e93e8a0";
-      const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
-        appId,
-        serverSecret,
-        roomId,
-        Date.now().toString(),
-        coachName
-      );
+    if (isClient && shareLink && meetingRef.current) {
+      import('@zegocloud/zego-uikit-prebuilt').then(({ ZegoUIKitPrebuilt }) => {
+        const appId = 693151417;
+        const serverSecret = "66df38c08b99ce891eb296a08e93e8a0";
+        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+          appId,
+          serverSecret,
+          roomId,
+          Date.now().toString(),
+          coachName
+        );
 
-      const zc = ZegoUIKitPrebuilt.create(kitToken);
-      zc.joinRoom({
-        container: meetingRef.current,
-        sharedLinks: [
-          {
-            name: "Copy Link",
-            url: shareLink,
+        const zc = ZegoUIKitPrebuilt.create(kitToken);
+        zc.joinRoom({
+          container: meetingRef.current,
+          sharedLinks: [
+            {
+              name: "Copy Link",
+              url: shareLink,
+            },
+          ],
+          scenario: {
+            mode: ZegoUIKitPrebuilt.OneONoneCall,
           },
-        ],
-        scenario: {
-          mode: ZegoUIKitPrebuilt.OneONoneCall,
-        },
-        showScreenSharingButton: false,
-        onLeaveRoom: handleExit, // Trigger navigation when exiting
+          showScreenSharingButton: false,
+          onLeaveRoom: handleExit, // Trigger navigation when exiting
+        });
+
+        sentMsg(shareLink); // Send the share link message
+      }).catch((error) => {
+        console.error("Error loading ZegoUIKitPrebuilt:", error);
       });
     }
+  }, [isClient, roomId, coachName, shareLink, coachId, userId]);
 
-    sentMsg(shareLink);
-  }, [roomId, shareLink]);
+  // Render null or loading state until the component is fully mounted
+  if (!isClient) {
+    return null; // Optionally, add a loading spinner
+  }
 
   return (
     <div>

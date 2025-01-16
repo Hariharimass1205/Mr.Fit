@@ -1,145 +1,88 @@
 "use client";
-import { getMessages, getRoomId, SaveChatCoach } from '@/service/chatApi';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import { formatDate } from '../../../../utils/dateFormat';
-import { io, Socket } from 'socket.io-client';
+
+import { getMessages, getRoomId, SaveChatCoach } from "../../../service/chatApi";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { formatDate } from "../../../../utils/dateFormat";
+import { io, Socket } from "socket.io-client";
+import { Suspense } from "react";
 
 const ChatPage = () => {
-  const msgRef = useRef(null)
   const searchParams = useSearchParams();
   const router = useRouter();
   const [messages, setMessages] = useState<any[]>([]);
-  const coachId = searchParams.get("coachId") || "";
-  const userIDS = searchParams.get("user") || "";
-  const userName = searchParams.get("userName") || "";
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [coachName, setCoachName] = useState("Coach");
   const [socket, setSocket] = useState<Socket | null>(null);
-   const [roomId, setRoomId] = useState<string | null>(null)
-   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [roomId, setRoomId] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-   useEffect(() => {
-    const fetchRoomId = async () => {
-      try {
-        const response = await getRoomId(userIDS, coachId);
-        if (response) {
-          setRoomId(response.data as string); // Ensure this is string
-        } else {
-          console.log("Room ID is undefined");
-        }
-      } catch (error) {
-        console.log("Error fetching roomId:", error);
-      }
-    };
-
-    fetchRoomId();
-    const socketConnection = io('http://localhost:5000', { withCredentials: true });
-
-    socketConnection.on('connect', () => {
-      console.log('Connected to WebSocket server');
-    });
-
-    socketConnection.on('message', (message: any) => {
-      console.log('Received message:', message);
-      setMessages(prevState => [...prevState, message]);
-    });
-
-    setSocket(socketConnection);
-
-    return () => {
-      if (socketConnection) {
-        console.log('Disconnecting socket');
-        socketConnection.disconnect();
-      }
-    };
-  }, [coachId, userIDS]); 
-
-  useEffect(() => {
-    if (socket && roomId) {
-      console.log(`Joining chat room: ${roomId}`);
-      socket.emit("joinRoom", roomId);
-    }
-  }, [roomId, socket]);
-
-  
-
-
-
-  useEffect(() => {
-    const fetchRoomId = async () => {
-      try {
-        const response = await getRoomId(userIDS, coachId);
-        console.log(response,"-------")
-        if (response) {
-          setRoomId(response.data as string); // Ensure this is string
-        } else {
-          console.log("Room ID is undefined");
-        }
-      } catch (error) {
-        console.log("Error fetching roomId:", error);
-      }
-    };
-    fetchRoomId();
-    // Initialize the socket connection
-    const socketConnection = io('http://localhost:5000', { withCredentials: true });
-    socketConnection.on('connect', () => {
-      console.log('Connected to WebSocket server');
-    });
-
-    socketConnection.on('message', (message: any) => {
-      console.log('Received message:', message);
-      setMessages(prevState => [...prevState, message]);
-    });
-
-    setSocket(socketConnection);
-
-    return () => {
-      if (socketConnection) {
-        console.log('Disconnecting socket');
-        socketConnection.disconnect();
-      }
-    };
-  }, [coachId, userIDS]); // Add userIdfromback and coachId as dependencies
-  console.log(roomId,"roooooomu")
-
-  useEffect(() => {
-    if (socket && roomId) {
-      console.log(`Joining chat room: ${roomId}`);
-      socket.emit("joinRoom", roomId);
-    }
-  }, [roomId, socket]);
-
-
+  // Extract query parameters
+  const coachId = searchParams.get("coachId") || "";
+  const userIDS = searchParams.get("user") || "";
+  const userName = searchParams.get("userName") || "";
 
   // Fetch userId from localStorage
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const user = localStorage.getItem("user");
-      if (user) {
-        const parsedUser = JSON.parse(user);
-        setUserId(parsedUser?._id || null);
-      }
+    const user = localStorage.getItem("user");
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      setUserId(parsedUser?._id || null);
     }
   }, []);
 
-  // Fetch chat details
+  // Fetch roomId and initialize socket connection
+  useEffect(() => {
+    const fetchRoomId = async () => {
+      try {
+        const response = await getRoomId(userIDS, coachId);
+        if (response?.data) {
+          setRoomId(response.data as string);
+        } else {
+          console.error("Room ID is undefined");
+        }
+      } catch (error) {
+        console.error("Error fetching roomId:", error);
+      }
+    };
+
+    fetchRoomId();
+
+    const socketConnection = io("http://localhost:5000", { withCredentials: true });
+
+    socketConnection.on("connect", () => console.log("Connected to WebSocket server"));
+
+    socketConnection.on("message", (message: any) => {
+      setMessages((prev) => [...prev, message]);
+    });
+
+    setSocket(socketConnection);
+
+    return () => {
+      socketConnection.disconnect();
+    };
+  }, [coachId, userIDS]);
+
+  // Join room when roomId and socket are available
+  useEffect(() => {
+    if (socket && roomId) {
+      socket.emit("joinRoom", roomId);
+    }
+  }, [roomId, socket]);
+
+  // Fetch chat messages
   useEffect(() => {
     const fetchChatDetails = async () => {
       if (userId && coachId) {
         try {
           const response = await getMessages(userIDS, coachId);
-          console.log(response,"data fetched")
           const messagesData = response?.data || [];
           setMessages(messagesData);
-          // Extract coach name from the first message
-          const name = messagesData[0]?.receiverId?.name || "Coach";
-          setCoachName(name);
+          setCoachName(messagesData[0]?.receiverId?.name || "Coach");
         } catch (error) {
           console.error("Failed to fetch chat details:", error);
           setMessages([]);
-          setCoachName("Coach");
         }
       }
     };
@@ -147,33 +90,25 @@ const ChatPage = () => {
     fetchChatDetails();
   }, [userId, coachId]);
 
-
+  // Scroll to the latest message
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'instant' });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   // Handle sending a message
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!userId) {
-      console.error("User ID is not defined");
-      return;
-    }
-
     if (!newMessage.trim()) {
-      console.log("Message cannot be empty");
+      console.error("Message cannot be empty");
       return;
     }
 
     try {
-        console.log("senderId",coachId, "coachId", userIDS)
       const response = await SaveChatCoach({
         content: newMessage,
         senderId: coachId,
-        coachId: userIDS
+        coachId: userIDS,
       });
 
       if (response) {
@@ -182,21 +117,19 @@ const ChatPage = () => {
           {
             content: newMessage,
             senderId: coachId,
-            receiverId: { name: {userName} },
+            receiverId: { name: userName },
             timestamp: new Date().toISOString(),
           },
         ]);
-        setNewMessage('');
+        setNewMessage("");
       }
     } catch (error) {
-      console.error("Network error:", error);
+      console.error("Failed to send message:", error);
     }
   };
 
   return (
     <div className="flex h-[95vh] bg-gray-900">
-      {/* Back Button */}
-
       <button
         onClick={() => router.back()}
         className="absolute top-9 right-9 bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-800"
@@ -208,11 +141,10 @@ const ChatPage = () => {
         <div className="h-16 bg-gray-700 flex items-center px-4 border-b border-gray-600">
           <h2 className="text-xl justify-end font-semibold text-cyan-400">{userName}</h2>
         </div>
-        <div
-          className="flex-1 overflow-y-auto bg-gray-800 p-6 space-y-4 scrollbar-hide"
-        >
+
+        <div className="flex-1 overflow-y-auto bg-gray-800 p-6 space-y-4 scrollbar-hide">
           {messages.length > 0 ? (
-            messages.map((msg: any, index: number) => (
+            messages.map((msg, index) => (
               <div
                 key={index}
                 className={`flex ${
@@ -241,10 +173,10 @@ const ChatPage = () => {
           )}
           <div ref={messagesEndRef}></div>
         </div>
+
         <div className="bg-gray-700 text-white flex items-center p-4 border-t border-gray-600 mt-4">
           <form onSubmit={handleSendMessage} className="flex w-full">
             <input
-            ref={msgRef}
               type="text"
               placeholder="Type a message..."
               value={newMessage}
@@ -257,7 +189,16 @@ const ChatPage = () => {
             >
               Send
             </button>
-            <button className="bg-cyan-600 ml-3 text-white px-6 py-1 rounded-md hover:bg-cyan-800 focus:outline-none"  onClick={() => window.open(`/user/videoCall?roomId=${userId}&coachName=${coachName}&coachId=${coachId}&userId=${userIDS}`)}>Video Call</button>
+            <button
+              className="bg-cyan-600 ml-3 text-white px-6 py-1 rounded-md hover:bg-cyan-800 focus:outline-none"
+              onClick={() =>
+               router.replace(
+                  `/user/videoCall?roomId=${userId}&coachName=${coachName}&coachId=${coachId}&userId=${userIDS}`
+                )
+              }
+            >
+              Video Call
+            </button>
           </form>
         </div>
       </div>
@@ -265,6 +206,10 @@ const ChatPage = () => {
   );
 };
 
-export default ChatPage;
-
-
+export default function WrappedChatPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ChatPage />
+    </Suspense>
+  );
+}

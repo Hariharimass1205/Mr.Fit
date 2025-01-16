@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import bg from "../../../../public/assets/backGround/pexels-dogu-tuncer-339534179-15917308.jpg";
-import { registerCoach } from "@/service/coachApi";
+import { registerCoach } from "../../../service/coachApi";
 import { ToastContainer} from 'react-toastify';
 import  { useRouter } from "next/navigation";
 import 'react-toastify/dist/ReactToastify.css';

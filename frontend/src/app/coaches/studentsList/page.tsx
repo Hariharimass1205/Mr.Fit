@@ -1,5 +1,5 @@
 "use client";
-import { fetchCoachData, updateDiet } from "@/service/coachApi";
+import { fetchCoachData, updateDiet } from "../../../service/coachApi";
 import { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

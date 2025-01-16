@@ -1,7 +1,7 @@
 "use client";
 import Image from 'next/image';
-import Navbar from '@/components/user/navbar';
-import Footer from '@/components/user/footer';
+import Navbar from '../../../components/user/navbar';
+import Footer from '../../../components/user/footer';
 import topBg from '../../../../public/assets/backGround/neeww.jpg';
 import box1 from '../../../../public/assets/sustainable_habits_124af7fc55.webp';
 import box3 from '../../../../public/assets/tailor_made_plans_326e72bd7f.webp';
@@ -9,7 +9,7 @@ import box2 from '../../../../public/assets/Biostrap-Labs.webp';
 import bottombg from '../../../../public/assets/backGround/fittr_community_judgement_free_c2ff664eb3.webp';
 import { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { getRoomId } from '@/service/chatApi';
+import { getRoomId } from '../../../service/chatApi';
 
 export default function Home() {
   const [userId, setUserId] = useState<string | null>(null);

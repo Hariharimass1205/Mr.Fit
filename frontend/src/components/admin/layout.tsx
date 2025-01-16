@@ -4,7 +4,7 @@ import Link from "next/link";
 import { deleteCookie } from "../../../utils/deleteCookie"; 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { fetchDataList } from "@/service/adminApi";
+import { fetchDataList } from "../../service/adminApi";
 
 interface LayoutProps {
   children: React.ReactNode;

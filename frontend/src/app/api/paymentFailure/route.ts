@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: any) {
   const contentType = req.headers.get("content-type") || "";
-  console.log({ contentType });
   console.log("API payment failure route hit");
 
   const formData = await req.formData();

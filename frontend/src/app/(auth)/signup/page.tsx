@@ -1,7 +1,7 @@
 "use client"
-import Footer from '@/components/user/footer';
+import Footer from '../../../components/user/footer';
 import { toast,ToastContainer } from 'react-toastify';
-import { signupApi } from '@/service/userApi';
+import { signupApi } from '../../../service/userApi';
 import { useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import 'react-toastify/dist/ReactToastify.css';

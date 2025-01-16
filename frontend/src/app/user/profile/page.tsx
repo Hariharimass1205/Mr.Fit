@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { fetchDataUserDetails, submitDietGoal, updateSlotTiming, updateUserProfile } from "@/service/userApi";
+import { fetchDataUserDetails, submitDietGoal, updateSlotTiming, updateUserProfile } from "../../../service/userApi";
 import { useRouter } from "next/navigation";
 import { User } from "../../../../utils/types";
 import { FieldError, useForm } from "react-hook-form";
@@ -8,7 +8,8 @@ import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { calculateExpirationDate } from "../../../../utils/expirationFinder";
 import banner from '../../../../public/assets/backGround/pexels-alesiakozik-7289250.jpg'
-import { changeProfilePic } from "@/service/coachApi";
+import { changeProfilePic } from "../../../service/coachApi";
+import Image from "next/image";
 
 // interface IPayment {
 //   amount: number;
@@ -86,7 +87,7 @@ export default function Dashboard() {
     // input diable concept
     const checkTime = () => {
       const now = new Date();
-      const currentHour = now.getHours();
+      console.log(now)
     };
     checkTime();
     const interval = setInterval(checkTime, 60000);
@@ -121,7 +122,7 @@ export default function Dashboard() {
     }
     fetchUserData();
   }, [dailyData,inputs,slotTime]);
-console.log(payment,"paypay")
+
    const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -320,7 +321,7 @@ console.log(payment,"paypay")
       >
         Save
       </button>:
-      <h2>Submit your todays diet goal after "9:00 pm"</h2>
+      <h2>Submit your todays diet goal after &quot;9:00 pm&quot;</h2>
       }
     </div>}
   </form>
@@ -449,7 +450,7 @@ console.log(payment,"paypay")
             </button>
             <h2 className="text-lg text-black font-bold text-center mb-4">Available Slots</h2>
             <p className="text-black text-center mb-4 text-xs">
-              Note: Choose your slot as per the requirement; it can't be changed after the payment.
+              Note: Choose your slot as per the requirement; it can&apos;t be changed after the payment.
             </p>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
               {slots.map((slot, index) => {

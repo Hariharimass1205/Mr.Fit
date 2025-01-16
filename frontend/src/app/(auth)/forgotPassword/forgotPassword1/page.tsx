@@ -1,6 +1,6 @@
 "use client"
-import Footer from '@/components/user/footer';
-import { forgotpasswordEmail } from '@/service/userApi';
+import Footer from '../../../../components/user/footer'
+import { forgotpasswordEmail } from '../../../../service/userApi';
 import { useRouter } from 'next/navigation';
 import {  useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';

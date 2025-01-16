@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { fetchData, logoutApi } from '@/service/userApi';
+import { fetchData, logoutApi } from '../../service/userApi';
 
 const Navbar: React.FC = () => {
   const [user, setUser] = useState();
@@ -76,16 +76,7 @@ const Navbar: React.FC = () => {
     router.replace("/login");
   };
 
-  useEffect(() => {
-    const updatedUser = localStorage.getItem("user");
-    if (updatedUser) {
-      try {
-        const user = JSON.parse(updatedUser);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }, [user]);
+
 
  const handleBecomeCoach = ()=>{
   if(enrolledPackage<=0){

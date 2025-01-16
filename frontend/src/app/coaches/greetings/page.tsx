@@ -1,5 +1,5 @@
 "use client"
-import Quizgreeting from '@/components/coach/Quizgreeting'
+import Quizgreeting from '../../../components/coach/Quizgreeting'
 import React from 'react'
 import { useSearchParams } from 'next/navigation'
 

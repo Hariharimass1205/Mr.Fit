@@ -1,14 +1,14 @@
-"use client";
+"use client";  // Ensure the component runs on the client-side
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { generateTxnId } from "../../../../utils/generateTxnld";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { CLIENT_URL } from "../../../../utils/serverURL";
-import { useSearchParams, useRouter } from "next/navigation";
 import payUApiCalls from "../../../../utils/apiCalls/payUApiCalls";
 
-const PayUPage = () => {
+const PayUPageContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -28,21 +28,20 @@ const PayUPage = () => {
   const userName = searchParams.get('userName');
 
   // Ensure that all parameters are available before proceeding
-  if (!user_Id || !coach_Id || !packageData || !userEmail || !userName) {
-    return <div>Missing necessary query parameters!</div>;
-  }
-
+  const missingParams = !user_Id || !coach_Id || !packageData || !userEmail || !userName;
+  
+  // Declare BookedData outside useEffect to use in JSX
   const BookedData = {
     advanceAmount: packageData,
     vendorId: coach_Id,
     user_Id: user_Id,
     username: userName,
     userEmail: userEmail,
-    slotTime:slotTime
+    slotTime: slotTime
   };
 
   const amount = BookedData.advanceAmount || 0;
-  const productinfo = BookedData.vendorId || "";
+  const productinfo = BookedData.vendorId || ""; // Ensure this is initialized
   const username = BookedData.username;
   const email = BookedData.userEmail;
   const surl = `${CLIENT_URL}/api/paymentSuccess?packageDuration=${encodeURIComponent(JSON.stringify(packageDuration))}&slotTime=${encodeURIComponent(JSON.stringify(slotTime))}`;
@@ -52,6 +51,11 @@ const PayUPage = () => {
   const key = "PMd9OW";
 
   useEffect(() => {
+    if (missingParams) {
+      setError("Missing necessary query parameters!");
+      return;
+    }
+
     const data = {
       txnid,
       amount,
@@ -65,9 +69,7 @@ const PayUPage = () => {
     const makePaymentRequest = async () => {
       try {
         console.log("Sending Payment Request:", data);
-        // Replace with your actual API call to generate hash
         const res = await payUApiCalls.paymentReq(data);
-        console.log(res, "ressss");
         setHash(res.hash);
         requestSentRef.current = true;
       } catch (error: any) {
@@ -79,7 +81,7 @@ const PayUPage = () => {
     if (!requestSentRef.current) {
       makePaymentRequest();
     }
-  }, [amount, email, productinfo, txnid, udf1, username]);
+  }, [user_Id, coach_Id, packageData, userEmail, userName, txnid, packageDuration, slotTime]);
 
   const handleBack = () => {
     router.back(); // Navigate back to the previous page
@@ -99,6 +101,10 @@ const PayUPage = () => {
       console.error("Hash not generated yet, form submission blocked.");
     }
   };
+
+  if (missingParams) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center p-4">
@@ -150,6 +156,14 @@ const PayUPage = () => {
         )}
       </div>
     </div>
+  );
+};
+
+const PayUPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PayUPageContent />
+    </Suspense>
   );
 };
 

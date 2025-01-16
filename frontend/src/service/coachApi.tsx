@@ -1,6 +1,5 @@
 import axios from "axios";
 import { SERVER_URL_COACH } from '../../utils/serverURL';
-import { Types } from "mongoose";
 import { redirect } from "next/navigation";
 import { logoutApi } from "./userApi";
 
@@ -58,7 +57,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
     }
   }
 
-  export const saveAvailabilityBackend = async (availability:{})=>{
+  export const saveAvailabilityBackend = async (availability:object)=>{
     try {
       const data = await Axios.post(`${SERVER_URL_COACH}/updateAvailability`,{availability})
       return data
@@ -89,7 +88,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
     }
   }
 
-  export const savePackageBackend = async(pack:Object)=>{
+  export const savePackageBackend = async(pack:object)=>{
     try {
       const {data} = await Axios.patch(`${SERVER_URL_COACH}/updatPackage`,{pack})
       return data
@@ -99,7 +98,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
     }
   }
   
-  export const saveProfiletoBackend = async (objData:Object)=>{
+  export const saveProfiletoBackend = async (objData:object)=>{
     try {
       const {data} = await Axios.patch(`${SERVER_URL_COACH}/updatProfile`,{objData})
       console.log(data,"::::::::::::::::::::;")
@@ -110,7 +109,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
     }
   }
   
-  export const saveAchievementBackend = async (dataset:{}):Promise<any>=>{
+  export const saveAchievementBackend = async (dataset:object):Promise<any>=>{
     try {
        const result = await Axios.patch(`${SERVER_URL_COACH}/saveCoachAchievement`,{dataset})
        console.log(result,"from back about achievement")
@@ -120,7 +119,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
       throw handleAxiosError(error) 
     }
 }
-export const updateDiet = async (studentId:Types.ObjectId,dietEdit:Object):Promise<any>=>{
+export const updateDiet = async (studentId:any,dietEdit:object):Promise<any>=>{
   try {
     const result = await Axios.put(`${SERVER_URL_COACH}/updateDiet`,{studentId,dietEdit})
     return result.data.success

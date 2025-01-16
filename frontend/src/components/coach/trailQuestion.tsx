@@ -1,8 +1,8 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { useState } from "react";'/'
+import { useRouter } from "next/navigation"; 
 import { FaDumbbell } from "react-icons/fa"; 
 import bgImage from '/public/assets/backGround/pexels-anush-1431283.jpg';
+import { useState } from "react";
 
 const Quiz = () => {
   const questions = [

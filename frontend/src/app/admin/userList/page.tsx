@@ -1,8 +1,8 @@
 "use client";
 
-import Layout from "@/components/admin/layout";
-import Modal from "@/components/admin/modal";
-import { fetchDataList, handleBlockFun, handleUnBlockFun } from "@/service/adminApi";
+import Layout from "../../../components/admin/layout";
+import Modal from "../../../components/admin/modal";
+import { fetchDataList, handleBlockFun, handleUnBlockFun } from '../../../service/adminApi';
 import { useEffect, useState } from "react";
 
 interface User {

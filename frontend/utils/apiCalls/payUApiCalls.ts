@@ -1,5 +1,3 @@
-/* eslint-disable import/no-anonymous-default-export */
-// import { SERVER_URL } from "@/app/services/serverURL";
 
 import axios from "axios";
 import { SERVER_URL_PAYMENT } from "../serverURL";

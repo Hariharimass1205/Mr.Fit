@@ -40,7 +40,7 @@ export const signupApi = async (reqBody: Record<string, any>) => {
 };
 
 
-export const googleLogin = async (userData:Object)=>{
+export const googleLogin = async (userData:object)=>{
   try {
     const response = await Axios.post(
       `${SERVER_URL_USER}/google-login`, 
@@ -211,7 +211,7 @@ try {
 }
 }
 
-export const submitDietGoal = async (userId:Types.ObjectId,data:Object):Promise<any>=>{
+export const submitDietGoal = async (userId:Types.ObjectId,data:object):Promise<any>=>{
     try {
       const response = await Axios.post(`${SERVER_URL_USER}/addDietGoal`,{userId,data})
       console.log(response,"000000")

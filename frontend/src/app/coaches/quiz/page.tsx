@@ -1,5 +1,5 @@
 "use client"
-import Quiz from '@/components/coach/trailQuestion'
+import Quiz from '../../../components/coach/trailQuestion'
 import React from 'react'
 
 const page = () => {

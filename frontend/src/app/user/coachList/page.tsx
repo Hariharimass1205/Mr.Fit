@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { fetchcoachList } from "@/service/userApi";
+import { fetchcoachList } from "../../../service/userApi";
 import { useRouter } from "next/navigation";
-import Footer from "@/components/user/footer";
+import Footer from "../../../components/user/footer";
+import Image from "next/image";
 
 interface Coach {
   _id: any;
