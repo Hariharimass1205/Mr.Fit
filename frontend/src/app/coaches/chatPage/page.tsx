@@ -92,7 +92,7 @@ const ChatPage = () => {
 
   // Scroll to the latest message
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "instant" });
   }, [messages]);
 
   // Handle sending a message
