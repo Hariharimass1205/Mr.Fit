@@ -6,8 +6,6 @@ import { io } from '../index';
 
 
 export class chatRepository implements IChatRepository{
-
-
     async saveMessageRepo(reqBody: any): Promise<any | null> {
         try {
           const { senderId, coachId, content } = reqBody;
