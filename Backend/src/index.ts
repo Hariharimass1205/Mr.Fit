@@ -16,13 +16,12 @@ import { socketHandler } from "./utils/chat";
 import { IisBlockHandle } from "./middlesware/isBlockHandler";
 
 dotenv.config();
-
 const app = express();
 connectToMongoDB();
 
 const myFormat =
   ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"';
-
+  
 app.use(cors({
   origin: process.env.CLIENT_URL || "http://localhost:3000",
   credentials: true,
