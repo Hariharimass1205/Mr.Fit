@@ -81,7 +81,8 @@ login = async(req:Request,res:Response,next:NextFunction) : Promise<void> =>{
     });
     res.cookie("refreshToken",refreshToken,{
       sameSite:"strict",
-      httpOnly:true
+      httpOnly:true,
+      domain:".mrfit.life"
     });
     res.status(HttpStatus.OK).json(user)
   } catch (error) {
