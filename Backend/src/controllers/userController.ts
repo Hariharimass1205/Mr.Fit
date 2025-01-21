@@ -75,14 +75,12 @@ login = async(req:Request,res:Response,next:NextFunction) : Promise<void> =>{
     const loginData = {email:email,password:password}
     const {user,refreshToken,accessToken} = await this.userService.loginUser(loginData)
     res.cookie("accessToken",accessToken,{
-      sameSite:"none",
+      sameSite:"strict",
       httpOnly:false,
-      domain:".mrfit.life"
     });
     res.cookie("refreshToken",refreshToken,{
-      sameSite:"none",
+      sameSite:"strict",
       httpOnly:true,
-      domain:".mrfit.life"
     });
     res.status(HttpStatus.OK).json(user)
   } catch (error) {
