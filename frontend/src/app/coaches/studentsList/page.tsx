@@ -122,7 +122,7 @@ const StudentList = () => {
           type="text"
           value={searchTerm}
           onChange={handleSearchChange}
-          placeholder="Search by name, phone, or district"
+          placeholder="Search by name, phone"
           className="w-full bg-gray-800 text-white px-4 py-2 rounded-md border border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
         />
       </div>
@@ -135,7 +135,6 @@ const StudentList = () => {
               <th className="px-6 py-3">#</th>
               <th className="px-6 py-3">Name</th>
               <th className="px-6 py-3">Phone</th>
-              <th className="px-6 py-3">District</th>
               <th className="px-6 py-3">Duration</th>
               <th className="px-6 py-3">Expire</th>
               <th className="px-6 py-3">Enrolled</th>
@@ -148,14 +147,13 @@ const StudentList = () => {
             {filteredStudents.map((student, index) => (
               <tr key={student._id} className="hover:bg-gray-700">
                 <td className="px-6 py-4">{index + 1}</td>
-                <td className="px-6 py-4">{student.enrolledDuration == "Expired" ? "Expired" :student.userName}</td>
-                <td className="px-6 py-4">{student.enrolledDuration == "Expired" ? "Expired" :student.phone}</td>
-                <td className="px-6 py-4">{ student.enrolledDuration == "Expired" ? "Expired" :  student.district}</td>
-                <td className="px-6 py-4">{student.enrolledDuration == "Expired" ? "Expired" :student.enrolledDuration}</td>
-                <td className="px-6 py-4">{student.enrolledDuration == "Expired" ? "Expired" :student.enrolledDurationExpire}</td>
-                <td className="px-6 py-4">{student.enrolledDuration == "Expired" ? "Expired" :student.enrolledDate}</td>
-                <td className="px-6 py-4">{student.enrolledDuration == "Expired" ? "Expired" :student.slotTaken}</td>
-                {student.enrolledDuration == "Expired" ? "Expired":
+                <td className="px-6 py-4">{student.userName}</td>
+                <td className="px-6 py-4">{student.phone}</td>
+                <td className="px-6 py-4">{student.enrolledDurationExpire == "Expired" ? <p className="text-red-600">Expired</p> :student.enrolledDuration}</td>
+                <td className="px-6 py-4">{student.enrolledDurationExpire == "Expired" ? <p className="text-red-600">Expired</p> :student.enrolledDurationExpire}</td>
+                <td className="px-6 py-4">{student.enrolledDurationExpire == "Expired" ? <p className="text-red-600">Expired</p> :student.enrolledDate}</td>
+                <td className="px-6 py-4">{student.enrolledDurationExpire == "Expired" ? <p className="text-red-600">Expired</p> :student.slotTaken}</td>
+                {student.enrolledDurationExpire == "Expired" ? "":
                 <td className="px-6 py-4 flex space-x-2">
                 <button
                   onClick={() => handleEditClick(student)}
@@ -169,9 +167,7 @@ const StudentList = () => {
                 >
                   View Goals
                 </button>
-              </td>
-                }
-                  {student.enrolledDuration == "Expired" ? "Expired":
+              </td>}
                  <td className="px-6 py-4">
                  <button
                    onClick={() =>
@@ -183,9 +179,7 @@ const StudentList = () => {
                  >
                    Chat
                  </button>
-               </td>}
-
-                
+               </td>
               </tr>
             ))}
           </tbody>
