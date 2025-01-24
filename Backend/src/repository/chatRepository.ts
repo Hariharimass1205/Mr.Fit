@@ -52,7 +52,6 @@ export class chatRepository implements IChatRepository{
             console.error("Missing required fields in request body:", reqBody);
             throw new Error("Missing required fields (senderId, coachId, content)");
           }
-      
           const room = await chatRoomModel.findOne({ user: coachId, coach: senderId });
           if (!room) {
             console.error("Room not found for the given user and coach IDs:", {
@@ -65,9 +64,8 @@ export class chatRepository implements IChatRepository{
           // Check if the content is a link
           const isLink = /^https?:\/\/[^\s$.?#].[^\s]*$/i.test(content);
           const messageContent = isLink
-            ? `Video call & ${content}`  // If it's a link, label it as "Video call invitation"
-            : content;
-      
+            ? "Video call "  // If it's a link, label it as "Video call invitation"
+            : content ;
           // Save the message, don't store type in the database
           const message = await messageModel.create({
             senderId,
