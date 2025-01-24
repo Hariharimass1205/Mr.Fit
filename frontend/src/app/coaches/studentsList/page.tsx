@@ -148,39 +148,44 @@ const StudentList = () => {
             {filteredStudents.map((student, index) => (
               <tr key={student._id} className="hover:bg-gray-700">
                 <td className="px-6 py-4">{index + 1}</td>
-                <td className="px-6 py-4">{student.userName}</td>
-                <td className="px-6 py-4">{student.phone}</td>
-                <td className="px-6 py-4">{student.district}</td>
-                <td className="px-6 py-4">{student.enrolledDuration}</td>
-                <td className="px-6 py-4">{student.enrolledDurationExpire}</td>
-                <td className="px-6 py-4">{student.enrolledDate}</td>
-                <td className="px-6 py-4">{student.slotTaken}</td>
+                <td className="px-6 py-4">{student.enrolledDuration == "Expired" ? "Expired" :student.userName}</td>
+                <td className="px-6 py-4">{student.enrolledDuration == "Expired" ? "Expired" :student.phone}</td>
+                <td className="px-6 py-4">{ student.enrolledDuration == "Expired" ? "Expired" :  student.district}</td>
+                <td className="px-6 py-4">{student.enrolledDuration == "Expired" ? "Expired" :student.enrolledDuration}</td>
+                <td className="px-6 py-4">{student.enrolledDuration == "Expired" ? "Expired" :student.enrolledDurationExpire}</td>
+                <td className="px-6 py-4">{student.enrolledDuration == "Expired" ? "Expired" :student.enrolledDate}</td>
+                <td className="px-6 py-4">{student.enrolledDuration == "Expired" ? "Expired" :student.slotTaken}</td>
+                {student.enrolledDuration == "Expired" ? "Expired":
                 <td className="px-6 py-4 flex space-x-2">
-                  <button
-                    onClick={() => handleEditClick(student)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                  >
-                    Edit Diet
-                  </button>
-                  <button
-                    onClick={() => handleViewClick(student)}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-                  >
-                    View Goals
-                  </button>
-                </td>
-                <td className="px-6 py-4">
-                  <button
-                    onClick={() =>
-                      router.push(
-                        `/coaches/chatPage?user=${student._id}&coachId=${coachId}&userName=${student.userName}`
-                      )
-                    }
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                  >
-                    Chat
-                  </button>
-                </td>
+                <button
+                  onClick={() => handleEditClick(student)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                >
+                  Edit Diet
+                </button>
+                <button
+                  onClick={() => handleViewClick(student)}
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+                >
+                  View Goals
+                </button>
+              </td>
+                }
+                  {student.enrolledDuration == "Expired" ? "Expired":
+                 <td className="px-6 py-4">
+                 <button
+                   onClick={() =>
+                     router.push(
+                       `/coaches/chatPage?user=${student._id}&coachId=${coachId}&userName=${student.userName}`
+                     )
+                   }
+                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                 >
+                   Chat
+                 </button>
+               </td>}
+
+                
               </tr>
             ))}
           </tbody>
