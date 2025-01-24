@@ -24,7 +24,7 @@ export class UserRepository implements IUserRepository{
       });
 
       cron.schedule("*/1 * * * *", async () => {
-        console.log("Testing --------------------------------------cron job...");
+        console.log("Testing ------------------------------------cron job...");
         await this.resetDietGoals();
       });
     }
