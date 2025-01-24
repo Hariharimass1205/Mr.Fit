@@ -81,7 +81,7 @@ const RoomPage = () => {
 
         sentMsg(shareLink); // Send the share link message
       }).catch((error) => {
-        console.error("Error loading ZegoUIKitPrebuilt:", error);
+        console.log("Error loading ZegoUIKitPrebuilt:", error);
       });
     }
   }, [isClient, roomId, coachName, shareLink, coachId, userId]);

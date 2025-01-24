@@ -34,7 +34,9 @@ const Login: React.FC = () => {
     try {
       const response = await loginApi(reqBody);
       if (response) {
-        localStorage.setItem("user", JSON.stringify(response))
+        localStorage.setItem("user", JSON.stringify(response.user))
+        localStorage.setItem("accesstoken", JSON.stringify(response.authToken.accessToken))
+        localStorage.setItem("refreshtoken", JSON.stringify(response.authToken.refreshToken))
        // dispatch(setUser(response))
         toast.success('Login Successful', { onClose: () => router.replace(`/user/home`) });
       }

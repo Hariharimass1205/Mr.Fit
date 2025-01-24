@@ -2,14 +2,16 @@ import axios from 'axios';
 import { SERVER_URL_USER } from '../../utils/serverURL';
 import { Types } from 'mongoose';
 import { redirect } from 'next/navigation';
-
+import axiosInstance from '@/utils/axiosInstance';
+import {setCookie} from '../../utils/constant'
+import { deleteCookie } from '@/utils/deleteCookie';
 
 const Axios = axios.create({
   baseURL:`${SERVER_URL_USER}`,
   headers:{
     "Content-Type":"application/json"
   },
-  withCredentials:true
+  withCredentials:true,
 })
 
 export const handleAxiosErrorlogin = (error:any)=>{
@@ -31,7 +33,7 @@ const handleAxiosError = async (error:any) => {
 
 export const signupApi = async (reqBody: Record<string, any>) => {
   try {
-    const response = await Axios.post(`${SERVER_URL_USER}/signup`, reqBody);
+    const response = await axiosInstance.post(`${SERVER_URL_USER}/signup`, reqBody);
     return response.data;
   } catch (error: any) {
     console.log(error,"from api")
@@ -42,7 +44,7 @@ export const signupApi = async (reqBody: Record<string, any>) => {
 
 export const googleLogin = async (userData:object)=>{
   try {
-    const response = await Axios.post(
+    const response = await axiosInstance.post(
       `${SERVER_URL_USER}/google-login`, 
       userData, 
       { withCredentials: true }
@@ -60,7 +62,7 @@ export const googleLogin = async (userData:object)=>{
 export const otpVerify = async (otp:string, email:any ): Promise<any> => {
   console.log("OTP:", otp,email);
   try {
-    const response = await Axios.post(`${SERVER_URL_USER}/sentOTP`, {otp,email});
+    const response = await axiosInstance.post(`${SERVER_URL_USER}/sentOTP`, {otp,email});
     return response;
   } catch (error) {
     console.log("Error in otpVerify:", error);
@@ -70,17 +72,21 @@ export const otpVerify = async (otp:string, email:any ): Promise<any> => {
 
 export const loginApi = async (reqBody: Record<string, any>)=>{
   try {
-    const response = await Axios.post(`${SERVER_URL_USER}/login`,reqBody)
+    const response = await axiosInstance.post(`${SERVER_URL_USER}/login`,reqBody)
+    console.log(response.data,"0000000")
+    // document.cookie.
+    console.log('login credintials',response?.data?.authToken?.refreshToken)
+    setCookie('refreshToken',response?.data?.authToken?.refreshToken,7)
     return response.data
   } catch (error:any) {
-    console.log(error);
-    throw handleAxiosErrorlogin(error) 
+    console.log(error); 
+    throw handleAxiosErrorlogin(error)    
   }
 }
 export const forgotpasswordEmail = async (email:string):Promise<any>=>{
   console.log("forgot email:",email)
   try {
-    const response = await Axios.post(`${SERVER_URL_USER}/forgotPassword1`,{email})
+    const response = await axiosInstance.post(`${SERVER_URL_USER}/forgotPassword1`,{email})
     return response.data.success
   } catch (err) {
     console.log("error at sending email to backend while forgot password",err)
@@ -91,7 +97,7 @@ export const forgotpasswordEmail = async (email:string):Promise<any>=>{
 export const verifyOTPforForgotOtp = async (otp:string, email:any ): Promise<any> => {
   console.log("OTP:", otp,email);
   try {
-    const response = await Axios.post(`${SERVER_URL_USER}/ForgotOTPVerify`, {otp,email});
+    const response = await axiosInstance.post(`${SERVER_URL_USER}/ForgotOTPVerify`, {otp,email});
     return response;
   } catch (error) {
     console.log("Error in otpVerify:", error);
@@ -101,7 +107,7 @@ export const verifyOTPforForgotOtp = async (otp:string, email:any ): Promise<any
 export const saveNewPassword = async (password:string,email:any):Promise<any>=>{
   console.log(password,email)
   try {
-    const response = await Axios.post(`${SERVER_URL_USER}/saveNewPassword`,{password,email});
+    const response = await axiosInstance.post(`${SERVER_URL_USER}/saveNewPassword`,{password,email});
     return response
   } catch (error) {
     console.log("Error in saving new password:", error);
@@ -110,7 +116,7 @@ export const saveNewPassword = async (password:string,email:any):Promise<any>=>{
 }
 export const resendOTP = async (email:any):Promise<any>=>{
   try {
-    const response = await Axios.post(`${SERVER_URL_USER}/resendOTP`,{email})
+    const response = await axiosInstance.post(`${SERVER_URL_USER}/resendOTP`,{email})
     return response
   } catch (error) {
     console.log("Error in resending OTP:", error);
@@ -120,8 +126,14 @@ export const resendOTP = async (email:any):Promise<any>=>{
 
 export const logoutApi = async () => {
   try {
-    const response = await Axios.post(`${SERVER_URL_USER}/logout`);
-    console.log(response,"logout res")
+    const response = await axiosInstance.post(`${SERVER_URL_USER}/logout`);
+    localStorage.setItem("accessToken","")
+    localStorage.setItem("accesstoken","")
+    localStorage.setItem("refreshToken","")
+    localStorage.setItem("refreshtoken","")
+    localStorage.setItem("user","")
+    deleteCookie('accessToken'); // Replace with your actual cookie name
+    deleteCookie('refreshToken');
     return response.data;
   } catch (error) {
     console.error("Error in logout:", error);
@@ -132,7 +144,7 @@ export const logoutApi = async () => {
 
 export const fetchData = async ()=>{
   try {
-    const {data} = await Axios.post(`${SERVER_URL_USER}/fetchdata`)
+    const {data} = await axiosInstance.post(`${SERVER_URL_USER}/fetchdata`)
    if(data){
     return data
    }
@@ -144,7 +156,7 @@ export const fetchData = async ()=>{
 
 export const fetchcoachList = async ()=>{
   try {
-    const {data} = await Axios.get(`${SERVER_URL_USER}/fetchCoachdata`)
+    const {data} = await axiosInstance.get(`${SERVER_URL_USER}/fetchCoachdata`)
     console.log(data,"coach list")
    if(data){
     return data.result.data
@@ -157,7 +169,7 @@ export const fetchcoachList = async ()=>{
 
 export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<any>=>{
   try {
-    const {data} = await Axios.get(`${SERVER_URL_USER}/fetchCoachDetails?coach=${coach_id}&user=${user_id}`)
+    const {data} = await axiosInstance.get(`${SERVER_URL_USER}/fetchCoachDetails?coach=${coach_id}&user=${user_id}`)
     console.log(data,"nnnnnnnnnn")
    if(data){
     return data.coachUserDetails
@@ -170,7 +182,7 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
 
   export const fetchDataUserDetails = async (user_id:string,coach_id:string):Promise<any>=>{
     try {
-      const {data} = await Axios.get(`${SERVER_URL_USER}/fetchUserDetails?userId=${user_id}&coachId=${coach_id}`)
+      const {data} = await axiosInstance.get(`${SERVER_URL_USER}/fetchUserDetails?userId=${user_id}&coachId=${coach_id}`)
       const {coach,user,payment,coachSlots,studentsList} = data.usercoachDeatails
      if(data){
       return {coach,user,payment,coachSlots,studentsList}
@@ -183,7 +195,7 @@ export const fetchCoachDetails = async (coach_id:string,user_id:string):Promise<
 
 export const updateUserProfile = async (data:any):Promise<any>=>{
     try {
-      const response = await Axios.put(`${SERVER_URL_USER}/updateUserData`,data)
+      const response = await axiosInstance.put(`${SERVER_URL_USER}/updateUserData`,data)
       return response.data.res[0]
     } catch (error) {
       console.log("error at user api editng api")
@@ -193,7 +205,7 @@ export const updateUserProfile = async (data:any):Promise<any>=>{
 
 export const UpdateReview = async (coachId:Types.ObjectId,userId:Types.ObjectId,review:string,starRating:number):Promise<any>=>{
     try {
-      const response = await Axios.post(`${SERVER_URL_USER}/addReview`,{coachId,userId,review,starRating})
+      const response = await axiosInstance.post(`${SERVER_URL_USER}/addReview`,{coachId,userId,review,starRating})
       return response.data
     } catch (error) {
       console.log("error at user review api",error)
@@ -203,7 +215,7 @@ export const UpdateReview = async (coachId:Types.ObjectId,userId:Types.ObjectId,
 
 export const updateSlotTiming = async (slot:string):Promise<any>=>{
 try {
-  const response = await Axios.post(`${SERVER_URL_USER}/updateSlot`,{slot})
+  const response = await axiosInstance.post(`${SERVER_URL_USER}/updateSlot`,{slot})
   return response.data.resData
 } catch (error) {
   console.log("Error in updating slot time:", error);
@@ -213,7 +225,7 @@ try {
 
 export const submitDietGoal = async (userId:Types.ObjectId,data:object):Promise<any>=>{
     try {
-      const response = await Axios.post(`${SERVER_URL_USER}/addDietGoal`,{userId,data})
+      const response = await axiosInstance.post(`${SERVER_URL_USER}/addDietGoal`,{userId,data})
       console.log(response,"000000")
       return response.data
     } catch (error) {

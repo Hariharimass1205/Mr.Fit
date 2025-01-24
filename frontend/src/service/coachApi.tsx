@@ -2,6 +2,7 @@ import axios from "axios";
 import { SERVER_URL_COACH } from '../../utils/serverURL';
 import { redirect } from "next/navigation";
 import { logoutApi } from "./userApi";
+import axiosInstance from "@/utils/axiosInstance";
 
 const Axios = axios.create({
   baseURL:`${SERVER_URL_COACH}`,
@@ -24,7 +25,7 @@ const handleAxiosError = async (error:any) => {
 
 export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
     try {
-      const response = await Axios.post(`${SERVER_URL_COACH}/saveQuizScore`,{score,coach})
+      const response = await axiosInstance.post(`${SERVER_URL_COACH}/saveQuizScore`,{score,coach})
       return response
     } catch (error) {
       console.log(error)
@@ -35,7 +36,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
   export const registerCoach = async (formData:any)=>{
    try {
     console.log(formData,"------ffffffssssssssssss--------")
-      const response = await Axios.post(`${SERVER_URL_COACH}/registerCoach`,{formData})
+      const response = await axiosInstance.post(`${SERVER_URL_COACH}/registerCoach`,{formData})
       console.log(response,"res from back")
       return response.data.success
    } catch (error) {
@@ -47,7 +48,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
 
   export const fetchCoachData = async ()=>{
     try {
-      const {data} = await Axios.post(`${SERVER_URL_COACH}/fetchCoachdata`)
+      const {data} = await axiosInstance.post(`${SERVER_URL_COACH}/fetchCoachdata`)
      if(data){
       return data.result
      }
@@ -59,7 +60,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
 
   export const saveAvailabilityBackend = async (availability:object)=>{
     try {
-      const data = await Axios.post(`${SERVER_URL_COACH}/updateAvailability`,{availability})
+      const data = await axiosInstance.post(`${SERVER_URL_COACH}/updateAvailability`,{availability})
       return data
     } catch (error) {
       console.log(error)
@@ -71,7 +72,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
     try {
       const formData = new FormData()
       formData.append("profilePic",file)
-      const data = await axios.patch(
+      const data = await axiosInstance.patch(
         `${SERVER_URL_COACH}/updateProfilePic`,
         formData,
         {
@@ -90,7 +91,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
 
   export const savePackageBackend = async(pack:object)=>{
     try {
-      const {data} = await Axios.patch(`${SERVER_URL_COACH}/updatPackage`,{pack})
+      const {data} = await axiosInstance.patch(`${SERVER_URL_COACH}/updatPackage`,{pack})
       return data
     } catch (error) {
       console.log(error,"error at changePackage")
@@ -100,8 +101,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
   
   export const saveProfiletoBackend = async (objData:object)=>{
     try {
-      const {data} = await Axios.patch(`${SERVER_URL_COACH}/updatProfile`,{objData})
-      console.log(data,"::::::::::::::::::::;")
+      const {data} = await axiosInstance.patch(`${SERVER_URL_COACH}/updatProfile`,{objData})
       return data
     } catch (error) {
       console.log(error,"error at updating profile")
@@ -111,7 +111,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
   
   export const saveAchievementBackend = async (dataset:object):Promise<any>=>{
     try {
-       const result = await Axios.patch(`${SERVER_URL_COACH}/saveCoachAchievement`,{dataset})
+       const result = await axiosInstance.patch(`${SERVER_URL_COACH}/saveCoachAchievement`,{dataset})
        console.log(result,"from back about achievement")
       return result
     } catch (error) {
@@ -121,7 +121,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
 }
 export const updateDiet = async (studentId:any,dietEdit:object):Promise<any>=>{
   try {
-    const result = await Axios.put(`${SERVER_URL_COACH}/updateDiet`,{studentId,dietEdit})
+    const result = await axiosInstance.put(`${SERVER_URL_COACH}/updateDiet`,{studentId,dietEdit})
     return result.data.success
   } catch (error) {
     console.log(error,"error at updating diet")

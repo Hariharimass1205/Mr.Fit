@@ -50,6 +50,7 @@ export default function GymProfile() {
   const [packageAmount,setPackageAmount] = useState(0)
   const [packageDuration,setPackageDuration] = useState("")
   const [fetchData,setFetchData] = useState<any>()
+  const [reviewName,setreviewName] = useState("")
   const [showSlots, setShowSlots] = useState(true);
   useEffect(() => {
     const fetchdatafn = async () => {
@@ -69,6 +70,8 @@ export default function GymProfile() {
     };
     fetchdatafn();
   }, []);
+
+
    const handleReviewSubmit = async () => {
     if (!reviewText.trim()) {
       toast.error("Review cannot be empty");
@@ -76,9 +79,11 @@ export default function GymProfile() {
     }
     try {
       const response = await UpdateReview(coach._id, user._id, reviewText, starRating);
-      if (response && response._id) {
+      console.log(response.userName,"review")
+      if (response && response.data._id) {
+        setreviewName(response.userName)
         setReviews((prevReviews: any) => {
-          return [response, ...prevReviews];
+          return [response.data, ...prevReviews];
         });
         setReviewText("");
         setStarRating(0);
@@ -320,8 +325,8 @@ export default function GymProfile() {
               className="border-b border-gray-700 pb-4 mb-4"
             >
               <h3 className="text-lg font-bold text-cyan-500">
-                {review.userId?.userName || "Anonymous"}{" "}
-                <span className="text-sm text-gray-400">({review.userId?.state || "Unknown"})-({review.transactionDate
+                {review.userId?.userName ? review.userId?.userName : reviewName}{" "}
+                <span className="text-sm text-gray-400">({review.userId?.state || "Kerala"})-({review.transactionDate
                 })</span>
               </h3>
               <p className="italic text-gray-300 mt-1">{review.review}</p>

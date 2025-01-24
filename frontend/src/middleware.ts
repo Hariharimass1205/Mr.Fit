@@ -21,30 +21,21 @@ const UNPROTECTED_ROUTES = new Set(["/_next/", "/favicon.ico", "/api/"]);
 
 export async function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
-    const tokenData = await verifyToken("accessToken", req );
+    const tokenData = await verifyToken("refreshToken", req );
     const role = tokenData?.role;
-
-
     const response = NextResponse.next();
     response.headers.set("Cache-Control", "no-store, must-revalidate");
-    
     if(!tokenData){
       localStorage.removeItem('user');
     }
-
     if ([...UNPROTECTED_ROUTES].some(route => pathname.startsWith(route)) || pathname === "/user/home") {
       console.log(`Allowing access to public route: ${pathname}`);
       return NextResponse.next();
     }
-
-
-
-    
     if (PUBLIC_ROUTES.has(pathname)) {
         console.log(`Allowing access to public page: ${pathname}`);
         return NextResponse.next();
       }
-
       if (!role ) {
         console.log(`Redirecting unauthenticated user from ${pathname} to /login`);
         return NextResponse.redirect(new URL("/login", req.url));
@@ -68,10 +59,8 @@ export async function middleware(req: NextRequest) {
 //////////////////////////////////////      /      //////////////////////////////////////////////
 
 async function verifyToken(tokenName: string, req: NextRequest): Promise<{ role:string | null }> {
-    const token = req.cookies.get(tokenName);
-    console.log(token,"from verify fn middle")
-    
-    if (!token?.value) {
+    const tokenHeader = req.cookies.get("refreshToken");
+    if (!tokenHeader?.value) {
       console.error("Token not found in cookies");
       return { role: null };
     }
@@ -80,9 +69,8 @@ async function verifyToken(tokenName: string, req: NextRequest): Promise<{ role:
       console.error("JWT_SECRET is not defined in environment variables");
       return { role: null };
     }
-  
     try {
-      const { payload } = await jwtVerify(token.value, new TextEncoder().encode(secret));
+      const { payload } = await jwtVerify(tokenHeader.value, new TextEncoder().encode(secret));
       const role = payload?.role as string | undefined;
   
       if (!role) {

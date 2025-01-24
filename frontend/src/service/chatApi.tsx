@@ -2,6 +2,7 @@ import axios from 'axios';
 import { SERVER_URL_CHAT } from '../../utils/serverURL';
 import { logoutApi } from './userApi';
 import { redirect } from 'next/navigation';
+import axiosInstance from '@/utils/axiosInstance';
 
 const Axios = axios.create({
   baseURL:`${SERVER_URL_CHAT}`,
@@ -25,7 +26,7 @@ const handleAxiosError = async (error:any) => {
 
 export const SaveChat = async (reqBody: {content:string,senderId: string,coachId: string})=>{
     try {
-      const res = await Axios.post(`${SERVER_URL_CHAT}/saveMsg`,{reqBody})
+      const res = await axiosInstance.post(`${SERVER_URL_CHAT}/saveMsg`,{reqBody})
       return res
     } catch (error) {
       console.log("error at user msg api SaveChat")
@@ -36,7 +37,7 @@ export const SaveChat = async (reqBody: {content:string,senderId: string,coachId
 
   export const SaveChatCoach = async (reqBody: {content:string,senderId: string,coachId: string})=>{
     try {
-      const res = await Axios.post(`${SERVER_URL_CHAT}/saveMsgCoach`,{reqBody})
+      const res = await axiosInstance.post(`${SERVER_URL_CHAT}/saveMsgCoach`,{reqBody})
       return res
     } catch (error) {
       console.log("error at user msg api SaveChat")
@@ -47,7 +48,7 @@ export const SaveChat = async (reqBody: {content:string,senderId: string,coachId
 
 export const getMessages = async (userId:any,coachId:string)=>{
     try {
-        const res = await Axios.get(`${SERVER_URL_CHAT}/getMsg?userId=${userId}&coachId=${coachId}`)
+        const res = await axiosInstance.get(`${SERVER_URL_CHAT}/getMsg?userId=${userId}&coachId=${coachId}`)
         return res
     } catch (error) {
       console.log("error at user msg api getMessages")
@@ -57,7 +58,7 @@ export const getMessages = async (userId:any,coachId:string)=>{
 }
 export const getRoomId = async (userId:any,coachId:string)=>{
   try {
-    const res = await Axios.get(`${SERVER_URL_CHAT}/getRoomId?userId=${userId}&coachId=${coachId}`)
+    const res = await axiosInstance.get(`${SERVER_URL_CHAT}/getRoomId?userId=${userId}&coachId=${coachId}`)
     return res
   } catch (error) {
     console.log("error at user msg api getMessages")

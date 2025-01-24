@@ -262,8 +262,7 @@ export default function CoachProfile() {
           <div className="relative bg-gray-700 rounded-full overflow-hidden h-28 w-28">
             {profileImageUrl ? (
               <div className="justify-item-center">
-              <Image src={profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
-             
+              <img src={profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
               </div>
             ) : (
               <input
@@ -273,7 +272,6 @@ export default function CoachProfile() {
             className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
           />
             )}
-           
           </div>
           {/* Name and State */}
           <div>

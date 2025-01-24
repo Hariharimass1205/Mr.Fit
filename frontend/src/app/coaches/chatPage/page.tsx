@@ -40,16 +40,16 @@ const ChatPage = () => {
         if (response?.data) {
           setRoomId(response.data as string);
         } else {
-          console.error("Room ID is undefined");
+          console.log("Room ID is undefined");
         }
       } catch (error) {
-        console.error("Error fetching roomId:", error);
+        console.log("Error fetching roomId:", error);
       }
     };
 
     fetchRoomId();
 
-    const socketConnection = io("https://mr-fit.onrender.com", { withCredentials: true });
+    const socketConnection = io("http://localhost:5000", { withCredentials: true });
 
     socketConnection.on("connect", () => console.log("Connected to WebSocket server"));
 
@@ -81,7 +81,7 @@ const ChatPage = () => {
           setMessages(messagesData);
           setCoachName(messagesData[0]?.receiverId?.name || "Coach");
         } catch (error) {
-          console.error("Failed to fetch chat details:", error);
+          console.log("Failed to fetch chat details:", error);
           setMessages([]);
         }
       }
@@ -100,7 +100,7 @@ const ChatPage = () => {
     e.preventDefault();
 
     if (!newMessage.trim()) {
-      console.error("Message cannot be empty");
+      console.log("Message cannot be empty");
       return;
     }
 
@@ -124,7 +124,7 @@ const ChatPage = () => {
         setNewMessage("");
       }
     } catch (error) {
-      console.error("Failed to send message:", error);
+      console.log("Failed to send message:", error);
     }
   };
 

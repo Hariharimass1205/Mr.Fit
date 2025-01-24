@@ -69,7 +69,7 @@ export default function Home() {
 
   // Socket setup
   useEffect(() => {
-    const socketConnection = io("https://mr-fit.onrender.com", { withCredentials: true });
+    const socketConnection = io("http://localhost:5000", { withCredentials: true });
     socketConnection.on("connect", () => {
       console.log("Socket connected:", socketConnection.id);
     });

@@ -11,7 +11,6 @@ export default function StoreProvider({
     children: React.ReactNode;
 }) {
     const storeRef = useRef<AppStore>(makeStore());
-
     useEffect(() => {
         const userJson = localStorage.getItem("auth");
         if (userJson) {

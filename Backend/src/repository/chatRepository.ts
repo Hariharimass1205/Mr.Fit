@@ -65,7 +65,7 @@ export class chatRepository implements IChatRepository{
           // Check if the content is a link
           const isLink = /^https?:\/\/[^\s$.?#].[^\s]*$/i.test(content);
           const messageContent = isLink
-            ? "Video call "  // If it's a link, label it as "Video call invitation"
+            ? `Video call & ${content}`  // If it's a link, label it as "Video call invitation"
             : content;
       
           // Save the message, don't store type in the database

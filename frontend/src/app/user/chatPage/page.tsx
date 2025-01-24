@@ -27,15 +27,15 @@ const ChatPage = () => {
         if (response) {
           setRoomId(response.data as string);
         } else {
-          console.error("Room ID is undefined");
+          console.log("Room ID is undefined");
         }
       } catch (error) {
-        console.error("Error fetching roomId:", error);
+        console.log("Error fetching roomId:", error);
       }
     };
 
     fetchRoomId();
-    const socketConnection = io('https://mr-fit.onrender.com', { withCredentials: true });
+    const socketConnection = io('http://localhost:5000', { withCredentials: true });
 
     socketConnection.on('connect', () => {
       console.log('Connected to WebSocket server');
@@ -121,7 +121,7 @@ const ChatPage = () => {
         setNewMessage('');
       }
     } catch (error) {
-      console.error("Network error:", error);
+      console.log("Network error:", error);
     }
   };
 
@@ -139,23 +139,55 @@ const ChatPage = () => {
           <h2 className="text-xl font-semibold text-cyan-400">{coachName}</h2>
         </div>
         <div className="flex-1 overflow-y-auto bg-gray-800 p-6 space-y-4">
-          {messages.length > 0 ? (
-            messages.map((msg: any, index: number) => (
-              <div key={index} className={`flex ${msg.senderId === userId ? "justify-end" : "justify-start"}`}>
-                <div className={`${msg.senderId === userId ? "bg-cyan-500" : "bg-gray-700"} text-white rounded-lg p-3 max-w-xs`}>
-                  <p>{msg.content}</p>
-                  <span className="text-xs text-gray-300 block mt-1">
-                    {msg.senderId === userId ? "You" : coachName || "Unknown"}
-                  </span>
-                  <span className="text-xs text-gray-400 block mt-1">{formatDate(msg.timestamp)}</span>
+  {messages.length > 0 ? (
+    messages.map((msg: any, index: number) => {
+      const isVideoCallMessage = msg.content.includes("http://localhost:3000/user/videoCall");
+      const videoCallLink = isVideoCallMessage
+        ? msg.content.match(/http:\/\/localhost:3000\/user\/videoCall\?roomId=\w+/)?.[0]
+        : null;
+
+      return (
+        <div key={index} className={`flex ${msg.senderId === userId ? "justify-end" : "justify-start"}`}>
+          <div
+            className={`${
+              msg.senderId === userId ? "bg-cyan-500" : "bg-gray-700"
+            } text-white rounded-lg p-3 max-w-xs`}
+          >
+            {isVideoCallMessage && videoCallLink ? (
+              <div>
+                <p>Video call request</p>
+                <div className="flex justify-around mt-2">
+                  <button
+                    onClick={() => router.push(videoCallLink)}
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    onClick={() => console.log("Video call rejected")}
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                  >
+                    Reject
+                  </button>
                 </div>
               </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-400 mt-6">No messages available.</p>
-          )}
-          <div ref={messagesEndRef}></div>
+            ) : (
+              <p>{msg.content}</p>
+            )}
+            <span className="text-xs text-gray-300 block mt-1">
+              {msg.senderId === userId ? "You" : coachName || "Unknown"}
+            </span>
+            <span className="text-xs text-gray-400 block mt-1">{formatDate(msg.timestamp)}</span>
+          </div>
         </div>
+      );
+    })
+  ) : (
+    <p className="text-center text-gray-400 mt-6">No messages available.</p>
+  )}
+  <div ref={messagesEndRef}></div>
+</div>
+
         <div className="bg-gray-700 flex items-center p-4">
           <form onSubmit={handleSendMessage} className="flex w-full">
             <input
