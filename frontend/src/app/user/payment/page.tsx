@@ -73,7 +73,7 @@ const PayUPageContent = () => {
         setHash(res.hash);
         requestSentRef.current = true;
       } catch (error: any) {
-        console.error("Payment Error: " + error.message);
+        console.log("Payment Error: " + error.message);
         toast.error(error.message);
       }
     };
@@ -98,7 +98,7 @@ const PayUPageContent = () => {
       event.currentTarget.submit();
     } else {
       setError("Hash not generated yet, form submission blocked.");
-      console.error("Hash not generated yet, form submission blocked.");
+      console.log("Hash not generated yet, form submission blocked.");
     }
   };
 

@@ -61,12 +61,12 @@ export async function middleware(req: NextRequest) {
 async function verifyToken(tokenName: string, req: NextRequest): Promise<{ role:string | null }> {
     const tokenHeader = req.cookies.get("refreshToken");
     if (!tokenHeader?.value) {
-      console.error("Token not found in cookies");
+      console.log("Token not found in cookies");
       return { role: null };
     }
     const secret = process.env.JWT_SECRET;
     if (!secret) {
-      console.error("JWT_SECRET is not defined in environment variables");
+      console.log("JWT_SECRET is not defined in environment variables");
       return { role: null };
     }
     try {
@@ -74,12 +74,12 @@ async function verifyToken(tokenName: string, req: NextRequest): Promise<{ role:
       const role = payload?.role as string | undefined;
   
       if (!role) {
-        console.error("Role not found in token payload");
+        console.log("Role not found in token payload");
         return { role: null };
       }
       return { role };
     } catch (err:any) {
-      console.error(`Failed to verify token: ${err.message}`);
+      console.log(`Failed to verify token: ${err.message}`);
       return { role: null };
     }
   }

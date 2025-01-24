@@ -31,7 +31,7 @@ export default function Home() {
           }
         }
       } catch (error) {
-        console.error("Error reading from localStorage:", error);
+        console.log("Error reading from localStorage:", error);
       }
     };
 
@@ -46,13 +46,13 @@ export default function Home() {
           if (response?.data) {
             setRoomId(response.data);
           } else {
-            console.error("Room ID is undefined");
+            console.log("Room ID is undefined");
           }
         } else {
           console.log("Waiting for userId and coachId...");
         }
       } catch (error) {
-        console.error("Error fetching roomId:", error);
+        console.log("Error fetching roomId:", error);
       }
     };
 
@@ -62,8 +62,8 @@ export default function Home() {
   const handleJoinRoom = () => {
     if (videoLink) {
       console.log("Joining video room:", videoLink);
-      window.open(videoLink, "_blank");
       setVideoLink(null)
+      window.open(videoLink, "_blank");
     }    
   };
 
@@ -107,10 +107,11 @@ export default function Home() {
       {videoLink && (
         <div
           className="fixed top-5 right-5 bg-green-500 text-white p-4 rounded-lg cursor-pointer z-50"
-          onClick={handleJoinRoom}
         >
           <p className="font-bold">Incoming Video Call</p>
           <p>Click here to join the call</p>
+          <button className='p-2 mt-4 bg-green-600 mr-7 rounded-lg' onClick={handleJoinRoom}>Answer</button>
+          <button className='p-2 mt-4 bg-red-600 rounded-lg' onClick={()=>setVideoLink(null)}>Reject</button>
         </div>
       )}
 

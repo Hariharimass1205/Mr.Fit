@@ -18,7 +18,7 @@ export async function POST(req: any) {
     // Optionally save or process failed payment data for tracking/debugging.
     // await paymentService.logFailedTransaction(data);
   } catch (error: any) {
-    console.error("Error logging failed transaction:", error.message);
+    console.log("Error logging failed transaction:", error.message);
   }
 
   // Redirect to the checkout page

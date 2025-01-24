@@ -35,7 +35,7 @@ const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
       // Optionally handle socket errors
       socketInstance.on("connect_error", (err) => {
-        console.error("Socket connection error:", err);
+        console.log("Socket connection error:", err);
         setSocket(null); // Handle connection failure
       });
 
@@ -44,7 +44,7 @@ const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
       });
 
       socketInstance.on("error", (error) => {
-        console.error("Socket error:", error);
+        console.log("Socket error:", error);
       });
 
       // Cleanup function to disconnect when component unmounts

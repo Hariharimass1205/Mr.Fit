@@ -11,13 +11,14 @@ const ChatPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [messages, setMessages] = useState<any[]>([]);
-  const coachId = searchParams.get("coach") || "";
-  const userIdfromback = searchParams.get("userId") || "";
   const [newMessage, setNewMessage] = useState('');
   const [userId, setUserId] = useState<string | null>(null);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [coachName, setCoachName] = useState("Coach");
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [videoLink, setVideoLink] = useState<string | null>(null); // Video call link state
+  const coachId = searchParams.get("coach") || "";
+  const userIdfromback = searchParams.get("userId") || "";
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,8 +42,14 @@ const ChatPage = () => {
       console.log('Connected to WebSocket server');
     });
 
+    // Listen for incoming video call link
+    socketConnection.on('linkNotification', (data) => {
+      console.log("Incoming video call link:", data);
+      setVideoLink(data.link);
+    });
+
     socketConnection.on('message', (message: any) => {
-      setMessages(prevState => [...prevState, message]);
+      setMessages((prevState) => [...prevState, message]);
     });
 
     setSocket(socketConnection);
@@ -81,7 +88,7 @@ const ChatPage = () => {
           const name = messagesData[0]?.receiverId?.name || "Coach";
           setCoachName(name);
         } catch (error) {
-          console.log(error)
+          console.log(error);
           setMessages([]);
           setCoachName("Coach");
         }
@@ -125,6 +132,14 @@ const ChatPage = () => {
     }
   };
 
+  const handleJoinRoom = () => {
+    if (videoLink) {
+      console.log("Joining video room:", videoLink);
+      window.open(videoLink, "_blank");
+      setVideoLink(null); // Clear the video link after joining
+    }
+  };
+
   return (
     <div className="flex h-[95vh] bg-gray-900">
       <ToastContainer autoClose={2000} position="top-center" />
@@ -134,60 +149,40 @@ const ChatPage = () => {
       >
         Back
       </button>
+        {/* Video call notification div */}
+        {videoLink && (
+        <div
+          className="fixed top-5 right-5 bg-green-500 text-white p-4 rounded-lg cursor-pointer z-50"
+          
+        >
+          <p className="font-bold">Incoming Video Call</p>
+          <p>Click here to join the call</p>
+          <button className='p-2 mt-4 bg-green-600 mr-7 rounded-lg' onClick={handleJoinRoom}>Answer</button>
+          <button className='p-2 mt-4 bg-red-600 rounded-lg' onClick={()=>setVideoLink(null)}>Reject</button>
+        </div>
+      )}
       <div className="flex-1 flex flex-col h-full p-6 bg-gray-800">
         <div className="h-16 bg-gray-700 flex items-center px-4 border-b border-gray-600">
           <h2 className="text-xl font-semibold text-cyan-400">{coachName}</h2>
         </div>
         <div className="flex-1 overflow-y-auto bg-gray-800 p-6 space-y-4">
-  {messages.length > 0 ? (
-    messages.map((msg: any, index: number) => {
-      const isVideoCallMessage = msg.content.includes("http://localhost:3000/user/videoCall");
-      const videoCallLink = isVideoCallMessage
-        ? msg.content.match(/http:\/\/localhost:3000\/user\/videoCall\?roomId=\w+/)?.[0]
-        : null;
-
-      return (
-        <div key={index} className={`flex ${msg.senderId === userId ? "justify-end" : "justify-start"}`}>
-          <div
-            className={`${
-              msg.senderId === userId ? "bg-cyan-500" : "bg-gray-700"
-            } text-white rounded-lg p-3 max-w-xs`}
-          >
-            {isVideoCallMessage && videoCallLink ? (
-              <div>
-                <p>Video call request</p>
-                <div className="flex justify-around mt-2">
-                  <button
-                    onClick={() => router.push(videoCallLink)}
-                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-                  >
-                    Accept
-                  </button>
-                  <button
-                    onClick={() => console.log("Video call rejected")}
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-                  >
-                    Reject
-                  </button>
+          {messages.length > 0 ? (
+            messages.map((msg: any, index: number) => (
+              <div key={index} className={`flex ${msg.senderId === userId ? "justify-end" : "justify-start"}`}>
+                <div className={`${msg.senderId === userId ? "bg-cyan-500" : "bg-gray-700"} text-white rounded-lg p-3 max-w-xs`}>
+                  <p>{msg.content}</p>
+                  <span className="text-xs text-gray-300 block mt-1">
+                    {msg.senderId === userId ? "You" : coachName || "Unknown"}
+                  </span>
+                  <span className="text-xs text-gray-400 block mt-1">{formatDate(msg.timestamp)}</span>
                 </div>
               </div>
-            ) : (
-              <p>{msg.content}</p>
-            )}
-            <span className="text-xs text-gray-300 block mt-1">
-              {msg.senderId === userId ? "You" : coachName || "Unknown"}
-            </span>
-            <span className="text-xs text-gray-400 block mt-1">{formatDate(msg.timestamp)}</span>
-          </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-400 mt-6">No messages available.</p>
+          )}
+          <div ref={messagesEndRef}></div>
         </div>
-      );
-    })
-  ) : (
-    <p className="text-center text-gray-400 mt-6">No messages available.</p>
-  )}
-  <div ref={messagesEndRef}></div>
-</div>
-
         <div className="bg-gray-700 flex items-center p-4">
           <form onSubmit={handleSendMessage} className="flex w-full">
             <input

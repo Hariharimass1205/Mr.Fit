@@ -136,7 +136,7 @@ export const logoutApi = async () => {
     deleteCookie('refreshToken');
     return response.data;
   } catch (error) {
-    console.error("Error in logout:", error);
+    console.log("Error in logout:", error);
     throw new Error("Failed to log out. Please try again.");
   }
 };

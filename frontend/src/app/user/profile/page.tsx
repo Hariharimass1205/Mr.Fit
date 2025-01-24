@@ -117,11 +117,11 @@ export default function Dashboard() {
           setPackageExpired(new Date(calculatedExpiration) < today);
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.log("Error fetching user data:", error);
       }
     }
     fetchUserData();
-  }, [dailyData,inputs,slotTime]);
+  }, [dailyData,inputs,slotTime,newProfileImage]);
 
    const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

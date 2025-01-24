@@ -93,7 +93,7 @@ export default function GymProfile() {
         toast.error("Review not submitted.");
       }
     } catch (error) {
-      console.error("Error submitting review:", error);
+      console.log("Error submitting review:", error);
       toast.error("Error submitting review. Please try again.");
     }
   };
@@ -283,7 +283,6 @@ export default function GymProfile() {
         <h3 className="font-semibold text-lg mb-4 text-center">Training Info</h3>
         <ol className="space-y-4">
           <li>No. of Students Coached: <span  className="mt-4 bg-red-500 p-1 rounded-lg font-semibold w-fit">{coach?.noOfStudentsCoached}</span></li>
-         
           <li>Time Availability : {coach?.availability?.fromTime}   to : {coach?.availability?.toTime}</li>
           <li >Days Availability :</li>
           {coach?.availability?.workingDays.map((days:string,i:number)=>(
