@@ -13,7 +13,6 @@ const Navbar: React.FC = () => {
   const [isCoach,setIsCoach] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false);
   const [quizScore,setQuizScore] = useState(0)
-  
   const router = useRouter();
   //const userdataRedux = useAppSelector(state => state?.user?.user)
 
@@ -94,7 +93,7 @@ const Navbar: React.FC = () => {
  }
 
   return (
-    <nav className="bg-black text-white flex justify-between items-center p-4 relative">
+  <nav className="bg-black text-white flex justify-between items-center p-4 relative">
     <div className="text-2xl font-bold">
       <h1>Mr.Fit</h1>
     </div>
@@ -178,110 +177,98 @@ const Navbar: React.FC = () => {
           Login
         </a>
       )}
-
+  
       {/* Mobile Menu Button */}
       <div className="md:hidden flex items-center z-10">
         <button
           className="text-lg hover:underline hover:text-cyan-400"
-          onClick={() => setMenuOpen(true)}  // Open the modal
+          onClick={() => setMenuOpen(!menuOpen)}
         >
           ☰
         </button>
       </div>
     </div>
-
-    {/* Modal */}
+  
+    {/* Mobile Menu */}
     {menuOpen && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
-        <div className="bg-white p-6 rounded-lg w-4/5 md:w-1/2">
-          <h2 className="text-xl font-bold mb-4 text-center text-black">Menu</h2>
-          {userStatus === "Accept" ? (
-            <a
-              onClick={() => router.push(`/coaches/studentsList`)}
-              className="text-lg hover:underline hover:text-cyan-400 block mb-2"
-            >
-              Students
-            </a>
-          ) : (
-            <a
-              href="/user/coachList"
-              className="text-lg hover:underline hover:text-cyan-400 block mb-2"
-            >
-              Get Coaches
-            </a>
-          )}
-          {user && (
-            <span className="block">
-              <span className="text-lg hover:underline mr-3 hover:text-cyan-400">
-                Hi.. {user}
-              </span>
-              {score <= 0 ? (
-                <a
-                  href="/user/FreeWorkOutPlans"
-                  className="ml-7 hover:underline mr-3 hover:text-orange-400 block"
-                >
-                  Free training
-                </a>
-              ) : (
-                ""
-              )}
+      <div className="absolute top-16 left-0 right-0 bg-black text-white p-4 md:hidden z-20">
+        {userStatus === "Accept" ? (
+          <a
+            onClick={() => router.push(`/coaches/studentsList`)}
+            className="text-lg hover:underline hover:text-cyan-400 block"
+          >
+            Students
+          </a>
+        ) : (
+          <a
+            href="/user/coachList"
+            className="text-lg hover:underline hover:text-cyan-400 block"
+          >
+            Get Coaches
+          </a>
+        )}
+        {user && (
+          <span className="block">
+            <span className="text-lg hover:underline mr-3 hover:text-cyan-400">
+              Hi.. {user}
             </span>
-          )}
-          {user && isAth ? (
-            <>
-              {userStatus === "Pending" ? (
-                <a className="text-lg hover:underline hover:text-yellow-400 block mb-2">
-                  Approval Pending
+            {score <= 0 ? (
+              <a
+                href="/user/FreeWorkOutPlans"
+                className="ml-7 hover:underline mr-3 hover:text-orange-400 block"
+              >
+                Free training
+              </a>
+            ) : (
+              ""
+            )}
+          </span>
+        )}
+        {user && isAth ? (
+          <>
+            {userStatus === "Pending" ? (
+              <a className="text-lg hover:underline hover:text-yellow-400 block">
+                Approval Pending
+              </a>
+            ) : userStatus === "Accept" ? (
+              isRegistered ? (
+                <a
+                  onClick={() => router.push('/coaches/coachProfile')}
+                  className="text-lg hover:underline hover:text-cyan-400 block"
+                >
+                  Profile
                 </a>
-              ) : userStatus === "Accept" ? (
-                isRegistered ? (
-                  <a
-                    onClick={() => router.push('/coaches/coachProfile')}
-                    className="text-lg hover:underline hover:text-cyan-400 block mb-2"
-                  >
-                    Profile
-                  </a>
-                ) : (
-                  <a
-                    onClick={() => router.push('/coaches/coachFillup')}
-                    className="text-lg hover:underline hover:text-cyan-400 block mb-2"
-                  >
-                    Register Coach
-                  </a>
-                )
               ) : (
                 <a
-                  onClick={handleBecomeCoach}
-                  className="text-lg hover:underline hover:text-cyan-400 block mb-2"
+                  onClick={() => router.push('/coaches/coachFillup')}
+                  className="text-lg hover:underline hover:text-cyan-400 block"
                 >
-                  {enrolledPackage <= 0 ? "Become a Coach" : "Profile"}
+                  Register Coach
                 </a>
-              )}
+              )
+            ) : (
               <a
-                onClick={handleLogout}
-                className="text-lg hover:underline hover:text-cyan-400 mr-3 block mb-2"
+                onClick={handleBecomeCoach}
+                className="text-lg hover:underline hover:text-cyan-400 block"
               >
-                Logout
+                {enrolledPackage <= 0 ? "Become a Coach" : "Profile"}
               </a>
-            </>
-          ) : (
+            )}
             <a
-              onClick={handleLogin}
-              className="text-lg hover:underline hover:text-cyan-400 block mb-2"
+              onClick={handleLogout}
+              className="text-lg hover:underline hover:text-cyan-400 mr-3 block"
             >
-              Login
+              Logout
             </a>
-          )}
-          {/* Close Button */}
-          <div className="flex justify-center">
-            <button
-              onClick={() => setMenuOpen(false)}  // Close the modal
-              className="px-6 py-2 mt-4 bg-cyan-500 hover:bg-cyan-600 text-white rounded-full"
-            >
-              Close
-            </button>
-          </div>
-        </div>
+          </>
+        ) : (
+          <a
+            onClick={handleLogin}
+            className="text-lg hover:underline hover:text-cyan-400 block"
+          >
+            Login
+          </a>
+        )}
       </div>
     )}
   </nav>
