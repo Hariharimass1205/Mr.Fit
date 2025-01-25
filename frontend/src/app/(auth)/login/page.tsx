@@ -18,8 +18,7 @@ type input = {
   password: string;
 };
 
-const Login: React.FC = () => {
-
+  const Login: React.FC = () => {
   const router = useRouter();
   //const dispatch = useAppDispatch()
   const {
@@ -27,7 +26,6 @@ const Login: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<input>();
-
   const onSubmit: SubmitHandler<input> = async (data) => {
     const { email, password } = data;
     const reqBody = { email, password };
@@ -48,7 +46,7 @@ const Login: React.FC = () => {
   const handleForgotPassword = () => {
     router.replace("/forgotPassword/forgotPassword1")
   }
-
+  
   const handleGoogleLogin = async () => {
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
@@ -90,7 +88,6 @@ const Login: React.FC = () => {
       }
     }
   };
-
   return (
     <>
       <ToastContainer autoClose={2000} position="top-center" />
@@ -100,7 +97,6 @@ const Login: React.FC = () => {
             <h1>Mr.Fit</h1>
           </div>
         </nav>
-
         <div
           className="flex justify-center items-start min-h-screen bg-cover bg-center pt-40"
           style={{ backgroundImage: `url(${bg.src})` }}
@@ -116,7 +112,6 @@ const Login: React.FC = () => {
                 className="w-full p-3 mb-1 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <small>{errors.email && <p className="text-red-500">{errors.email.message}</p>}</small>
-
               <input
                 type="password"
                 placeholder="Password..."
