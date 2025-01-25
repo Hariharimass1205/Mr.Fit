@@ -92,7 +92,8 @@ const Navbar: React.FC = () => {
   }
  }
 
-  return (<nav className="bg-black text-white flex justify-between items-center p-4">
+  return (
+  <nav className="bg-black text-white flex justify-between items-center p-4 relative">
     <div className="text-2xl font-bold">
       <h1>Mr.Fit</h1>
     </div>
@@ -178,7 +179,7 @@ const Navbar: React.FC = () => {
       )}
   
       {/* Mobile Menu Button */}
-      <div className="md:hidden flex items-center">
+      <div className="md:hidden flex items-center z-10">
         <button
           className="text-lg hover:underline hover:text-cyan-400"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -190,7 +191,7 @@ const Navbar: React.FC = () => {
   
     {/* Mobile Menu */}
     {menuOpen && (
-      <div className="absolute top-16 left-0 right-0 bg-black text-white p-4 md:hidden">
+      <div className="absolute top-16 left-0 right-0 bg-black text-white p-4 md:hidden z-20">
         {userStatus === "Accept" ? (
           <a
             onClick={() => router.push(`/coaches/studentsList`)}
