@@ -1,5 +1,6 @@
 import axios from "axios";
 import { SERVER_URL_ADMIN } from '../../utils/serverURL';
+import axiosInstance from "@/utils/axiosInstance";
 
 const Axios = axios.create({
   baseURL:`${SERVER_URL_ADMIN}`,
@@ -12,7 +13,7 @@ const Axios = axios.create({
   export const adminlogin = async (reqBody: Record<string,any>)=>{
     console.log("from frontt " , reqBody)
     try {
-      const response = await Axios.post(`${SERVER_URL_ADMIN}/adminlogin`,reqBody)
+      const response = await axiosInstance.post(`${SERVER_URL_ADMIN}/adminlogin`,reqBody)
       console.log(response)
       return response.data
     } catch (error:any) {
@@ -23,7 +24,7 @@ const Axios = axios.create({
 
   export const fetchDataList = async()=>{
     try {
-      const response = await Axios.post(`${SERVER_URL_ADMIN}/fetchUserList`)
+      const response = await axiosInstance.post(`${SERVER_URL_ADMIN}/fetchUserList`)
       const {userList,pendingApprovalsList,users,coachList,coaches,enrolledUsers} = response.data
       console.log(response.data,"from api page")
       if(response){
@@ -37,7 +38,7 @@ const Axios = axios.create({
 
   export const handleBlockFun = async (email:string) => {
      try {
-      const response = await Axios.post(`${SERVER_URL_ADMIN}/blockUser`,{email})
+      const response = await axiosInstance.post(`${SERVER_URL_ADMIN}/blockUser`,{email})
       return response.data.success
      } catch (error) {
       console.log("Error in handling block :",error);
@@ -47,7 +48,7 @@ const Axios = axios.create({
 
   export const handleUnBlockFun = async (email:string) => {
     try {
-     const response = await Axios.post(`${SERVER_URL_ADMIN}/unblockUser`,{email})
+     const response = await axiosInstance.post(`${SERVER_URL_ADMIN}/unblockUser`,{email})
      return response.data.success
     } catch (error) {
      console.log("Error in handling unblock :",error);
@@ -57,7 +58,7 @@ const Axios = axios.create({
 
  export const changeCoachStatus = async (email:string,newStatus:string)=>{
   try {
-    const response = await Axios.post(`${SERVER_URL_ADMIN}/changeStatus`,{email,newStatus})
+    const response = await axiosInstance.post(`${SERVER_URL_ADMIN}/changeStatus`,{email,newStatus})
     const {result} = response.data
     console.log(result,"cahnegedd roll")
     if(result){
