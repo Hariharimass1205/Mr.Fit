@@ -45,11 +45,10 @@ export const signupApi = async (reqBody: Record<string, any>) => {
 export const googleLogin = async (userData:object)=>{
   try {
     const response = await axiosInstance.post(
-      `${SERVER_URL_USER}/google-login`, 
-      userData, 
-      { withCredentials: true }
-    );
+      `${SERVER_URL_USER}/google-login`,userData,);
     console.log(response,"from api")
+    console.log('login credintials',response?.data?.authToken?.refreshToken)
+    setCookie('refreshToken',response?.data?.authToken?.refreshToken,7)
     return response
   } catch (error) {
     console.log(error,"from user api")

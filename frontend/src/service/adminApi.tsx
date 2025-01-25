@@ -16,7 +16,7 @@ const Axios = axios.create({
     try {
       const response = await axiosInstance.post(`${SERVER_URL_ADMIN}/adminlogin`,reqBody)
       console.log(response)
-       setCookie('refreshToken',response?.data?.auth?.refreshToken,7)
+      setCookie('refreshToken',response?.data?.auth?.refreshToken,7)
       return response.data
     } catch (error:any) {
       console.log("Error in adminLogin:", error.message || error);

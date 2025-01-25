@@ -64,9 +64,9 @@ const Login: React.FC = () => {
       };
       const response = await googleLogin(userData)
       if (response.data) {
-        localStorage.setItem("user", JSON.stringify(response))
+        localStorage.setItem("user", JSON.stringify(response.data.user))
        // dispatch(setUser(response.data))
-        toast.success(`Welcome back, Dr. ${response.data.userName}!`, {
+        toast.success(`Welcome back, Dr. ${response.data.user.userName}!`, {
           position: "top-center",
           autoClose: 2000,
           theme: "colored",
