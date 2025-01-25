@@ -5,6 +5,7 @@ export const SERVER_URL_ADMIN = "https://api.mrfit.life/admin";
 export const SERVER_URL_PAYMENT = "https://api.mrfit.life/payment";
 export const CLIENT_URL = "https://mrfit.life"
 
+
 // export const SERVER_URL_USER = "http://localhost:5000/user";
 // export const SERVER_URL_COACH = "http://localhost:5000/coach";
 // export const SERVER_URL_CHAT = "http://localhost:5000/chat";
