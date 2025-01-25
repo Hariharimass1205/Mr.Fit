@@ -1,6 +1,7 @@
 import axios from "axios";
 import { SERVER_URL_ADMIN } from '../../utils/serverURL';
 import axiosInstance from "@/utils/axiosInstance";
+import { setCookie } from "@/utils/constant";
 
 const Axios = axios.create({
   baseURL:`${SERVER_URL_ADMIN}`,
@@ -15,6 +16,7 @@ const Axios = axios.create({
     try {
       const response = await axiosInstance.post(`${SERVER_URL_ADMIN}/adminlogin`,reqBody)
       console.log(response)
+       setCookie('refreshToken',response?.data?.auth?.refreshToken,7)
       return response.data
     } catch (error:any) {
       console.log("Error in adminLogin:", error.message || error);
