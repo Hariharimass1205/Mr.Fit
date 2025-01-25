@@ -11,6 +11,7 @@ const Navbar: React.FC = () => {
   const [enrolledPackage,setEnrolledPackage] = useState(0)
   const [isAth, setIsAth] = useState<boolean>(false);
   const [isCoach,setIsCoach] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false);
   const [quizScore,setQuizScore] = useState(0)
   const router = useRouter();
   //const userdataRedux = useAppSelector(state => state?.user?.user)
@@ -28,6 +29,7 @@ const Navbar: React.FC = () => {
       }
       setUserStatus(data?.result?.data?.isApproved)
       setScore(data?.result?.data?.quizScore)
+      
       setIsRegistered(data?.result?.data?.isRegisted)
       setEnrolledPackage(data?.result?.data?.enrolledPackage)
       setQuizScore(quizScore)
@@ -90,83 +92,184 @@ const Navbar: React.FC = () => {
   }
  }
 
-  return (
-    <nav className="bg-black text-white flex justify-between items-center p-4">
+  return (<nav className="bg-black text-white flex justify-between items-center p-4">
     <div className="text-2xl font-bold">
       <h1>Mr.Fit</h1>
     </div>
-    <div className="flex gap-7">
-      
-      {userStatus =="Accept"? 
-      <a onClick={()=>router.push(`/coaches/studentsList`)} className="text-lg hover:underline hover:text-cyan-400">Students</a>:
+    <div className="flex items-center gap-7">
+      {userStatus === "Accept" ? (
+        <a
+          onClick={() => router.push(`/coaches/studentsList`)}
+          className="text-lg hover:underline hover:text-cyan-400 hidden md:block"
+        >
+          Students
+        </a>
+      ) : (
+        <a
+          href="/user/coachList"
+          className="text-lg hover:underline hover:text-cyan-400 hidden md:block"
+        >
+          Get Coaches
+        </a>
+      )}
+      {user && (
+        <span className="hidden md:flex items-center">
+          <span className="text-lg hover:underline mr-3 hover:text-cyan-400">
+            Hi.. {user}
+          </span>
+          {score <= 0 ? (
             <a
-              href="/user/coachList"
-              className="text-lg hover:underline hover:text-cyan-400"
+              href="/user/FreeWorkOutPlans"
+              className="ml-7 hover:underline mr-3 hover:text-orange-400"
             >
-              Get Coaches
-            </a>}
-    {user && (
-      <span>
-        <span className="text-lg hover:underline mr-3 hover:text-cyan-400">
-          Hi.. {user}
-        </span>
-          {score <= 0 ?
-        <span>
-          <a href="/user/FreeWorkOutPlans" className='ml-7 hover:underline mr-3 hover:text-orange-400'>Free training</a>
-        </span>
-        :""}
+              Free training
+            </a>
+          ) : (
+            ""
+          )}
         </span>
       )}
       {user && isAth ? (
-  <>
-    <div className="flex space-x-3">
-      {userStatus === "Pending" ? (
-        <a className="text-lg hover:underline hover:text-yellow-400">
-          Approval Pending
-        </a>
-      ) : userStatus === "Accept" ? (
-        isRegistered ? (
+        <>
+          <div className="hidden md:flex space-x-3">
+            {userStatus === "Pending" ? (
+              <a className="text-lg hover:underline hover:text-yellow-400">
+                Approval Pending
+              </a>
+            ) : userStatus === "Accept" ? (
+              isRegistered ? (
+                <a
+                  onClick={() => router.push('/coaches/coachProfile')}
+                  className="text-lg hover:underline hover:text-cyan-400"
+                >
+                  Profile
+                </a>
+              ) : (
+                <a
+                  onClick={() => router.push('/coaches/coachFillup')}
+                  className="text-lg hover:underline hover:text-cyan-400"
+                >
+                  Register Coach
+                </a>
+              )
+            ) : (
+              <a
+                onClick={handleBecomeCoach}
+                className="text-lg hover:underline hover:text-cyan-400"
+              >
+                {enrolledPackage <= 0 ? "Become a Coach" : "Profile"}
+              </a>
+            )}
+          </div>
           <a
-            onClick={() => router.push('/coaches/coachProfile')}
-            className="text-lg hover:underline hover:text-cyan-400"
+            onClick={handleLogout}
+            className="text-lg hover:underline hover:text-cyan-400 mr-3 hidden md:block"
           >
-            Profile
+            Logout
+          </a>
+        </>
+      ) : (
+        <a
+          onClick={handleLogin}
+          className="text-lg hover:underline hover:text-cyan-400 hidden md:block"
+        >
+          Login
+        </a>
+      )}
+  
+      {/* Mobile Menu Button */}
+      <div className="md:hidden flex items-center">
+        <button
+          className="text-lg hover:underline hover:text-cyan-400"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          ☰
+        </button>
+      </div>
+    </div>
+  
+    {/* Mobile Menu */}
+    {menuOpen && (
+      <div className="absolute top-16 left-0 right-0 bg-black text-white p-4 md:hidden">
+        {userStatus === "Accept" ? (
+          <a
+            onClick={() => router.push(`/coaches/studentsList`)}
+            className="text-lg hover:underline hover:text-cyan-400 block"
+          >
+            Students
           </a>
         ) : (
           <a
-            onClick={() => router.push('/coaches/coachFillup')}
-            className="text-lg hover:underline hover:text-cyan-400"
+            href="/user/coachList"
+            className="text-lg hover:underline hover:text-cyan-400 block"
           >
-            Register Coach
+            Get Coaches
           </a>
-        )
-      ) : (
-        <a
-          onClick={handleBecomeCoach}
-          className="text-lg hover:underline hover:text-cyan-400"
-        >
-          {enrolledPackage<=0?"Become a Coach":"Profile"}
-        </a>
-      )}
-    </div>
-    <a
-      onClick={handleLogout}
-      className="text-lg hover:underline hover:text-cyan-400 mr-3"
-    >
-      Logout
-    </a>
-  </>
-) : (
-
-  <a
-    onClick={handleLogin}
-    className="text-lg hover:underline hover:text-cyan-400"
-  >
-    Login
-  </a>
-)}
-
-    </div>
+        )}
+        {user && (
+          <span className="block">
+            <span className="text-lg hover:underline mr-3 hover:text-cyan-400">
+              Hi.. {user}
+            </span>
+            {score <= 0 ? (
+              <a
+                href="/user/FreeWorkOutPlans"
+                className="ml-7 hover:underline mr-3 hover:text-orange-400 block"
+              >
+                Free training
+              </a>
+            ) : (
+              ""
+            )}
+          </span>
+        )}
+        {user && isAth ? (
+          <>
+            {userStatus === "Pending" ? (
+              <a className="text-lg hover:underline hover:text-yellow-400 block">
+                Approval Pending
+              </a>
+            ) : userStatus === "Accept" ? (
+              isRegistered ? (
+                <a
+                  onClick={() => router.push('/coaches/coachProfile')}
+                  className="text-lg hover:underline hover:text-cyan-400 block"
+                >
+                  Profile
+                </a>
+              ) : (
+                <a
+                  onClick={() => router.push('/coaches/coachFillup')}
+                  className="text-lg hover:underline hover:text-cyan-400 block"
+                >
+                  Register Coach
+                </a>
+              )
+            ) : (
+              <a
+                onClick={handleBecomeCoach}
+                className="text-lg hover:underline hover:text-cyan-400 block"
+              >
+                {enrolledPackage <= 0 ? "Become a Coach" : "Profile"}
+              </a>
+            )}
+            <a
+              onClick={handleLogout}
+              className="text-lg hover:underline hover:text-cyan-400 mr-3 block"
+            >
+              Logout
+            </a>
+          </>
+        ) : (
+          <a
+            onClick={handleLogin}
+            className="text-lg hover:underline hover:text-cyan-400 block"
+          >
+            Login
+          </a>
+        )}
+      </div>
+    )}
   </nav>
   );
 };
