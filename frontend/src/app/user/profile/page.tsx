@@ -314,7 +314,7 @@ export default function Dashboard() {
       </div>
     ))}
     {user?.Diet?.Goal?.Calories?<h1>Thank you for your submission</h1>: <div className="col-span-2 flex justify-center">
-      {21 >= 21?<button
+      {currentHour >= 21?<button
         type="button"
         onClick={handleDietSave}
         className="bg-green-500 hover:bg-green-700 text-white py-1.5 px-3 rounded w-auto text-sm"
