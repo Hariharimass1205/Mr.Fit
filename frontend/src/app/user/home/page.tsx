@@ -141,10 +141,6 @@ export default function Home() {
         {/* "How Mr.Fit helps you" Section */}
         <section className="text-center py-16 bg-teal-100">
           <h2 className="text-6xl text-black font-semibold pb-10">How Mr.Fit helps you...</h2>
-          <button className="mt-6 bg-cyan-400 w-48 rounded-2xl text-white py-2 px-6 hover:bg-cyan-700 transition">
-            Start Training
-          </button>
-
           {/* Benefits */}
           <div className="mt-12 flex flex-col md:flex-row items-center justify-center gap-8">
             {/* Large Top Box */}
