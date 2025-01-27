@@ -235,7 +235,7 @@ export default function Dashboard() {
         {/* Profile Image */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-700 rounded-full overflow-hidden h-48 w-48">
           {user?.profileImage || newProfileImage ? (
-            <img
+            <Image
               src={user?.profileImage}
               alt="Profile"
               className="w-full h-full object-cover"

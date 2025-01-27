@@ -134,7 +134,7 @@ export default function GymProfile() {
           {/* Profile Picture */}
           <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-cyan-500">
                 
-            <img
+            <Image
               src={coach?.userId?.profileImage || "/default-avatar.jpg"}
               alt="Coach Avatar"    
               width={128}

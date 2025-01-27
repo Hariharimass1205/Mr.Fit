@@ -262,7 +262,7 @@ export default function CoachProfile() {
           <div className="relative bg-gray-700 rounded-full overflow-hidden h-28 w-28">
             {profileImageUrl ? (
               <div className="justify-item-center">
-              <img src={profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
+              <Image src={profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
               </div>
             ) : (
               <input
