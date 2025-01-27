@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata = {
     title: "Mr Fit",
-    description: "Find best jobs",
+    description: "Online fitness service",
 };
 
 function Layout({ children }) {
