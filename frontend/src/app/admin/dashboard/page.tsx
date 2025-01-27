@@ -55,6 +55,7 @@ const Dashboard: React.FC = () => {
 
   const coachesJoinedByMonth = [1, 2, 0, 3, 1, 2, 0, 0, 4, 3, 2, 1];
   coachesByMonth.splice(0, 12, ...coachesJoinedByMonth);
+  
   const revenueChartData = {
     labels: [
       "January", "February", "March", "April", "May", "June",
