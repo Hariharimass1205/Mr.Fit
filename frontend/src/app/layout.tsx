@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata = {
-    title: "_Job Club. | Job search India",
+    title: "Mr Fit",
     description: "Find best jobs",
 };
 

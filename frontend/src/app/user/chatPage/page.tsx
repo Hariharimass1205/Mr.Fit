@@ -106,7 +106,6 @@ const ChatPage = () => {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!userId || !newMessage.trim()) {
       toast.error("Type something...");
       return;
