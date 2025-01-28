@@ -238,7 +238,6 @@ export default function CoachProfile() {
     return `${formattedHour} ${period}`;
   };
 
-  console.log(availability,"avava---------------vavav")
   return (
     <div className="min-h-screen bg-gray-900 text-white font-sans p-4 relative">
       {/* Back Button */}
