@@ -103,33 +103,35 @@ const Signup: React.FC = () => {
             />
             <small> {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}</small>
 
-            <div className='flex'>
-              <input
-                type="password"
-                id="password"
-                {...register("password", {
-                  required: "Password is required",
-                  pattern: {
-                    value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*()_+~`|}{[\]:;?><,./-]).{8,}$/,
-                    message: "Password must be at least 6 characters",
-                  },
-                })}
-                placeholder="password..."
-                className="w-full  p-3 mt-3 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <input
-                type="password"
-                id="confirmPassword"
-                {...register("confirmPassword", {
-                  required: "Please confirm your password",
-                  validate: value => value === getValues("password") || "Passwords do not match",
-                })}
-                placeholder="confirmPassword..."
-                className="w-full p-3 mt-3 ml-4 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <small>At least one uppercase letter, one lowercase letter, one special character, and one number should be included.</small>
-            <small>{errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}</small>
+            <div>
+  <input
+    type="password"
+    id="password"
+    {...register("password", {
+      required: "Password is required",
+      pattern: {
+        value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*()_+~`|}{[\]:;?><,./-]).{8,}$/,
+        message: "Password must include at least one uppercase, one lowercase, one number, and one special character.",
+      },
+    })}
+    placeholder="password..."
+    className="w-full p-3 mt-3 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+  {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+
+  <input
+    type="password"
+    id="confirmPassword"
+    {...register("confirmPassword", {
+      required: "Please confirm your password",
+      validate: (value) => value === getValues("password") || "Passwords do not match",
+    })}
+    placeholder="confirmPassword..."
+    className="w-full p-3 mt-3 ml-4 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+  {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}
+</div>
+
             <div className="mb-10 mt-10">
   <h2>Select Gender:</h2>
   <label className="p-8">
