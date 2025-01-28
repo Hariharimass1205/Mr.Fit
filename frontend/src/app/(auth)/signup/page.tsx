@@ -128,6 +128,7 @@ const Signup: React.FC = () => {
                 className="w-full p-3 mt-3 ml-4 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
+            <small>At least one uppercase letter, one lowercase letter, one special character, and one number should be included.</small>
             <small>{errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}</small>
             <div className="mb-10 mt-10">
   <h2>Select Gender:</h2>
