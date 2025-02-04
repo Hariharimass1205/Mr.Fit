@@ -62,7 +62,6 @@ const RoomPage = () => {
           Date.now().toString(),
           coachName
         );
-
         const zc = ZegoUIKitPrebuilt.create(kitToken);
         zc.joinRoom({
           container: meetingRef.current,

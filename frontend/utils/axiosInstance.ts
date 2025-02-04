@@ -4,7 +4,8 @@ import axios from 'axios';
 // Create an Axios instance
 const axiosInstance = axios.create({
    // baseURL: 'http://localhost:5000', // Replace with your API base URL
-    baseURL: 'https://api.mrfit.life',
+    //baseURL: 'https://api.mrfit.life',
+    baseURL:"https://mr-fit.onrender.com"
 });
 
 // Add a request interceptor
