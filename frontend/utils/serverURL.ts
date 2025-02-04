@@ -3,7 +3,7 @@
 // export const SERVER_URL_CHAT = "https://api.mrfit.life/chat";
 // export const SERVER_URL_ADMIN = "https://api.mrfit.life/admin";
 // export const SERVER_URL_PAYMENT = "https://api.mrfit.life/payment";
-// export const CLIENT_URL = "https://mrfit.life"
+// export const CLIENT_URL = "https://www.mrfit.life"
 
 
 export const SERVER_URL_USER = "https://mr-fit.onrender.com/user";

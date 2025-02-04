@@ -23,7 +23,7 @@ const myFormat =
   ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"';
   
 app.use(cors({
-  origin: process.env.CLIENT_URL || "https://mrfit.life",
+  origin: process.env.CLIENT_URL || "*",
   credentials: true,
 }));
 
