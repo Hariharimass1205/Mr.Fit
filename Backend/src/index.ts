@@ -22,10 +22,12 @@ connectToMongoDB();
 const myFormat =
   ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"';
   
-app.use(cors({
-  origin: process.env.CLIENT_URL || "*",
-  credentials: true,
-}));
+  app.use(cors({
+    origin: ['https://www.mrfit.life','https://mrfit.life'], // Explicitly allow your frontend domain
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

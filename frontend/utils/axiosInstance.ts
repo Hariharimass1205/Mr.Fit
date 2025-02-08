@@ -7,7 +7,6 @@ const axiosInstance = axios.create({
     //baseURL: 'https://api.mrfit.life',
     baseURL:"https://mr-fit.onrender.com"
 });
-
 // Add a request interceptor
 axiosInstance.interceptors.request.use(
     (config) => {
@@ -25,6 +24,4 @@ axiosInstance.interceptors.request.use(
         return Promise.reject(error);
     }
 );
-
-
 export default axiosInstance;
