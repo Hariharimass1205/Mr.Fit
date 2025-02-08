@@ -37,7 +37,7 @@ const httpServer = createServer(app);
 
 export const io = new ServerSocket(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL || "https://mrfit.life",
+    origin: process.env.CLIENT_URL || "*",
     methods: ["GET", "POST"],
     credentials: true,
   },
