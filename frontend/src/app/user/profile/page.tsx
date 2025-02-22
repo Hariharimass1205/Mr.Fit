@@ -126,9 +126,8 @@ export default function Dashboard() {
    const handleProfileImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setNewProfileImage(URL.createObjectURL(file)); 
               const res = await changeProfilePic(file)
-              console.log(res)
+              setNewProfileImage(res.profileImage); 
               toast.success("profile pictured changed successfuly")
     }
   };
@@ -236,10 +235,12 @@ export default function Dashboard() {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-700 rounded-full overflow-hidden h-48 w-48">
           {user?.profileImage || newProfileImage ? (
             <Image
-              src={user?.profileImage}
-              alt="Profile"
-              className="w-full h-full object-cover"
-            />
+            src={user?.profileImage}
+            width={300}
+            height={300}
+            alt="Profile"
+            className="w-full h-full object-cover"
+          />
           ) : (
             <input
               type="file"

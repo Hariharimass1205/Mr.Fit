@@ -71,7 +71,7 @@ export const  saveQuizScore = async (score:string,coach:any): Promise<any>=>{
   export const changeProfilePic = async (file:any)=>{
     try {
       const formData = new FormData()
-      formData.append("profilePic",file)
+      formData.append("file",file)
       const data = await axiosInstance.patch(
         `${SERVER_URL_COACH}/updateProfilePic`,
         formData,

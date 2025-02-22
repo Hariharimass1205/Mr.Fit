@@ -85,7 +85,8 @@ updateCoachProfilePic = async (req:CustomRequest,res:Response,next:NextFunction)
   try {
     const {id} = req?.user
     const idd = new mongoose.Types.ObjectId(id)
-    const url = (req.files as any)?.profilePic?.[0]?.location
+    const filee:any = req?.file
+    const  url = filee.path
     const result = await this.coachService.saveProfilePic(url,idd) 
     res.status(HttpStatus.OK).json(result)
   } catch (error) {

@@ -3,7 +3,7 @@ import authMiddleware from "../middlesware/jwtVerification";
 import { CoachRepository } from "../repository/coachRepository";
 import { CoachService } from "../services/coachService";
 import { CoachController } from "../controllers/coachController";
-import { uploadMiddleware } from "../middlesware/multerConfig";
+import upload from "../middlesware/multerConfig";
 import { IisBlockHandle } from "../middlesware/isBlockHandler";
 
 const coachRouter = Router();
@@ -15,7 +15,7 @@ coachRouter.post("/saveQuizScore",controller.saveScore)
 coachRouter.post("/registerCoach",authMiddleware,controller.registerCoachController)
 
 coachRouter.post("/fetchCoachdata",authMiddleware,IisBlockHandle,controller.fetchCoachDataController)
-coachRouter.patch("/updateProfilePic",authMiddleware,IisBlockHandle,uploadMiddleware,controller.updateCoachProfilePic)
+coachRouter.patch("/updateProfilePic",authMiddleware,IisBlockHandle,upload.single('file'),controller.updateCoachProfilePic)
 coachRouter.patch("/updatPackage",authMiddleware,IisBlockHandle,controller.updateCoachPackage)
 coachRouter.patch("/updatProfile",authMiddleware,IisBlockHandle,controller.updateCoachProfile)
 coachRouter.patch("/saveCoachAchievement",authMiddleware,controller.updateCoachAchievement)

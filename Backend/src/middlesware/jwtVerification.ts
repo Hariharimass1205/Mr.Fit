@@ -14,7 +14,7 @@ interface UserPayload extends JwtPayload {
 
   export interface CustomRequest extends Request {
     user?: UserPayload;
-    files?:""
+    file?:""
   }
 
 
