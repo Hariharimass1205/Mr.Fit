@@ -2,7 +2,6 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-import morgan from "morgan";
 import { createServer } from "http";
 import { Server as ServerSocket } from "socket.io";
 import { connectToMongoDB } from "./config/db.connect";
@@ -14,14 +13,13 @@ import chatRouter from "./routes/chatRouter";
 import { errorHandles } from "./middlesware/errrorHandlers";
 import { socketHandler } from "./utils/chat";
 import { IisBlockHandle } from "./middlesware/isBlockHandler";
+import logger from "./utils/logger"; // ✅ Import Pino logger
 
 dotenv.config();
 const app = express();
 connectToMongoDB();
 
-const myFormat =
-  ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"';
-  
+// Middleware
 app.use(cors({
   origin: process.env.CLIENT_URL || "*",
   credentials: true,
@@ -30,7 +28,12 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(morgan(myFormat));
+
+// ✅ Replace Morgan with a Pino request logger
+app.use((req, res, next) => {
+  logger.info(`Incoming request: ${req.method} ${req.url}`);
+  next();
+});
 
 // Initialize HTTP Server and Socket.IO
 const httpServer = createServer(app);
@@ -54,10 +57,10 @@ app.use("/chat", chatRouter);
 
 // Global Error Handler
 app.use(errorHandles);
-app.use(IisBlockHandle)
+app.use(IisBlockHandle);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
 httpServer.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
+  logger.info(`🚀 Server started on port ${PORT}`);
 });
