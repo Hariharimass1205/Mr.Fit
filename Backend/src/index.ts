@@ -29,7 +29,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ✅ Replace Morgan with a Pino request logger
+// Replace Morgan with a Pino request logger
 app.use((req, res, next) => {
   logger.info(`Incoming request: ${req.method} ${req.url}`);
   next();
@@ -62,5 +62,5 @@ app.use(IisBlockHandle);
 // Start Server
 const PORT = process.env.PORT || 5000;
 httpServer.listen(PORT, () => {
-  logger.info(`🚀 Server started on port ${PORT}`);
+  logger.info(` Server started on port ${PORT}`);
 });
